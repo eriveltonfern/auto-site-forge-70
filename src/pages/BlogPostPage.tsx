@@ -111,11 +111,13 @@ export default function BlogPostPage() {
         <div className="container grid gap-10 lg:grid-cols-3">
           <article className="lg:col-span-2 space-y-8">
             {post.featured_image && (
-              <img
+              <OptimizedImage
                 src={post.featured_image}
                 alt={post.title}
                 className="w-full rounded-xl object-cover shadow-md"
                 style={{ maxHeight: 480 }}
+                priority
+                sizes="(max-width: 1024px) 100vw, 66vw"
               />
             )}
 
