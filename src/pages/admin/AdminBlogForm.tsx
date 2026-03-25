@@ -91,7 +91,42 @@ export default function AdminBlogForm() {
 
         <div><Label>Resumo</Label><Textarea value={form.summary} onChange={(e) => setForm((f) => ({ ...f, summary: e.target.value }))} rows={3} /></div>
         <div><Label>Conteúdo</Label><Textarea value={form.content} onChange={(e) => setForm((f) => ({ ...f, content: e.target.value }))} rows={10} /></div>
-        <div><Label>URL da Imagem Destacada</Label><Input value={form.featured_image} onChange={(e) => setForm((f) => ({ ...f, featured_image: e.target.value }))} /></div>
+        <div>
+          <Label>Imagem Destacada</Label>
+          <Input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            disabled={uploading}
+            onChange={async (e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+              setUploading(true);
+              try {
+                const compressed = await compressImageToWebP(file);
+                const path = `blog/${Date.now()}.webp`;
+                const { error } = await supabase.storage.from("uploads").upload(path, compressed, { contentType: "image/webp" });
+                if (error) { toast({ title: "Erro no upload", description: error.message, variant: "destructive" }); return; }
+                const { data: urlData } = supabase.storage.from("uploads").getPublicUrl(path);
+                setForm((f) => ({ ...f, featured_image: urlData.publicUrl }));
+                toast({ title: "Imagem enviada e comprimida!" });
+              } catch (err: any) {
+                toast({ title: "Erro", description: err.message, variant: "destructive" });
+              } finally {
+                setUploading(false);
+                if (fileInputRef.current) fileInputRef.current.value = "";
+              }
+            }}
+          />
+          {form.featured_image && (
+            <div className="relative mt-2">
+              <img src={form.featured_image} alt="Destaque" className="h-40 w-full rounded-lg object-cover" />
+              <Button type="button" variant="ghost" size="sm" className="absolute top-1 right-1 text-destructive bg-card/80"
+                onClick={() => setForm((f) => ({ ...f, featured_image: "" }))}>Remover</Button>
+            </div>
+          )}
+          <Input className="mt-2" placeholder="Ou cole a URL da imagem" value={form.featured_image} onChange={(e) => setForm((f) => ({ ...f, featured_image: e.target.value }))} />
+        </div>
 
         <div className="rounded-lg border bg-muted/30 p-4 space-y-3">
           <h3 className="font-display text-sm font-bold text-foreground">SEO</h3>
