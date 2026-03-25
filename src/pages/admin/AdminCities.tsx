@@ -52,7 +52,7 @@ export default function AdminCities() {
             <tr>
               <th className="px-4 py-3 text-left font-semibold text-foreground">Cidade</th>
               <th className="hidden px-4 py-3 text-left font-semibold text-foreground md:table-cell">Estado</th>
-              <th className="hidden px-4 py-3 text-left font-semibold text-foreground md:table-cell">Bairros</th>
+              <th className="hidden px-4 py-3 text-left font-semibold text-foreground md:table-cell">Setores</th>
               <th className="px-4 py-3 text-left font-semibold text-foreground">Status</th>
               <th className="px-4 py-3 text-right font-semibold text-foreground">Ações</th>
             </tr>

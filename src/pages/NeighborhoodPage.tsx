@@ -85,8 +85,7 @@ export default function NeighborhoodPage() {
                 <MessageCircle className="h-5 w-5" /> Solicitar Orçamento Grátis
               </a>
             </Button>
-            <Button variant="outline" size="lg" asChild
-              className="border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
+            <Button variant="hero-phone" size="lg" asChild>
               <a href={getPhoneUrl(settings)}>
                 <Phone className="h-5 w-5" /> Ligar Agora
               </a>
@@ -325,9 +324,9 @@ export default function NeighborhoodPage() {
                       <MessageCircle className="h-5 w-5" /> WhatsApp
                     </a>
                   </Button>
-                  <Button variant="default" size="lg" asChild className="w-full">
+                  <Button variant="phone" size="lg" asChild className="w-full">
                     <a href={getPhoneUrl(settings)}>
-                      <Phone className="h-5 w-5" /> Ligar
+                      <Phone className="h-5 w-5" /> Ligar Agora
                     </a>
                   </Button>
                 </div>
