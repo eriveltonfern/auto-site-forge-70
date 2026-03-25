@@ -63,6 +63,7 @@ export default function AdminServiceForm() {
       seo_title: form.seo_title, meta_description: form.meta_description,
       h1: form.h1, short_description: form.short_description,
       long_description: form.long_description, icon: form.icon,
+      cover_image: form.cover_image || null,
       keywords: form.keywords.split(",").map((k) => k.trim()).filter(Boolean),
       problems: form.problems.split("\n").map((p) => p.trim()).filter(Boolean),
       benefits: form.benefits.split("\n").map((b) => b.trim()).filter(Boolean),
