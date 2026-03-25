@@ -60,7 +60,7 @@ export default function BlogPage() {
                 <Link key={post.id} to={`/blog/${post.slug}`}
                   className="group overflow-hidden rounded-xl border bg-card shadow-sm transition-all hover:shadow-lg hover:-translate-y-1">
                   {post.featured_image && (
-                    <img src={post.featured_image} alt={post.title} className="h-48 w-full object-cover transition-transform group-hover:scale-105" />
+                    <OptimizedImage src={post.featured_image} alt={post.title} className="h-48 w-full object-cover transition-transform group-hover:scale-105" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" />
                   )}
                   <div className="p-5">
                     {post.category && (
