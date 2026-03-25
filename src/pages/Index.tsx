@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { SEOHead, getLocalBusinessSchema, getFAQSchema } from "@/components/SEOHead";
 import { useSiteSettings, useServices, useCitiesWithNeighborhoodCount, getWhatsAppUrl, getPhoneUrl } from "@/hooks/useSiteData";
+import { ServiceCard } from "@/components/ServiceCard";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { FloatingCTA } from "@/components/FloatingCTA";
