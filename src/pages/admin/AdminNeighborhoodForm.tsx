@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { generateSlug, generateSeoTitle, generateMetaDescription, generateH1 } from "@/lib/seo-helpers";
+import { compressImageToWebP } from "@/lib/image-compressor";
 import { Upload, X } from "lucide-react";
 
 export default function AdminNeighborhoodForm() {
@@ -62,9 +63,9 @@ export default function AdminNeighborhoodForm() {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
-    const ext = file.name.split(".").pop();
-    const path = `neighborhoods/${Date.now()}.${ext}`;
-    const { error } = await supabase.storage.from("uploads").upload(path, file);
+    const compressed = await compressImageToWebP(file);
+    const path = `neighborhoods/${Date.now()}.webp`;
+    const { error } = await supabase.storage.from("uploads").upload(path, compressed, { contentType: "image/webp" });
     if (error) {
       toast({ title: "Erro no upload", description: error.message, variant: "destructive" });
     } else {

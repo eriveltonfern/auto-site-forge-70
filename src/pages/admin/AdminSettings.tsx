@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { compressImageToWebP } from "@/lib/image-compressor";
 import { Save } from "lucide-react";
 
 export default function AdminSettings() {
@@ -34,9 +35,9 @@ export default function AdminSettings() {
   }, []);
 
   const handleFileUpload = async (file: File, field: "logo_url" | "favicon_url") => {
-    const ext = file.name.split(".").pop();
-    const path = `${field.replace("_url", "")}-${Date.now()}.${ext}`;
-    const { error } = await supabase.storage.from("uploads").upload(path, file);
+    const compressed = await compressImageToWebP(file);
+    const path = `${field.replace("_url", "")}-${Date.now()}.webp`;
+    const { error } = await supabase.storage.from("uploads").upload(path, compressed, { contentType: "image/webp" });
     if (error) { toast({ title: "Erro no upload", description: error.message, variant: "destructive" }); return; }
     const { data: urlData } = supabase.storage.from("uploads").getPublicUrl(path);
     setForm((f) => ({ ...f, [field]: urlData.publicUrl }));

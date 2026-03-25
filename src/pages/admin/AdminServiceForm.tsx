@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { generateSlug, generateSeoTitle, generateMetaDescription, generateH1 } from "@/lib/seo-helpers";
+import { compressImageToWebP } from "@/lib/image-compressor";
 import { Upload, Loader2, X, Image as ImageIcon } from "lucide-react";
 
 export default function AdminServiceForm() {
@@ -60,11 +61,12 @@ export default function AdminServiceForm() {
   const handleImageUpload = async (file: File) => {
     setUploading(true);
     try {
-      const ext = file.name.split(".").pop();
-      const path = `services/cover-${Date.now()}.${ext}`;
-      const { error } = await supabase.storage.from("uploads").upload(path, file, {
+      const compressed = await compressImageToWebP(file);
+      const path = `services/cover-${Date.now()}.webp`;
+      const { error } = await supabase.storage.from("uploads").upload(path, compressed, {
         cacheControl: "3600",
         upsert: false,
+        contentType: "image/webp",
       });
       if (error) {
         toast({ title: "Erro no upload", description: error.message, variant: "destructive" });

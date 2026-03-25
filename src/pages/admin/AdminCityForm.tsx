@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { generateSlug, generateSeoTitle, generateMetaDescription, generateH1 } from "@/lib/seo-helpers";
+import { compressImageToWebP } from "@/lib/image-compressor";
 
 export default function AdminCityForm() {
   const { id } = useParams();
@@ -96,9 +97,9 @@ export default function AdminCityForm() {
             onChange={async (e) => {
               const file = e.target.files?.[0];
               if (!file) return;
-              const ext = file.name.split(".").pop();
-              const path = `cities/cover-${Date.now()}.${ext}`;
-              const { error } = await supabase.storage.from("uploads").upload(path, file);
+              const compressed = await compressImageToWebP(file);
+              const path = `cities/cover-${Date.now()}.webp`;
+              const { error } = await supabase.storage.from("uploads").upload(path, compressed, { contentType: "image/webp" });
               if (error) { toast({ title: "Erro no upload", description: error.message, variant: "destructive" }); return; }
               const { data: urlData } = supabase.storage.from("uploads").getPublicUrl(path);
               setForm((f) => ({ ...f, cover_image: urlData.publicUrl }));
