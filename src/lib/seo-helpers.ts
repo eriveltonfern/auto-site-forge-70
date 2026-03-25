@@ -42,7 +42,7 @@ export function generateH1(type: "service" | "city" | "neighborhood" | "post", n
     case "city":
       return `Desentupidora em ${name}`;
     case "neighborhood":
-      return `Desentupidora no ${name}`;
+      return `Desentupidora no Setor ${name}`;
     case "post":
       return name;
   }

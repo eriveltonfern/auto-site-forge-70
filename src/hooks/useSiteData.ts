@@ -181,10 +181,10 @@ export function generateCityContent(cityName: string) {
 
 export function generateNeighborhoodContent(neighborhoodName: string, cityName: string) {
   return {
-    title: `Desentupidora no ${neighborhoodName}, ${cityName} | Atendimento Imediato`,
-    metaDescription: `Desentupidora no ${neighborhoodName} em ${cityName}. Atendimento rápido e profissional. Desentupimento de pia, vaso, esgoto e mais. Fale no WhatsApp.`,
-    h1: `Desentupidora no ${neighborhoodName}`,
-    intro: `Atendemos diariamente o bairro ${neighborhoodName} em ${cityName}, oferecendo soluções rápidas e profissionais para problemas de entupimento. Nossa equipe chega em minutos!`,
+    title: `Desentupidora no Setor ${neighborhoodName}, ${cityName} | Atendimento Imediato`,
+    metaDescription: `Desentupidora no Setor ${neighborhoodName} em ${cityName}. Atendimento rápido e profissional. Desentupimento de pia, vaso, esgoto e mais. Fale no WhatsApp.`,
+    h1: `Desentupidora no Setor ${neighborhoodName}`,
+    intro: `Atendemos diariamente o Setor ${neighborhoodName} em ${cityName}, oferecendo soluções rápidas e profissionais para problemas de entupimento. Nossa equipe chega em minutos!`,
     responseTime: "Tempo estimado de chegada: 20 a 40 minutos",
   };
 }
