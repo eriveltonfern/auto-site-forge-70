@@ -44,10 +44,12 @@ export default function ServicePage() {
           </nav>
           <div className="flex flex-col gap-6 md:flex-row md:items-center">
             {(service as any).cover_image && (
-              <img
+              <OptimizedImage
                 src={(service as any).cover_image}
                 alt={service.name}
                 className="h-40 w-full rounded-xl object-cover md:h-48 md:w-72"
+                priority
+                sizes="(max-width: 768px) 100vw, 288px"
               />
             )}
             <div>
