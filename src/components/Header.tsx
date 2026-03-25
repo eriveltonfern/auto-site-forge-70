@@ -7,6 +7,7 @@ const navLinks = [
   { to: "/", label: "Início" },
   { to: "/servicos", label: "Serviços" },
   { to: "/goiania", label: "Áreas Atendidas" },
+  { to: "/blog", label: "Blog" },
 ];
 
 export function Header() {
@@ -42,9 +43,9 @@ export function Header() {
               {settings.address}
             </span>
           </div>
-          <a href={getPhoneUrl(settings)} className="flex items-center gap-1.5 font-semibold hover:underline">
+          <a href={getPhoneUrl(settings)} className="flex items-center gap-1.5 font-semibold text-accent hover:underline">
             <Phone className="h-3.5 w-3.5" />
-            {settings.phone}
+            Ligar Agora
           </a>
         </div>
       </div>

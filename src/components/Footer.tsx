@@ -64,6 +64,12 @@ export function Footer() {
                 </li>
               ))}
             </ul>
+            <h4 className="mt-6 mb-4 font-display text-sm font-bold uppercase tracking-wider opacity-70">Blog</h4>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link to="/blog" className="opacity-80 hover:opacity-100 hover:underline transition-opacity">Ver artigos</Link>
+              </li>
+            </ul>
           </div>
 
           {/* Contact CTA */}
