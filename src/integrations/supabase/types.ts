@@ -157,6 +157,7 @@ export type Database = {
       services: {
         Row: {
           benefits: string[] | null
+          cover_image: string | null
           created_at: string
           faq: Json | null
           h1: string | null
@@ -176,6 +177,7 @@ export type Database = {
         }
         Insert: {
           benefits?: string[] | null
+          cover_image?: string | null
           created_at?: string
           faq?: Json | null
           h1?: string | null
@@ -195,6 +197,7 @@ export type Database = {
         }
         Update: {
           benefits?: string[] | null
+          cover_image?: string | null
           created_at?: string
           faq?: Json | null
           h1?: string | null
