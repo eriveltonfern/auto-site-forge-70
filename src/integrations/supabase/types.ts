@@ -14,7 +14,254 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      blog_posts: {
+        Row: {
+          category: string | null
+          content: string | null
+          created_at: string
+          featured_image: string | null
+          id: string
+          meta_description: string | null
+          published_at: string | null
+          seo_title: string | null
+          slug: string
+          status: string
+          summary: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          content?: string | null
+          created_at?: string
+          featured_image?: string | null
+          id?: string
+          meta_description?: string | null
+          published_at?: string | null
+          seo_title?: string | null
+          slug: string
+          status?: string
+          summary?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          content?: string | null
+          created_at?: string
+          featured_image?: string | null
+          id?: string
+          meta_description?: string | null
+          published_at?: string | null
+          seo_title?: string | null
+          slug?: string
+          status?: string
+          summary?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      cities: {
+        Row: {
+          base_content: string | null
+          created_at: string
+          h1: string | null
+          id: string
+          meta_description: string | null
+          name: string
+          seo_title: string | null
+          slug: string
+          state: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          base_content?: string | null
+          created_at?: string
+          h1?: string | null
+          id?: string
+          meta_description?: string | null
+          name: string
+          seo_title?: string | null
+          slug: string
+          state?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          base_content?: string | null
+          created_at?: string
+          h1?: string | null
+          id?: string
+          meta_description?: string | null
+          name?: string
+          seo_title?: string | null
+          slug?: string
+          state?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      neighborhoods: {
+        Row: {
+          base_content: string | null
+          city_id: string
+          created_at: string
+          h1: string | null
+          id: string
+          meta_description: string | null
+          name: string
+          seo_title: string | null
+          slug: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          base_content?: string | null
+          city_id: string
+          created_at?: string
+          h1?: string | null
+          id?: string
+          meta_description?: string | null
+          name: string
+          seo_title?: string | null
+          slug: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          base_content?: string | null
+          city_id?: string
+          created_at?: string
+          h1?: string | null
+          id?: string
+          meta_description?: string | null
+          name?: string
+          seo_title?: string | null
+          slug?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "neighborhoods_city_id_fkey"
+            columns: ["city_id"]
+            isOneToOne: false
+            referencedRelation: "cities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      services: {
+        Row: {
+          benefits: string[] | null
+          created_at: string
+          faq: Json | null
+          h1: string | null
+          icon: string | null
+          id: string
+          keywords: string[] | null
+          long_description: string | null
+          meta_description: string | null
+          name: string
+          problems: string[] | null
+          seo_title: string | null
+          short_description: string | null
+          slug: string
+          sort_order: number | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          benefits?: string[] | null
+          created_at?: string
+          faq?: Json | null
+          h1?: string | null
+          icon?: string | null
+          id?: string
+          keywords?: string[] | null
+          long_description?: string | null
+          meta_description?: string | null
+          name: string
+          problems?: string[] | null
+          seo_title?: string | null
+          short_description?: string | null
+          slug: string
+          sort_order?: number | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          benefits?: string[] | null
+          created_at?: string
+          faq?: Json | null
+          h1?: string | null
+          icon?: string | null
+          id?: string
+          keywords?: string[] | null
+          long_description?: string | null
+          meta_description?: string | null
+          name?: string
+          problems?: string[] | null
+          seo_title?: string | null
+          short_description?: string | null
+          slug?: string
+          sort_order?: number | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      site_settings: {
+        Row: {
+          address: string | null
+          business_hours: string | null
+          company_name: string | null
+          created_at: string
+          email: string | null
+          favicon_url: string | null
+          global_scripts: string | null
+          id: string
+          logo_url: string | null
+          phone: string | null
+          updated_at: string
+          whatsapp: string | null
+          whatsapp_message: string | null
+        }
+        Insert: {
+          address?: string | null
+          business_hours?: string | null
+          company_name?: string | null
+          created_at?: string
+          email?: string | null
+          favicon_url?: string | null
+          global_scripts?: string | null
+          id?: string
+          logo_url?: string | null
+          phone?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+          whatsapp_message?: string | null
+        }
+        Update: {
+          address?: string | null
+          business_hours?: string | null
+          company_name?: string | null
+          created_at?: string
+          email?: string | null
+          favicon_url?: string | null
+          global_scripts?: string | null
+          id?: string
+          logo_url?: string | null
+          phone?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+          whatsapp_message?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
