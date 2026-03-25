@@ -3,7 +3,7 @@ import { Phone, MessageCircle, CheckCircle, Shield, Clock, Star, ChevronDown } f
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { SEOHead, getLocalBusinessSchema, getFAQSchema } from "@/components/SEOHead";
-import { SITE_CONFIG, getWhatsAppUrl, getPhoneUrl, services, cities } from "@/data/siteData";
+import { useSiteSettings, useServices, useCitiesWithNeighborhoodCount, getWhatsAppUrl, getPhoneUrl } from "@/hooks/useSiteData";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { FloatingCTA } from "@/components/FloatingCTA";
@@ -26,6 +26,11 @@ const differentials = [
 
 export default function Index() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const { data: settings } = useSiteSettings();
+  const { data: services } = useServices();
+  const { data: citiesData } = useCitiesWithNeighborhoodCount();
+
+  if (!settings) return null;
 
   return (
     <>
@@ -66,14 +71,14 @@ export default function Index() {
               className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center"
             >
               <Button variant="hero" size="lg" asChild className="w-full sm:w-auto px-8 py-6 text-lg">
-                <a href={getWhatsAppUrl()} target="_blank" rel="noopener noreferrer">
+                <a href={getWhatsAppUrl(settings)} target="_blank" rel="noopener noreferrer">
                   <MessageCircle className="h-5 w-5" /> Chamar no WhatsApp
                 </a>
               </Button>
               <Button variant="outline" size="lg" asChild
                 className="w-full sm:w-auto border-primary-foreground/40 px-8 py-6 text-lg text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
-                <a href={getPhoneUrl()}>
-                  <Phone className="h-5 w-5" /> {SITE_CONFIG.phone}
+                <a href={getPhoneUrl(settings)}>
+                  <Phone className="h-5 w-5" /> {settings.phone}
                 </a>
               </Button>
             </motion.div>
@@ -85,7 +90,7 @@ export default function Index() {
       <section className="py-16">
         <div className="container">
           <h2 className="mb-10 text-center text-2xl font-bold text-foreground md:text-3xl">
-            Por que escolher a <span className="text-accent">{SITE_CONFIG.name}</span>?
+            Por que escolher a <span className="text-accent">{settings.company_name}</span>?
           </h2>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {differentials.map((d, i) => (
@@ -107,37 +112,39 @@ export default function Index() {
       </section>
 
       {/* SERVIÇOS */}
-      <section className="section-alt py-16">
-        <div className="container">
-          <h2 className="mb-2 text-center text-2xl font-bold text-foreground md:text-3xl">Nossos Serviços</h2>
-          <p className="mb-10 text-center text-muted-foreground">Soluções completas para todo tipo de entupimento</p>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {services.map((s, i) => (
-              <motion.div
-                key={s.slug}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.05 }}
-              >
-                <Link
-                  to={`/servicos/${s.slug}`}
-                  className="group block rounded-xl border bg-card p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-1"
+      {services && services.length > 0 && (
+        <section className="section-alt py-16">
+          <div className="container">
+            <h2 className="mb-2 text-center text-2xl font-bold text-foreground md:text-3xl">Nossos Serviços</h2>
+            <p className="mb-10 text-center text-muted-foreground">Soluções completas para todo tipo de entupimento</p>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {services.map((s, i) => (
+                <motion.div
+                  key={s.slug}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.05 }}
                 >
-                  <span className="mb-3 block text-3xl">{s.icon}</span>
-                  <h3 className="mb-2 font-display text-lg font-bold text-foreground group-hover:text-accent transition-colors">{s.name}</h3>
-                  <p className="text-sm text-muted-foreground">{s.shortDescription}</p>
-                </Link>
-              </motion.div>
-            ))}
+                  <Link
+                    to={`/servicos/${s.slug}`}
+                    className="group block rounded-xl border bg-card p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-1"
+                  >
+                    <span className="mb-3 block text-3xl">{s.icon || "🔧"}</span>
+                    <h3 className="mb-2 font-display text-lg font-bold text-foreground group-hover:text-accent transition-colors">{s.name}</h3>
+                    <p className="text-sm text-muted-foreground">{s.short_description}</p>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+            <div className="mt-8 text-center">
+              <Button variant="cta" size="lg" asChild>
+                <Link to="/servicos">Ver Todos os Serviços</Link>
+              </Button>
+            </div>
           </div>
-          <div className="mt-8 text-center">
-            <Button variant="cta" size="lg" asChild>
-              <Link to="/servicos">Ver Todos os Serviços</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* PROVAS SOCIAIS */}
       <section className="py-16">
@@ -169,29 +176,31 @@ export default function Index() {
       </section>
 
       {/* ÁREAS ATENDIDAS */}
-      <section className="section-alt py-16">
-        <div className="container">
-          <h2 className="mb-2 text-center text-2xl font-bold text-foreground md:text-3xl">Áreas Atendidas</h2>
-          <p className="mb-10 text-center text-muted-foreground">Cobertura em toda Goiânia e região metropolitana</p>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {cities.map((c) => (
-              <Link
-                key={c.slug}
-                to={`/${c.slug}`}
-                className="group flex items-center gap-3 rounded-lg border bg-card p-4 shadow-sm transition-all hover:shadow-md hover:border-accent"
-              >
-                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/10 text-accent font-bold text-sm">
-                  {c.neighborhoods.length}
-                </span>
-                <div>
-                  <h3 className="font-display font-bold text-foreground group-hover:text-accent transition-colors">{c.name}</h3>
-                  <p className="text-xs text-muted-foreground">{c.neighborhoods.length} bairros atendidos</p>
-                </div>
-              </Link>
-            ))}
+      {citiesData && citiesData.length > 0 && (
+        <section className="section-alt py-16">
+          <div className="container">
+            <h2 className="mb-2 text-center text-2xl font-bold text-foreground md:text-3xl">Áreas Atendidas</h2>
+            <p className="mb-10 text-center text-muted-foreground">Cobertura em toda Goiânia e região metropolitana</p>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {citiesData.map((c: any) => (
+                <Link
+                  key={c.slug}
+                  to={`/${c.slug}`}
+                  className="group flex items-center gap-3 rounded-lg border bg-card p-4 shadow-sm transition-all hover:shadow-md hover:border-accent"
+                >
+                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/10 text-accent font-bold text-sm">
+                    {c.neighborhoodCount}
+                  </span>
+                  <div>
+                    <h3 className="font-display font-bold text-foreground group-hover:text-accent transition-colors">{c.name}</h3>
+                    <p className="text-xs text-muted-foreground">{c.neighborhoodCount} bairros atendidos</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* FAQ */}
       <section className="py-16">
@@ -223,13 +232,13 @@ export default function Index() {
           <p className="mb-8 text-lg opacity-90">Fale conosco e resolva seu problema em minutos!</p>
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <Button variant="hero" size="lg" asChild className="w-full sm:w-auto px-8 py-6 text-lg">
-              <a href={getWhatsAppUrl()} target="_blank" rel="noopener noreferrer">
+              <a href={getWhatsAppUrl(settings)} target="_blank" rel="noopener noreferrer">
                 <MessageCircle className="h-5 w-5" /> Chamar no WhatsApp
               </a>
             </Button>
             <Button variant="outline" size="lg" asChild
               className="w-full sm:w-auto border-primary-foreground/40 px-8 py-6 text-lg text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
-              <a href={getPhoneUrl()}>
+              <a href={getPhoneUrl(settings)}>
                 <Phone className="h-5 w-5" /> Ligar Agora
               </a>
             </Button>
@@ -239,7 +248,6 @@ export default function Index() {
 
       <Footer />
 
-      {/* FAQ Schema */}
       <SEOHead title="" description="" structuredData={getFAQSchema(homeFaq)} />
     </>
   );

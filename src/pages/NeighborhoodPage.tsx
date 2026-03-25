@@ -3,19 +3,30 @@ import { SEOHead, getFAQSchema } from "@/components/SEOHead";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { FloatingCTA } from "@/components/FloatingCTA";
-import { getNeighborhoodBySlug, generateNeighborhoodContent, getWhatsAppUrl, getPhoneUrl, services, SITE_CONFIG } from "@/data/siteData";
+import { useNeighborhoodBySlug, useServices, useSiteSettings, getWhatsAppUrl, getPhoneUrl, generateNeighborhoodContent } from "@/hooks/useSiteData";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Phone, Clock, CheckCircle } from "lucide-react";
 import NotFound from "./NotFound";
 
 export default function NeighborhoodPage() {
-  const { citySlug, neighborhoodSlug } = useParams();
-  const result = getNeighborhoodBySlug(citySlug || "", neighborhoodSlug || "");
+  const { neighborhoodSlug } = useParams();
+  const { data: result, isLoading } = useNeighborhoodBySlug(neighborhoodSlug || "");
+  const { data: services } = useServices();
+  const { data: settings } = useSiteSettings();
 
+  if (isLoading || !settings) return null;
   if (!result) return <NotFound />;
 
-  const { neighborhood, city } = result;
-  const seo = generateNeighborhoodContent(neighborhood.name, city.name);
+  const neighborhood = result;
+  const city = result.cities;
+
+  const seo = {
+    title: neighborhood.seo_title || generateNeighborhoodContent(neighborhood.name, city.name).title,
+    metaDescription: neighborhood.meta_description || generateNeighborhoodContent(neighborhood.name, city.name).metaDescription,
+    h1: neighborhood.h1 || generateNeighborhoodContent(neighborhood.name, city.name).h1,
+    intro: neighborhood.base_content || generateNeighborhoodContent(neighborhood.name, city.name).intro,
+    responseTime: generateNeighborhoodContent(neighborhood.name, city.name).responseTime,
+  };
 
   const faqs = [
     { question: `Vocês atendem o ${neighborhood.name}?`, answer: `Sim! Temos equipes disponíveis para atendimento imediato no ${neighborhood.name}, ${city.name}.` },
@@ -28,7 +39,7 @@ export default function NeighborhoodPage() {
       <SEOHead
         title={seo.title}
         description={seo.metaDescription}
-        canonical={`https://${SITE_CONFIG.domain}/${city.slug}/${neighborhood.slug}`}
+        canonical={`https://desentupidoras.goiania.br/${city.slug}/${neighborhood.slug}`}
         structuredData={getFAQSchema(faqs)}
       />
       <Header />
@@ -47,13 +58,13 @@ export default function NeighborhoodPage() {
           </div>
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
             <Button variant="hero" size="lg" asChild>
-              <a href={getWhatsAppUrl(`Olá! Preciso de desentupimento no ${neighborhood.name}, ${city.name}.`)} target="_blank" rel="noopener noreferrer">
+              <a href={getWhatsAppUrl(settings, `Olá! Preciso de desentupimento no ${neighborhood.name}, ${city.name}.`)} target="_blank" rel="noopener noreferrer">
                 <MessageCircle className="h-5 w-5" /> WhatsApp
               </a>
             </Button>
             <Button variant="outline" size="lg" asChild
               className="border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
-              <a href={getPhoneUrl()}>
+              <a href={getPhoneUrl(settings)}>
                 <Phone className="h-5 w-5" /> Ligar
               </a>
             </Button>
@@ -69,18 +80,20 @@ export default function NeighborhoodPage() {
               <p className="text-muted-foreground leading-relaxed">{seo.intro}</p>
             </div>
 
-            <div>
-              <h2 className="mb-4 text-xl font-bold text-foreground">Serviços mais solicitados no {neighborhood.name}</h2>
-              <div className="grid gap-3 sm:grid-cols-2">
-                {services.map((s) => (
-                  <Link key={s.slug} to={`/servicos/${s.slug}`}
-                    className="flex items-center gap-3 rounded-lg border bg-card p-4 transition-all hover:shadow-sm hover:border-accent">
-                    <span className="text-2xl">{s.icon}</span>
-                    <span className="font-display text-sm font-bold text-foreground">{s.name}</span>
-                  </Link>
-                ))}
+            {services && services.length > 0 && (
+              <div>
+                <h2 className="mb-4 text-xl font-bold text-foreground">Serviços mais solicitados no {neighborhood.name}</h2>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {services.map((s) => (
+                    <Link key={s.slug} to={`/servicos/${s.slug}`}
+                      className="flex items-center gap-3 rounded-lg border bg-card p-4 transition-all hover:shadow-sm hover:border-accent">
+                      <span className="text-2xl">{s.icon || "🔧"}</span>
+                      <span className="font-display text-sm font-bold text-foreground">{s.name}</span>
+                    </Link>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             <div>
               <h2 className="mb-4 text-xl font-bold text-foreground">Perguntas Frequentes</h2>
@@ -94,7 +107,6 @@ export default function NeighborhoodPage() {
               </div>
             </div>
 
-            {/* Link back to city */}
             <div>
               <Link to={`/${city.slug}`} className="text-sm font-medium text-accent hover:underline">
                 ← Ver todos os bairros de {city.name}
@@ -110,12 +122,12 @@ export default function NeighborhoodPage() {
               </div>
               <div className="flex flex-col gap-3">
                 <Button variant="whatsapp" size="lg" asChild className="w-full">
-                  <a href={getWhatsAppUrl(`Preciso de desentupimento no ${neighborhood.name}, ${city.name}.`)} target="_blank" rel="noopener noreferrer">
+                  <a href={getWhatsAppUrl(settings, `Preciso de desentupimento no ${neighborhood.name}, ${city.name}.`)} target="_blank" rel="noopener noreferrer">
                     <MessageCircle className="h-5 w-5" /> WhatsApp
                   </a>
                 </Button>
                 <Button variant="default" size="lg" asChild className="w-full">
-                  <a href={getPhoneUrl()}>
+                  <a href={getPhoneUrl(settings)}>
                     <Phone className="h-5 w-5" /> Ligar
                   </a>
                 </Button>

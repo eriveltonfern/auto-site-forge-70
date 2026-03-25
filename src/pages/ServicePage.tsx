@@ -3,7 +3,7 @@ import { SEOHead, getFAQSchema } from "@/components/SEOHead";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { FloatingCTA } from "@/components/FloatingCTA";
-import { getServiceBySlug, generateServiceContent, getWhatsAppUrl, getPhoneUrl, cities, SITE_CONFIG } from "@/data/siteData";
+import { useServiceBySlug, useCities, useSiteSettings, getWhatsAppUrl, getPhoneUrl } from "@/hooks/useSiteData";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Phone, CheckCircle, ChevronDown } from "lucide-react";
 import { useState } from "react";
@@ -11,20 +11,25 @@ import NotFound from "./NotFound";
 
 export default function ServicePage() {
   const { serviceSlug } = useParams();
-  const service = getServiceBySlug(serviceSlug || "");
+  const { data: service, isLoading } = useServiceBySlug(serviceSlug || "");
+  const { data: cities } = useCities();
+  const { data: settings } = useSiteSettings();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
+  if (isLoading || !settings) return null;
   if (!service) return <NotFound />;
 
-  const seo = generateServiceContent(service.name);
+  const seoTitle = service.seo_title || `${service.name} em Goiânia | Atendimento 24h`;
+  const seoDesc = service.meta_description || `Serviço profissional de ${service.name.toLowerCase()} em Goiânia e região. Atendimento 24 horas com garantia.`;
+  const faq = (service.faq as { question: string; answer: string }[]) || [];
 
   return (
     <>
       <SEOHead
-        title={seo.title}
-        description={seo.metaDescription}
-        canonical={`https://${SITE_CONFIG.domain}/servicos/${service.slug}`}
-        structuredData={getFAQSchema(service.faq)}
+        title={seoTitle}
+        description={seoDesc}
+        canonical={`https://desentupidoras.goiania.br/servicos/${service.slug}`}
+        structuredData={getFAQSchema(faq)}
       />
       <Header />
       <FloatingCTA />
@@ -36,91 +41,98 @@ export default function ServicePage() {
             <Link to="/servicos" className="hover:underline">Serviços</Link> {" > "}
             <span>{service.name}</span>
           </nav>
-          <h1 className="text-3xl font-black md:text-4xl">{seo.h1}</h1>
-          <p className="mt-2 opacity-90">{service.shortDescription}</p>
+          <h1 className="text-3xl font-black md:text-4xl">{service.h1 || service.name}</h1>
+          <p className="mt-2 opacity-90">{service.short_description}</p>
         </div>
       </section>
 
       <section className="py-12">
         <div className="container grid gap-8 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-8">
-            <div>
-              <h2 className="mb-3 text-xl font-bold text-foreground">Sobre o serviço</h2>
-              <p className="text-muted-foreground leading-relaxed">{service.description}</p>
-            </div>
-
-            <div>
-              <h2 className="mb-3 text-xl font-bold text-foreground">Problemas comuns</h2>
-              <ul className="grid gap-2 sm:grid-cols-2">
-                {service.problems.map((p, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
-                    <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-accent" /> {p}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div>
-              <h2 className="mb-3 text-xl font-bold text-foreground">Benefícios</h2>
-              <ul className="grid gap-2 sm:grid-cols-2">
-                {service.benefits.map((b, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
-                    <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-accent" /> {b}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* FAQ */}
-            <div>
-              <h2 className="mb-4 text-xl font-bold text-foreground">Perguntas Frequentes</h2>
-              <div className="space-y-3">
-                {service.faq.map((faq, i) => (
-                  <div key={i} className="rounded-lg border bg-card shadow-sm">
-                    <button
-                      onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                      className="flex w-full items-center justify-between p-4 text-left font-display text-sm font-semibold text-foreground"
-                    >
-                      {faq.question}
-                      <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${openFaq === i ? "rotate-180" : ""}`} />
-                    </button>
-                    {openFaq === i && (
-                      <div className="border-t px-4 py-3 text-sm text-muted-foreground">{faq.answer}</div>
-                    )}
-                  </div>
-                ))}
+            {service.long_description && (
+              <div>
+                <h2 className="mb-3 text-xl font-bold text-foreground">Sobre o serviço</h2>
+                <p className="text-muted-foreground leading-relaxed">{service.long_description}</p>
               </div>
-            </div>
+            )}
 
-            {/* Cidades linkadas */}
-            <div>
-              <h2 className="mb-3 text-xl font-bold text-foreground">{service.name} nas cidades</h2>
-              <div className="flex flex-wrap gap-2">
-                {cities.map((c) => (
-                  <Link key={c.slug} to={`/${c.slug}`}
-                    className="rounded-full border bg-card px-3 py-1 text-sm text-muted-foreground hover:text-accent hover:border-accent transition-colors">
-                    {c.name}
-                  </Link>
-                ))}
+            {service.problems && service.problems.length > 0 && (
+              <div>
+                <h2 className="mb-3 text-xl font-bold text-foreground">Problemas comuns</h2>
+                <ul className="grid gap-2 sm:grid-cols-2">
+                  {service.problems.map((p, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                      <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-accent" /> {p}
+                    </li>
+                  ))}
+                </ul>
               </div>
-            </div>
+            )}
+
+            {service.benefits && service.benefits.length > 0 && (
+              <div>
+                <h2 className="mb-3 text-xl font-bold text-foreground">Benefícios</h2>
+                <ul className="grid gap-2 sm:grid-cols-2">
+                  {service.benefits.map((b, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                      <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-accent" /> {b}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {faq.length > 0 && (
+              <div>
+                <h2 className="mb-4 text-xl font-bold text-foreground">Perguntas Frequentes</h2>
+                <div className="space-y-3">
+                  {faq.map((f, i) => (
+                    <div key={i} className="rounded-lg border bg-card shadow-sm">
+                      <button
+                        onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                        className="flex w-full items-center justify-between p-4 text-left font-display text-sm font-semibold text-foreground"
+                      >
+                        {f.question}
+                        <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${openFaq === i ? "rotate-180" : ""}`} />
+                      </button>
+                      {openFaq === i && (
+                        <div className="border-t px-4 py-3 text-sm text-muted-foreground">{f.answer}</div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {cities && cities.length > 0 && (
+              <div>
+                <h2 className="mb-3 text-xl font-bold text-foreground">{service.name} nas cidades</h2>
+                <div className="flex flex-wrap gap-2">
+                  {cities.map((c) => (
+                    <Link key={c.slug} to={`/${c.slug}`}
+                      className="rounded-full border bg-card px-3 py-1 text-sm text-muted-foreground hover:text-accent hover:border-accent transition-colors">
+                      {c.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* Sidebar CTA */}
           <aside className="space-y-4">
             <div className="sticky top-28 space-y-4">
               <div className="rounded-xl border bg-card p-6 shadow-sm text-center">
-                <span className="mb-3 block text-5xl">{service.icon}</span>
+                <span className="mb-3 block text-5xl">{service.icon || "🔧"}</span>
                 <h3 className="mb-2 font-display text-lg font-bold text-foreground">Precisa desse serviço?</h3>
                 <p className="mb-4 text-sm text-muted-foreground">Orçamento grátis e sem compromisso</p>
                 <div className="flex flex-col gap-3">
                   <Button variant="whatsapp" size="lg" asChild className="w-full">
-                    <a href={getWhatsAppUrl(`Olá! Preciso de ${service.name.toLowerCase()}. Podem me ajudar?`)} target="_blank" rel="noopener noreferrer">
+                    <a href={getWhatsAppUrl(settings, `Olá! Preciso de ${service.name.toLowerCase()}. Podem me ajudar?`)} target="_blank" rel="noopener noreferrer">
                       <MessageCircle className="h-5 w-5" /> WhatsApp
                     </a>
                   </Button>
                   <Button variant="default" size="lg" asChild className="w-full">
-                    <a href={getPhoneUrl()}>
+                    <a href={getPhoneUrl(settings)}>
                       <Phone className="h-5 w-5" /> Ligar Agora
                     </a>
                   </Button>
