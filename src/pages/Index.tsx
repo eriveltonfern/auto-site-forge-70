@@ -375,7 +375,7 @@ export default function Index() {
                 </Button>
                 <Button variant="outline" size="lg" asChild className="w-full sm:w-auto">
                   <a href={getPhoneUrl(settings)}>
-                    <Phone className="h-4 w-4" /> {settings.phone}
+                    <Phone className="h-4 w-4" /> Ligar Agora
                   </a>
                 </Button>
               </div>
