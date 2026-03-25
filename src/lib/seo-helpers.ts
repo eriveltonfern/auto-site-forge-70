@@ -29,7 +29,7 @@ export function generateMetaDescription(type: "service" | "city" | "neighborhood
     case "city":
       return `Desentupidora em ${name} com atendimento rápido 24h. Serviços de desentupimento de pia, vaso, esgoto e mais. Ligue agora ou fale no WhatsApp.`;
     case "neighborhood":
-      return `Desentupidora no ${name}${cityName ? ` em ${cityName}` : ""}. Atendimento rápido e profissional. Fale no WhatsApp.`;
+      return `Desentupidora no Setor ${name}${cityName ? ` em ${cityName}` : ""}. Atendimento rápido e profissional. Fale no WhatsApp.`;
     case "post":
       return `${name} - Dicas e informações sobre desentupimento.`;
   }
