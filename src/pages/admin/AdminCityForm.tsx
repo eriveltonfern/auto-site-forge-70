@@ -18,7 +18,7 @@ export default function AdminCityForm() {
   const [form, setForm] = useState({
     name: "", slug: "", state: "GO",
     seo_title: "", meta_description: "", h1: "",
-    base_content: "", status: "draft",
+    base_content: "", cover_image: "", status: "draft",
   });
 
   useEffect(() => {
@@ -27,7 +27,9 @@ export default function AdminCityForm() {
         if (data) setForm({
           name: data.name, slug: data.slug, state: data.state,
           seo_title: data.seo_title || "", meta_description: data.meta_description || "",
-          h1: data.h1 || "", base_content: data.base_content || "", status: data.status,
+          h1: data.h1 || "", base_content: data.base_content || "",
+          cover_image: (data as any).cover_image || "",
+          status: data.status,
         });
       });
     }
@@ -49,11 +51,13 @@ export default function AdminCityForm() {
     e.preventDefault();
     setLoading(true);
 
+    const payload = { ...form, cover_image: form.cover_image || null };
+
     let error;
     if (isNew) {
-      ({ error } = await supabase.from("cities").insert(form));
+      ({ error } = await supabase.from("cities").insert(payload));
     } else {
-      ({ error } = await supabase.from("cities").update(form).eq("id", id));
+      ({ error } = await supabase.from("cities").update(payload).eq("id", id));
     }
 
     setLoading(false);
@@ -82,6 +86,32 @@ export default function AdminCityForm() {
             <Label>Estado</Label>
             <Input value={form.state} onChange={(e) => setForm((f) => ({ ...f, state: e.target.value }))} />
           </div>
+        </div>
+
+        <div className="rounded-lg border bg-muted/30 p-4 space-y-3">
+          <h3 className="font-display text-sm font-bold text-foreground">Imagem de Destaque</h3>
+          <Input
+            type="file"
+            accept="image/*"
+            onChange={async (e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+              const ext = file.name.split(".").pop();
+              const path = `cities/cover-${Date.now()}.${ext}`;
+              const { error } = await supabase.storage.from("uploads").upload(path, file);
+              if (error) { toast({ title: "Erro no upload", description: error.message, variant: "destructive" }); return; }
+              const { data: urlData } = supabase.storage.from("uploads").getPublicUrl(path);
+              setForm((f) => ({ ...f, cover_image: urlData.publicUrl }));
+              toast({ title: "Imagem enviada!" });
+            }}
+          />
+          {form.cover_image && (
+            <div className="relative">
+              <img src={form.cover_image} alt="Destaque" className="mt-2 h-40 w-full rounded-lg object-cover" />
+              <Button type="button" variant="ghost" size="sm" className="absolute top-3 right-1 text-destructive bg-card/80"
+                onClick={() => setForm((f) => ({ ...f, cover_image: "" }))}>Remover</Button>
+            </div>
+          )}
         </div>
 
         <div className="rounded-lg border bg-muted/30 p-4 space-y-3">
