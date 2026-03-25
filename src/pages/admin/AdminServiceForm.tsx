@@ -18,6 +18,7 @@ export default function AdminServiceForm() {
   const [form, setForm] = useState({
     name: "", slug: "", seo_title: "", meta_description: "", h1: "",
     short_description: "", long_description: "", icon: "🔧",
+    cover_image: "",
     keywords: "", problems: "", benefits: "",
     faq: [{ question: "", answer: "" }],
     status: "draft" as string,
