@@ -4,6 +4,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { FloatingCTA } from "@/components/FloatingCTA";
 import { useNeighborhoodBySlug, useServices, useSiteSettings, getWhatsAppUrl, getPhoneUrl, generateNeighborhoodContent } from "@/hooks/useSiteData";
+import { ServiceCard } from "@/components/ServiceCard";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Phone, Clock, CheckCircle } from "lucide-react";
 import NotFound from "./NotFound";
