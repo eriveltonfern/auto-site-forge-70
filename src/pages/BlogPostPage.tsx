@@ -171,7 +171,8 @@ export default function BlogPostPage() {
                     {relatedPosts.map((rp) => (
                       <Link key={rp.id} to={`/blog/${rp.slug}`} className="group block">
                         {rp.featured_image && (
-                          <img src={rp.featured_image} alt={rp.title} className="mb-2 h-24 w-full rounded-lg object-cover" />
+                          <OptimizedImage src={rp.featured_image} alt={rp.title} className="mb-2 h-24 w-full rounded-lg object-cover" sizes="300px" />
+                        )}
                         )}
                         <h4 className="text-sm font-semibold text-foreground group-hover:text-accent transition-colors line-clamp-2">
                           {rp.title}
