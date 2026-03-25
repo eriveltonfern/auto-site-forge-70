@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { generateSlug, generateSeoTitle, generateMetaDescription, generateH1 } from "@/lib/seo-helpers";
+import { Upload, Loader2, X, Image as ImageIcon } from "lucide-react";
 
 export default function AdminServiceForm() {
   const { id } = useParams();
@@ -14,6 +15,8 @@ export default function AdminServiceForm() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [form, setForm] = useState({
     name: "", slug: "", seo_title: "", meta_description: "", h1: "",
@@ -33,7 +36,7 @@ export default function AdminServiceForm() {
             seo_title: data.seo_title || "", meta_description: data.meta_description || "",
             h1: data.h1 || "", short_description: data.short_description || "",
             long_description: data.long_description || "", icon: data.icon || "🔧",
-            cover_image: (data as any).cover_image || "",
+            cover_image: data.cover_image || "",
             keywords: (data.keywords || []).join(", "),
             problems: (data.problems || []).join("\n"),
             benefits: (data.benefits || []).join("\n"),
@@ -52,6 +55,35 @@ export default function AdminServiceForm() {
     if (isNew || !form.meta_description) updates.meta_description = generateMetaDescription("service", name);
     if (isNew || !form.h1) updates.h1 = generateH1("service", name);
     setForm((f) => ({ ...f, ...updates }));
+  };
+
+  const handleImageUpload = async (file: File) => {
+    setUploading(true);
+    try {
+      const ext = file.name.split(".").pop();
+      const path = `services/cover-${Date.now()}.${ext}`;
+      const { error } = await supabase.storage.from("uploads").upload(path, file, {
+        cacheControl: "3600",
+        upsert: false,
+      });
+      if (error) {
+        toast({ title: "Erro no upload", description: error.message, variant: "destructive" });
+        return;
+      }
+      const { data: urlData } = supabase.storage.from("uploads").getPublicUrl(path);
+      setForm((f) => ({ ...f, cover_image: urlData.publicUrl }));
+      toast({ title: "Imagem enviada com sucesso!" });
+    } catch (err: any) {
+      toast({ title: "Erro no upload", description: err.message, variant: "destructive" });
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setForm((f) => ({ ...f, cover_image: "" }));
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -109,29 +141,69 @@ export default function AdminServiceForm() {
           </div>
         </div>
 
+        {/* Image upload section */}
         <div className="rounded-lg border bg-muted/30 p-4 space-y-3">
           <h3 className="font-display text-sm font-bold text-foreground">Imagem de Capa</h3>
-          <Input
+
+          {form.cover_image ? (
+            <div className="relative group">
+              <img src={form.cover_image} alt="Capa" className="h-48 w-full rounded-lg object-cover border" />
+              <div className="absolute inset-0 flex items-center justify-center gap-3 rounded-lg bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                >
+                  {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+                  Substituir
+                </Button>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="sm"
+                  onClick={handleRemoveImage}
+                >
+                  <X className="h-4 w-4" /> Remover
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading}
+              className="flex h-48 w-full flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-muted-foreground/30 bg-card hover:border-accent hover:bg-accent/5 transition-colors cursor-pointer"
+            >
+              {uploading ? (
+                <>
+                  <Loader2 className="h-8 w-8 animate-spin text-accent" />
+                  <span className="text-sm text-muted-foreground">Enviando imagem...</span>
+                </>
+              ) : (
+                <>
+                  <ImageIcon className="h-8 w-8 text-muted-foreground/50" />
+                  <span className="text-sm text-muted-foreground">Clique para enviar uma imagem</span>
+                  <span className="text-xs text-muted-foreground/60">JPG, PNG ou WebP</span>
+                </>
+              )}
+            </button>
+          )}
+
+          <input
+            ref={fileInputRef}
             type="file"
             accept="image/*"
-            onChange={async (e) => {
+            className="hidden"
+            onChange={(e) => {
               const file = e.target.files?.[0];
-              if (!file) return;
-              const ext = file.name.split(".").pop();
-              const path = `services/cover-${Date.now()}.${ext}`;
-              const { error } = await supabase.storage.from("uploads").upload(path, file);
-              if (error) { toast({ title: "Erro no upload", description: error.message, variant: "destructive" }); return; }
-              const { data: urlData } = supabase.storage.from("uploads").getPublicUrl(path);
-              setForm((f) => ({ ...f, cover_image: urlData.publicUrl }));
-              toast({ title: "Imagem enviada!" });
+              if (file) handleImageUpload(file);
             }}
           />
+
           {form.cover_image && (
-            <div className="relative">
-              <img src={form.cover_image} alt="Capa" className="mt-2 h-40 w-full rounded-lg object-cover" />
-              <Button type="button" variant="ghost" size="sm" className="absolute top-3 right-1 text-destructive bg-card/80"
-                onClick={() => setForm((f) => ({ ...f, cover_image: "" }))}>Remover</Button>
-            </div>
+            <p className="text-xs text-muted-foreground truncate">URL: {form.cover_image}</p>
           )}
         </div>
 
@@ -211,7 +283,7 @@ export default function AdminServiceForm() {
         </div>
 
         <div className="flex gap-3">
-          <Button type="submit" variant="cta" disabled={loading}>
+          <Button type="submit" variant="cta" disabled={loading || uploading}>
             {loading ? "Salvando..." : isNew ? "Criar Serviço" : "Salvar Alterações"}
           </Button>
           <Button type="button" variant="outline" onClick={() => navigate("/admin/servicos")}>Cancelar</Button>
