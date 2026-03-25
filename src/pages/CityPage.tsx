@@ -59,7 +59,7 @@ export default function CityPage() {
       <section className="relative hero-bg py-16 md:py-20">
         {coverImage && (
           <div className="absolute inset-0">
-            <img src={coverImage} alt={city.name} className="h-full w-full object-cover opacity-20" />
+            <OptimizedImage src={coverImage} alt={city.name} className="h-full w-full object-cover opacity-20" priority />
           </div>
         )}
         <div className="container relative text-primary-foreground">
