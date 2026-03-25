@@ -84,8 +84,7 @@ export default function Index() {
                   <MessageCircle className="h-5 w-5" /> Chamar no WhatsApp
                 </a>
               </Button>
-              <Button variant="outline" size="lg" asChild
-                className="w-full sm:w-auto border-primary-foreground/40 px-8 py-6 text-lg text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
+              <Button variant="hero-phone" size="lg" asChild className="w-full sm:w-auto px-8 py-6 text-lg">
                 <a href={getPhoneUrl(settings)}>
                   <Phone className="h-5 w-5" /> Ligar Agora
                 </a>
