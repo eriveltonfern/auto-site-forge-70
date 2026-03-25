@@ -87,7 +87,7 @@ export default function Index() {
               <Button variant="outline" size="lg" asChild
                 className="w-full sm:w-auto border-primary-foreground/40 px-8 py-6 text-lg text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
                 <a href={getPhoneUrl(settings)}>
-                  <Phone className="h-5 w-5" /> {settings.phone}
+                  <Phone className="h-5 w-5" /> Ligar Agora
                 </a>
               </Button>
             </motion.div>
