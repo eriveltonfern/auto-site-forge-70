@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { generateSlug, generateSeoTitle, generateMetaDescription } from "@/lib/seo-helpers";
+import { compressImageToWebP } from "@/lib/image-compressor";
 
 export default function AdminBlogForm() {
   const { id } = useParams();
