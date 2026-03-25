@@ -40,6 +40,7 @@ const App = () => (
             <Route path="/servicos" element={<ServicesHub />} />
             <Route path="/servicos/:serviceSlug" element={<ServicePage />} />
             <Route path="/blog" element={<BlogPage />} />
+            <Route path="/blog/:slug" element={<BlogPostPage />} />
 
             {/* Admin routes */}
             <Route path="/admin" element={<AdminLayout />}>
