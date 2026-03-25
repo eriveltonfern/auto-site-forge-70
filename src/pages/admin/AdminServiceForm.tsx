@@ -33,6 +33,7 @@ export default function AdminServiceForm() {
             seo_title: data.seo_title || "", meta_description: data.meta_description || "",
             h1: data.h1 || "", short_description: data.short_description || "",
             long_description: data.long_description || "", icon: data.icon || "🔧",
+            cover_image: (data as any).cover_image || "",
             keywords: (data.keywords || []).join(", "),
             problems: (data.problems || []).join("\n"),
             benefits: (data.benefits || []).join("\n"),
