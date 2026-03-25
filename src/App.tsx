@@ -10,6 +10,18 @@ import ServicePage from "./pages/ServicePage.tsx";
 import CityPage from "./pages/CityPage.tsx";
 import NeighborhoodPage from "./pages/NeighborhoodPage.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import AdminLayout from "./pages/admin/AdminLayout.tsx";
+import AdminDashboard from "./pages/admin/AdminDashboard.tsx";
+import AdminServices from "./pages/admin/AdminServices.tsx";
+import AdminServiceForm from "./pages/admin/AdminServiceForm.tsx";
+import AdminCities from "./pages/admin/AdminCities.tsx";
+import AdminCityForm from "./pages/admin/AdminCityForm.tsx";
+import AdminNeighborhoods from "./pages/admin/AdminNeighborhoods.tsx";
+import AdminNeighborhoodForm from "./pages/admin/AdminNeighborhoodForm.tsx";
+import AdminBlog from "./pages/admin/AdminBlog.tsx";
+import AdminBlogForm from "./pages/admin/AdminBlogForm.tsx";
+import AdminSettings from "./pages/admin/AdminSettings.tsx";
+import AdminBulkImport from "./pages/admin/AdminBulkImport.tsx";
 
 const queryClient = new QueryClient();
 
@@ -21,11 +33,31 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
+            {/* Public routes */}
             <Route path="/" element={<Index />} />
             <Route path="/servicos" element={<ServicesHub />} />
             <Route path="/servicos/:serviceSlug" element={<ServicePage />} />
+
+            {/* Admin routes */}
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="servicos" element={<AdminServices />} />
+              <Route path="servicos/:id" element={<AdminServiceForm />} />
+              <Route path="cidades" element={<AdminCities />} />
+              <Route path="cidades/importar" element={<AdminBulkImport type="cities" />} />
+              <Route path="cidades/:id" element={<AdminCityForm />} />
+              <Route path="bairros" element={<AdminNeighborhoods />} />
+              <Route path="bairros/importar" element={<AdminBulkImport type="neighborhoods" />} />
+              <Route path="bairros/:id" element={<AdminNeighborhoodForm />} />
+              <Route path="blog" element={<AdminBlog />} />
+              <Route path="blog/:id" element={<AdminBlogForm />} />
+              <Route path="configuracoes" element={<AdminSettings />} />
+            </Route>
+
+            {/* Dynamic city/neighborhood routes (must be after /admin) */}
             <Route path="/:citySlug" element={<CityPage />} />
             <Route path="/:citySlug/:neighborhoodSlug" element={<NeighborhoodPage />} />
+
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
