@@ -90,6 +90,19 @@ export default function BlogPostPage() {
             {post.title}
           </h1>
 
+          {/* Featured image at top if exists and not in content */}
+          {post.featured_image && !post.content?.includes(post.featured_image) && (
+            <figure className="mb-8">
+              <OptimizedImage
+                src={post.featured_image}
+                alt={post.title}
+                className="w-full rounded-lg object-cover"
+                sizes="(max-width: 768px) 100vw, 768px"
+                priority
+              />
+            </figure>
+          )}
+
           {/* Content */}
           {post.content && (
             <div className="prose prose-lg max-w-none text-foreground prose-headings:font-display prose-headings:text-foreground prose-a:text-accent prose-strong:text-foreground prose-p:text-muted-foreground prose-p:leading-relaxed prose-li:text-muted-foreground space-y-5">
@@ -118,18 +131,6 @@ export default function BlogPostPage() {
                 return <p key={i} className="text-muted-foreground leading-relaxed text-base">{trimmed}</p>;
               })}
             </div>
-          )}
-
-          {post.featured_image && !post.content?.includes(post.featured_image) && (
-            <figure className="my-8">
-              <OptimizedImage
-                src={post.featured_image}
-                alt={post.title}
-                className="w-full rounded-lg object-cover"
-                sizes="(max-width: 768px) 100vw, 768px"
-                priority
-              />
-            </figure>
           )}
 
           {/* CTA */}

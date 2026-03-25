@@ -79,7 +79,7 @@ export function ServiceCard({ service, compact = false, whatsappUrl, cityLabel }
             onClick={(e) => e.stopPropagation()}
           >
             <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-              <MessageCircle className="h-4 w-4" /> Solicitar Orçamento
+              <MessageCircle className="h-4 w-4" /> Chame Já
             </a>
           </Button>
         ) : (

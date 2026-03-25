@@ -54,6 +54,41 @@ const fadeUp = {
   viewport: { once: true },
 };
 
+function CtaBanner({ settings, variant = 1 }: { settings: any; variant?: number }) {
+  return (
+    <section className="hero-bg py-14 md:py-16">
+      <div className="container">
+        <div className="flex flex-col items-center gap-6 text-center text-primary-foreground md:flex-row md:text-left">
+          <div className="hidden md:block shrink-0">
+            <img
+              src="https://desentupidoras.goiania.br/wp-content/uploads/2025/07/desentupidor-300x300.png"
+              alt="Desentupidor"
+              className="h-28 w-28 object-contain"
+              loading="lazy"
+            />
+          </div>
+          <div className="flex-1">
+            <h2 className="mb-2 text-2xl font-black md:text-3xl">Empresa de Desentupimento Perto de Mim</h2>
+            <p className="text-lg opacity-90">
+              Problemas com entupimento, vazamento ou retorno de esgoto? Desentupidora 24h resolve!
+            </p>
+            <p className="opacity-80">
+              {variant === 1
+                ? "Atendimento rápido em Goiânia com equipe especializada e total segurança."
+                : "Serviço rápido em Goiânia com equipe especializada e total segurança."}
+            </p>
+          </div>
+          <Button variant="whatsapp" size="lg" asChild className="px-8 py-6 text-lg rounded-full shrink-0">
+            <a href={getWhatsAppUrl(settings)} target="_blank" rel="noopener noreferrer">
+              <MessageCircle className="h-5 w-5" /> Chamar Agora!
+            </a>
+          </Button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function Index() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const { data: settings } = useSiteSettings();
@@ -84,7 +119,7 @@ export default function Index() {
       <Header />
       <FloatingCTA />
 
-      {/* ===== HERO with background image ===== */}
+      {/* ===== HERO ===== */}
       <section className="relative overflow-hidden bg-foreground">
         <div className="absolute inset-0 bg-[url('https://desentupidoras.goiania.br/wp-content/uploads/2025/07/fundo-desentupidora-1-scaled.jpg')] bg-cover bg-center" />
         <div className="absolute inset-0 bg-black/60" />
@@ -161,35 +196,19 @@ export default function Index() {
               </p>
             </motion.div>
             <motion.div {...fadeUp} transition={{ delay: 0.15 }} className="flex justify-center">
-              <div className="rounded-2xl bg-primary/5 p-8">
-                <div className="flex h-48 w-48 items-center justify-center rounded-full bg-accent/10 mx-auto">
-                  <Wrench className="h-24 w-24 text-accent" />
-                </div>
-              </div>
+              <img
+                src="https://desentupidoras.goiania.br/wp-content/uploads/2025/07/desentupidor-1.png"
+                alt="Desentupidor profissional"
+                className="max-h-96 w-auto object-contain"
+                loading="lazy"
+              />
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* ===== CTA BANNER ===== */}
-      <section className="hero-bg py-14 md:py-16">
-        <div className="container">
-          <div className="flex flex-col items-center gap-6 text-center text-primary-foreground md:flex-row md:text-left">
-            <div className="flex-1">
-              <h2 className="mb-2 text-2xl font-black md:text-3xl">Empresa de Desentupimento Perto de Mim</h2>
-              <p className="text-lg opacity-90">
-                Problemas com entupimento, vazamento ou retorno de esgoto? Desentupidora 24h resolve!
-              </p>
-              <p className="opacity-80">Atendimento rápido em Goiânia com equipe especializada e total segurança.</p>
-            </div>
-            <Button variant="whatsapp" size="lg" asChild className="px-8 py-6 text-lg rounded-full shrink-0">
-              <a href={getWhatsAppUrl(settings)} target="_blank" rel="noopener noreferrer">
-                <MessageCircle className="h-5 w-5" /> Chamar Agora!
-              </a>
-            </Button>
-          </div>
-        </div>
-      </section>
+      {/* ===== CTA BANNER 1 ===== */}
+      <CtaBanner settings={settings} variant={1} />
 
       {/* ===== VANTAGENS ===== */}
       <section className="py-16 md:py-20">
@@ -238,24 +257,7 @@ export default function Index() {
       </section>
 
       {/* ===== CTA BANNER 2 ===== */}
-      <section className="hero-bg py-14 md:py-16">
-        <div className="container">
-          <div className="flex flex-col items-center gap-6 text-center text-primary-foreground md:flex-row md:text-left">
-            <div className="flex-1">
-              <h2 className="mb-2 text-2xl font-black md:text-3xl">Empresa de Desentupimento Perto de Mim</h2>
-              <p className="text-lg opacity-90">
-                Problemas com entupimento, vazamento ou retorno de esgoto? Desentupidora 24h resolve!
-              </p>
-              <p className="opacity-80">Serviço rápido em Goiânia com equipe especializada e total segurança.</p>
-            </div>
-            <Button variant="whatsapp" size="lg" asChild className="px-8 py-6 text-lg rounded-full shrink-0">
-              <a href={getWhatsAppUrl(settings)} target="_blank" rel="noopener noreferrer">
-                <MessageCircle className="h-5 w-5" /> Chamar Agora!
-              </a>
-            </Button>
-          </div>
-        </div>
-      </section>
+      <CtaBanner settings={settings} variant={2} />
 
       {/* ===== FAQ ===== */}
       <section className="py-16 md:py-20">
@@ -282,24 +284,7 @@ export default function Index() {
       </section>
 
       {/* ===== CTA BANNER 3 ===== */}
-      <section className="hero-bg py-14 md:py-16">
-        <div className="container">
-          <div className="flex flex-col items-center gap-6 text-center text-primary-foreground md:flex-row md:text-left">
-            <div className="flex-1">
-              <h2 className="mb-2 text-2xl font-black md:text-3xl">Empresa de Desentupimento Perto de Mim</h2>
-              <p className="text-lg opacity-90">
-                Problemas com entupimento, vazamento ou retorno de esgoto? Desentupidora 24h resolve!
-              </p>
-              <p className="opacity-80">Atendimento rápido em Goiânia com equipe especializada e total segurança.</p>
-            </div>
-            <Button variant="whatsapp" size="lg" asChild className="px-8 py-6 text-lg rounded-full shrink-0">
-              <a href={getWhatsAppUrl(settings)} target="_blank" rel="noopener noreferrer">
-                <MessageCircle className="h-5 w-5" /> Chamar Agora!
-              </a>
-            </Button>
-          </div>
-        </div>
-      </section>
+      <CtaBanner settings={settings} variant={1} />
 
       {/* ===== DEPOIMENTOS ===== */}
       <section className="py-16 md:py-20">
