@@ -3,6 +3,7 @@ import { SEOHead, getFAQSchema } from "@/components/SEOHead";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { FloatingCTA } from "@/components/FloatingCTA";
+import { OptimizedImage } from "@/components/OptimizedImage";
 import { useServiceBySlug, useCities, useSiteSettings, getWhatsAppUrl, getPhoneUrl } from "@/hooks/useSiteData";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Phone, CheckCircle, ChevronDown } from "lucide-react";
