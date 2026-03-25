@@ -62,8 +62,18 @@ export default function ServicePage() {
           <div className="lg:col-span-2 space-y-8">
             {service.long_description && (
               <div>
-                <h2 className="mb-3 text-xl font-bold text-foreground">Sobre o serviço</h2>
-                <p className="text-muted-foreground leading-relaxed">{service.long_description}</p>
+                <h2 className="mb-4 text-xl font-bold text-foreground">Sobre o serviço</h2>
+                <div className="prose prose-lg max-w-none text-muted-foreground prose-headings:font-display prose-headings:text-foreground prose-p:text-muted-foreground prose-p:leading-relaxed prose-li:text-muted-foreground space-y-4">
+                  {service.long_description.split("\n").map((paragraph, i) => {
+                    const trimmed = paragraph.trim();
+                    if (!trimmed) return null;
+                    if (trimmed.startsWith("### ")) return <h3 key={i} className="mt-6 mb-2 text-lg font-bold text-foreground">{trimmed.slice(4)}</h3>;
+                    if (trimmed.startsWith("## ")) return <h2 key={i} className="mt-8 mb-3 text-xl font-bold text-foreground">{trimmed.slice(3)}</h2>;
+                    if (trimmed.startsWith("# ")) return <h2 key={i} className="mt-8 mb-3 text-xl font-bold text-foreground">{trimmed.slice(2)}</h2>;
+                    if (trimmed.startsWith("- ")) return <li key={i} className="ml-4 list-disc text-muted-foreground leading-relaxed">{trimmed.slice(2)}</li>;
+                    return <p key={i} className="text-muted-foreground leading-relaxed">{trimmed}</p>;
+                  })}
+                </div>
               </div>
             )}
 
