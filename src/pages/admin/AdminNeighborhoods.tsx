@@ -25,7 +25,7 @@ export default function AdminNeighborhoods() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-neighborhoods"] });
-      toast({ title: "Bairro excluído" });
+      toast({ title: "Setor excluído" });
     },
   });
 
@@ -33,15 +33,15 @@ export default function AdminNeighborhoods() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-display text-2xl font-bold text-foreground">Bairros</h1>
-          <p className="text-sm text-muted-foreground">{neighborhoods?.length || 0} bairros cadastrados</p>
+          <h1 className="font-display text-2xl font-bold text-foreground">Setores</h1>
+          <p className="text-sm text-muted-foreground">{neighborhoods?.length || 0} setores cadastrados</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" asChild>
             <Link to="/admin/bairros/importar"><Upload className="h-4 w-4" /> Importar</Link>
           </Button>
           <Button variant="cta" asChild>
-            <Link to="/admin/bairros/novo"><Plus className="h-4 w-4" /> Novo Bairro</Link>
+            <Link to="/admin/bairros/novo"><Plus className="h-4 w-4" /> Novo Setor</Link>
           </Button>
         </div>
       </div>
@@ -50,7 +50,7 @@ export default function AdminNeighborhoods() {
         <table className="w-full text-sm">
           <thead className="border-b bg-muted/50">
             <tr>
-              <th className="px-4 py-3 text-left font-semibold text-foreground">Bairro</th>
+              <th className="px-4 py-3 text-left font-semibold text-foreground">Setor</th>
               <th className="hidden px-4 py-3 text-left font-semibold text-foreground md:table-cell">Cidade</th>
               <th className="px-4 py-3 text-left font-semibold text-foreground">Status</th>
               <th className="px-4 py-3 text-right font-semibold text-foreground">Ações</th>
@@ -60,7 +60,7 @@ export default function AdminNeighborhoods() {
             {isLoading ? (
               <tr><td colSpan={4} className="px-4 py-8 text-center text-muted-foreground">Carregando...</td></tr>
             ) : neighborhoods?.length === 0 ? (
-              <tr><td colSpan={4} className="px-4 py-8 text-center text-muted-foreground">Nenhum bairro cadastrado</td></tr>
+              <tr><td colSpan={4} className="px-4 py-8 text-center text-muted-foreground">Nenhum setor cadastrado</td></tr>
             ) : (
               neighborhoods?.map((n: any) => (
                 <tr key={n.id} className="border-b last:border-0 hover:bg-muted/30">
@@ -77,7 +77,7 @@ export default function AdminNeighborhoods() {
                         <Link to={`/admin/bairros/${n.id}`}><Edit className="h-4 w-4" /></Link>
                       </Button>
                       <Button variant="ghost" size="icon" onClick={() => {
-                        if (confirm("Excluir este bairro?")) deleteMutation.mutate(n.id);
+                        if (confirm("Excluir este setor?")) deleteMutation.mutate(n.id);
                       }}>
                         <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>
