@@ -3,6 +3,7 @@ import { SEOHead } from "@/components/SEOHead";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { FloatingCTA } from "@/components/FloatingCTA";
+import { OptimizedImage } from "@/components/OptimizedImage";
 import { useSiteSettings, getWhatsAppUrl } from "@/hooks/useSiteData";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -110,11 +111,13 @@ export default function BlogPostPage() {
         <div className="container grid gap-10 lg:grid-cols-3">
           <article className="lg:col-span-2 space-y-8">
             {post.featured_image && (
-              <img
+              <OptimizedImage
                 src={post.featured_image}
                 alt={post.title}
                 className="w-full rounded-xl object-cover shadow-md"
                 style={{ maxHeight: 480 }}
+                priority
+                sizes="(max-width: 1024px) 100vw, 66vw"
               />
             )}
 
@@ -168,7 +171,7 @@ export default function BlogPostPage() {
                     {relatedPosts.map((rp) => (
                       <Link key={rp.id} to={`/blog/${rp.slug}`} className="group block">
                         {rp.featured_image && (
-                          <img src={rp.featured_image} alt={rp.title} className="mb-2 h-24 w-full rounded-lg object-cover" />
+                          <OptimizedImage src={rp.featured_image} alt={rp.title} className="mb-2 h-24 w-full rounded-lg object-cover" sizes="300px" />
                         )}
                         <h4 className="text-sm font-semibold text-foreground group-hover:text-accent transition-colors line-clamp-2">
                           {rp.title}

@@ -3,6 +3,7 @@ import { SEOHead, getFAQSchema } from "@/components/SEOHead";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { FloatingCTA } from "@/components/FloatingCTA";
+import { OptimizedImage } from "@/components/OptimizedImage";
 import { useCityBySlug, useNeighborhoodsByCity, useServices, useSiteSettings, getWhatsAppUrl, getPhoneUrl, generateCityContent } from "@/hooks/useSiteData";
 import { ServiceCard } from "@/components/ServiceCard";
 import { Button } from "@/components/ui/button";
@@ -59,7 +60,7 @@ export default function CityPage() {
       <section className="relative hero-bg py-16 md:py-20">
         {coverImage && (
           <div className="absolute inset-0">
-            <img src={coverImage} alt={city.name} className="h-full w-full object-cover opacity-20" />
+            <OptimizedImage src={coverImage} alt={city.name} className="h-full w-full object-cover opacity-20" priority />
           </div>
         )}
         <div className="container relative text-primary-foreground">
@@ -95,7 +96,7 @@ export default function CityPage() {
                 <Wrench className="h-6 w-6 text-accent" /> Desentupidora em {city.name}
               </h2>
               {coverImage && (
-                <img src={coverImage} alt={`Desentupidora em ${city.name}`} className="mb-4 w-full rounded-xl object-cover max-h-80" loading="lazy" />
+                <OptimizedImage src={coverImage} alt={`Desentupidora em ${city.name}`} className="mb-4 w-full rounded-xl object-cover max-h-80" sizes="(max-width: 1024px) 100vw, 66vw" />
               )}
               <p className="text-muted-foreground leading-relaxed">{seo.intro}</p>
             </section>

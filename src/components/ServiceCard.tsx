@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { OptimizedImage } from "@/components/OptimizedImage";
 import type { DbService } from "@/hooks/useSiteData";
 
 interface ServiceCardProps {
@@ -21,11 +22,12 @@ export function ServiceCard({ service, compact = false, whatsappUrl, cityLabel }
         className="group flex items-center gap-3 rounded-lg border bg-card p-4 transition-all hover:shadow-sm hover:border-accent"
       >
         {service.cover_image ? (
-          <img
+          <OptimizedImage
             src={service.cover_image}
             alt={service.name}
+            width={40}
+            height={40}
             className="h-10 w-10 rounded-md object-cover"
-            loading="lazy"
           />
         ) : (
           <span className="flex h-10 w-10 items-center justify-center rounded-md bg-accent/10 text-xl">
@@ -49,11 +51,11 @@ export function ServiceCard({ service, compact = false, whatsappUrl, cityLabel }
     >
       {service.cover_image ? (
         <div className="aspect-[16/9] w-full overflow-hidden bg-muted">
-          <img
+          <OptimizedImage
             src={service.cover_image}
             alt={service.name}
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-            loading="lazy"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         </div>
       ) : (
