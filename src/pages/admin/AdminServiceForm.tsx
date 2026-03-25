@@ -60,11 +60,12 @@ export default function AdminServiceForm() {
   const handleImageUpload = async (file: File) => {
     setUploading(true);
     try {
-      const ext = file.name.split(".").pop();
-      const path = `services/cover-${Date.now()}.${ext}`;
-      const { error } = await supabase.storage.from("uploads").upload(path, file, {
+      const compressed = await compressImageToWebP(file);
+      const path = `services/cover-${Date.now()}.webp`;
+      const { error } = await supabase.storage.from("uploads").upload(path, compressed, {
         cacheControl: "3600",
         upsert: false,
+        contentType: "image/webp",
       });
       if (error) {
         toast({ title: "Erro no upload", description: error.message, variant: "destructive" });
