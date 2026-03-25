@@ -45,6 +45,8 @@ const App = () => (
             <Route path="/areas-atendidas" element={<AreasPage />} />
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/blog/:slug" element={<BlogPostPage />} />
+            <Route path="/sobre" element={<SobrePage />} />
+            <Route path="/contato" element={<ContatoPage />} />
 
             {/* Admin routes */}
             <Route path="/admin" element={<AdminLayout />}>
