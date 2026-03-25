@@ -4,6 +4,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { FloatingCTA } from "@/components/FloatingCTA";
 import { useNeighborhoodBySlug, useServices, useSiteSettings, getWhatsAppUrl, getPhoneUrl, generateNeighborhoodContent } from "@/hooks/useSiteData";
+import { ServiceCard } from "@/components/ServiceCard";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Phone, Clock, CheckCircle } from "lucide-react";
 import NotFound from "./NotFound";
@@ -83,13 +84,9 @@ export default function NeighborhoodPage() {
             {services && services.length > 0 && (
               <div>
                 <h2 className="mb-4 text-xl font-bold text-foreground">Serviços mais solicitados no {neighborhood.name}</h2>
-                <div className="grid gap-3 sm:grid-cols-2">
+                <div className="grid gap-4 sm:grid-cols-2">
                   {services.map((s) => (
-                    <Link key={s.slug} to={`/servicos/${s.slug}`}
-                      className="flex items-center gap-3 rounded-lg border bg-card p-4 transition-all hover:shadow-sm hover:border-accent">
-                      <span className="text-2xl">{s.icon || "🔧"}</span>
-                      <span className="font-display text-sm font-bold text-foreground">{s.name}</span>
-                    </Link>
+                    <ServiceCard key={s.slug} service={s} compact />
                   ))}
                 </div>
               </div>

@@ -1,0 +1,1 @@
+ALTER TABLE public.services ADD COLUMN cover_image text;

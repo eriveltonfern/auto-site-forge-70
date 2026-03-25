@@ -1,9 +1,9 @@
-import { Link } from "react-router-dom";
 import { SEOHead } from "@/components/SEOHead";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { FloatingCTA } from "@/components/FloatingCTA";
 import { useServices, useSiteSettings, getWhatsAppUrl } from "@/hooks/useSiteData";
+import { ServiceCard } from "@/components/ServiceCard";
 import { Button } from "@/components/ui/button";
 import { MessageCircle } from "lucide-react";
 
@@ -32,24 +32,13 @@ export default function ServicesHub() {
 
       <section className="py-16">
         <div className="container">
-          <div className="grid gap-8 md:grid-cols-2">
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {(services || []).map((s) => (
-              <Link
+              <ServiceCard
                 key={s.slug}
-                to={`/servicos/${s.slug}`}
-                className="group flex gap-4 rounded-xl border bg-card p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-1"
-              >
-                <span className="text-4xl">{s.icon || "🔧"}</span>
-                <div className="flex-1">
-                  <h2 className="mb-1 font-display text-xl font-bold text-foreground group-hover:text-accent transition-colors">{s.name}</h2>
-                  <p className="mb-3 text-sm text-muted-foreground">{s.short_description}</p>
-                  <ul className="space-y-1">
-                    {(s.problems || []).slice(0, 3).map((p, i) => (
-                      <li key={i} className="text-xs text-muted-foreground">✓ {p}</li>
-                    ))}
-                  </ul>
-                </div>
-              </Link>
+                service={s}
+                whatsappUrl={getWhatsAppUrl(settings, `Olá! Preciso de ${s.name.toLowerCase()}. Podem me ajudar?`)}
+              />
             ))}
           </div>
 

@@ -18,6 +18,7 @@ export default function AdminServiceForm() {
   const [form, setForm] = useState({
     name: "", slug: "", seo_title: "", meta_description: "", h1: "",
     short_description: "", long_description: "", icon: "🔧",
+    cover_image: "",
     keywords: "", problems: "", benefits: "",
     faq: [{ question: "", answer: "" }],
     status: "draft" as string,
@@ -32,6 +33,7 @@ export default function AdminServiceForm() {
             seo_title: data.seo_title || "", meta_description: data.meta_description || "",
             h1: data.h1 || "", short_description: data.short_description || "",
             long_description: data.long_description || "", icon: data.icon || "🔧",
+            cover_image: (data as any).cover_image || "",
             keywords: (data.keywords || []).join(", "),
             problems: (data.problems || []).join("\n"),
             benefits: (data.benefits || []).join("\n"),
@@ -61,6 +63,7 @@ export default function AdminServiceForm() {
       seo_title: form.seo_title, meta_description: form.meta_description,
       h1: form.h1, short_description: form.short_description,
       long_description: form.long_description, icon: form.icon,
+      cover_image: form.cover_image || null,
       keywords: form.keywords.split(",").map((k) => k.trim()).filter(Boolean),
       problems: form.problems.split("\n").map((p) => p.trim()).filter(Boolean),
       benefits: form.benefits.split("\n").map((b) => b.trim()).filter(Boolean),
@@ -104,6 +107,32 @@ export default function AdminServiceForm() {
             <Label>Ícone (emoji)</Label>
             <Input value={form.icon} onChange={(e) => setForm((f) => ({ ...f, icon: e.target.value }))} />
           </div>
+        </div>
+
+        <div className="rounded-lg border bg-muted/30 p-4 space-y-3">
+          <h3 className="font-display text-sm font-bold text-foreground">Imagem de Capa</h3>
+          <Input
+            type="file"
+            accept="image/*"
+            onChange={async (e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+              const ext = file.name.split(".").pop();
+              const path = `services/cover-${Date.now()}.${ext}`;
+              const { error } = await supabase.storage.from("uploads").upload(path, file);
+              if (error) { toast({ title: "Erro no upload", description: error.message, variant: "destructive" }); return; }
+              const { data: urlData } = supabase.storage.from("uploads").getPublicUrl(path);
+              setForm((f) => ({ ...f, cover_image: urlData.publicUrl }));
+              toast({ title: "Imagem enviada!" });
+            }}
+          />
+          {form.cover_image && (
+            <div className="relative">
+              <img src={form.cover_image} alt="Capa" className="mt-2 h-40 w-full rounded-lg object-cover" />
+              <Button type="button" variant="ghost" size="sm" className="absolute top-3 right-1 text-destructive bg-card/80"
+                onClick={() => setForm((f) => ({ ...f, cover_image: "" }))}>Remover</Button>
+            </div>
+          )}
         </div>
 
         <div className="rounded-lg border bg-muted/30 p-4 space-y-3">

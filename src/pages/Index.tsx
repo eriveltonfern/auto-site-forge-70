@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { SEOHead, getLocalBusinessSchema, getFAQSchema } from "@/components/SEOHead";
 import { useSiteSettings, useServices, useCitiesWithNeighborhoodCount, getWhatsAppUrl, getPhoneUrl } from "@/hooks/useSiteData";
+import { ServiceCard } from "@/components/ServiceCard";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { FloatingCTA } from "@/components/FloatingCTA";
@@ -126,14 +127,10 @@ export default function Index() {
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.05 }}
                 >
-                  <Link
-                    to={`/servicos/${s.slug}`}
-                    className="group block rounded-xl border bg-card p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-1"
-                  >
-                    <span className="mb-3 block text-3xl">{s.icon || "🔧"}</span>
-                    <h3 className="mb-2 font-display text-lg font-bold text-foreground group-hover:text-accent transition-colors">{s.name}</h3>
-                    <p className="text-sm text-muted-foreground">{s.short_description}</p>
-                  </Link>
+                  <ServiceCard
+                    service={s}
+                    whatsappUrl={getWhatsAppUrl(settings, `Olá! Preciso de ${s.name.toLowerCase()}. Podem me ajudar?`)}
+                  />
                 </motion.div>
               ))}
             </div>
