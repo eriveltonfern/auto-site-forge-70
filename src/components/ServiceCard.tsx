@@ -51,11 +51,11 @@ export function ServiceCard({ service, compact = false, whatsappUrl, cityLabel }
     >
       {service.cover_image ? (
         <div className="aspect-[16/9] w-full overflow-hidden bg-muted">
-          <img
+          <OptimizedImage
             src={service.cover_image}
             alt={service.name}
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-            loading="lazy"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         </div>
       ) : (
