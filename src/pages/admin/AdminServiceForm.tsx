@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { generateSlug, generateSeoTitle, generateMetaDescription, generateH1 } from "@/lib/seo-helpers";
+import { compressImageToWebP } from "@/lib/image-compressor";
 import { Upload, Loader2, X, Image as ImageIcon } from "lucide-react";
 
 export default function AdminServiceForm() {
