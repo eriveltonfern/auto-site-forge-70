@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Index from "./pages/Index.tsx";
 import ServicesHub from "./pages/ServicesHub.tsx";
+import AreasPage from "./pages/AreasPage.tsx";
 import ServicePage from "./pages/ServicePage.tsx";
 import CityPage from "./pages/CityPage.tsx";
 import NeighborhoodPage from "./pages/NeighborhoodPage.tsx";
@@ -39,6 +40,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/servicos" element={<ServicesHub />} />
             <Route path="/servicos/:serviceSlug" element={<ServicePage />} />
+            <Route path="/areas-atendidas" element={<AreasPage />} />
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/blog/:slug" element={<BlogPostPage />} />
 
