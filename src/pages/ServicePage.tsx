@@ -142,7 +142,7 @@ export default function ServicePage() {
                       <MessageCircle className="h-5 w-5" /> WhatsApp
                     </a>
                   </Button>
-                  <Button variant="default" size="lg" asChild className="w-full">
+                  <Button variant="phone" size="lg" asChild className="w-full">
                     <a href={getPhoneUrl(settings)}>
                       <Phone className="h-5 w-5" /> Ligar Agora
                     </a>

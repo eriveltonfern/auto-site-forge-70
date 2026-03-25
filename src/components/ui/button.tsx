@@ -18,6 +18,8 @@ const buttonVariants = cva(
         cta: "bg-cta text-cta-foreground hover:bg-cta-hover cta-glow font-bold text-base",
         whatsapp: "bg-whatsapp text-whatsapp-foreground hover:bg-whatsapp/90 font-bold text-base",
         hero: "bg-cta text-cta-foreground hover:bg-cta-hover cta-glow font-display font-bold text-lg",
+        phone: "bg-primary text-primary-foreground hover:bg-primary/90 font-bold text-base",
+        "hero-phone": "border-2 border-primary-foreground/50 bg-primary-foreground/15 text-primary-foreground hover:bg-primary-foreground/25 font-display font-bold text-lg backdrop-blur-sm",
       },
       size: {
         default: "h-10 px-4 py-2",

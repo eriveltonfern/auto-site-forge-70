@@ -10,6 +10,7 @@ import ServicePage from "./pages/ServicePage.tsx";
 import CityPage from "./pages/CityPage.tsx";
 import NeighborhoodPage from "./pages/NeighborhoodPage.tsx";
 import BlogPage from "./pages/BlogPage.tsx";
+import BlogPostPage from "./pages/BlogPostPage.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import AdminLayout from "./pages/admin/AdminLayout.tsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.tsx";

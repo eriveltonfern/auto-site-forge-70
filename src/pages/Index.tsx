@@ -371,7 +371,7 @@ export default function Index() {
                     <MessageCircle className="h-4 w-4" /> Falar com um Especialista
                   </a>
                 </Button>
-                <Button variant="outline" size="lg" asChild className="w-full sm:w-auto">
+                <Button variant="phone" size="lg" asChild className="w-full sm:w-auto">
                   <a href={getPhoneUrl(settings)}>
                     <Phone className="h-4 w-4" /> Ligar Agora
                   </a>
