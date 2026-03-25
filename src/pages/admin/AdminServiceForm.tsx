@@ -110,6 +110,32 @@ export default function AdminServiceForm() {
         </div>
 
         <div className="rounded-lg border bg-muted/30 p-4 space-y-3">
+          <h3 className="font-display text-sm font-bold text-foreground">Imagem de Capa</h3>
+          <Input
+            type="file"
+            accept="image/*"
+            onChange={async (e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+              const ext = file.name.split(".").pop();
+              const path = `services/cover-${Date.now()}.${ext}`;
+              const { error } = await supabase.storage.from("uploads").upload(path, file);
+              if (error) { toast({ title: "Erro no upload", description: error.message, variant: "destructive" }); return; }
+              const { data: urlData } = supabase.storage.from("uploads").getPublicUrl(path);
+              setForm((f) => ({ ...f, cover_image: urlData.publicUrl }));
+              toast({ title: "Imagem enviada!" });
+            }}
+          />
+          {form.cover_image && (
+            <div className="relative">
+              <img src={form.cover_image} alt="Capa" className="mt-2 h-40 w-full rounded-lg object-cover" />
+              <Button type="button" variant="ghost" size="sm" className="absolute top-3 right-1 text-destructive bg-card/80"
+                onClick={() => setForm((f) => ({ ...f, cover_image: "" }))}>Remover</Button>
+            </div>
+          )}
+        </div>
+
+        <div className="rounded-lg border bg-muted/30 p-4 space-y-3">
           <h3 className="font-display text-sm font-bold text-foreground">SEO (gerado automaticamente)</h3>
           <div>
             <Label>Título SEO</Label>
