@@ -119,15 +119,15 @@ export default function BlogPostPage() {
             )}
 
             {post.content && (
-              <div className="prose prose-lg max-w-none text-foreground prose-headings:font-display prose-headings:text-foreground prose-a:text-accent prose-strong:text-foreground prose-p:text-muted-foreground prose-li:text-muted-foreground">
+              <div className="prose prose-lg max-w-none text-foreground prose-headings:font-display prose-headings:text-foreground prose-a:text-accent prose-strong:text-foreground prose-p:text-muted-foreground prose-p:leading-relaxed prose-li:text-muted-foreground space-y-4">
                 {post.content.split("\n").map((paragraph, i) => {
                   const trimmed = paragraph.trim();
-                  if (!trimmed) return null;
-                  if (trimmed.startsWith("### ")) return <h3 key={i}>{trimmed.slice(4)}</h3>;
-                  if (trimmed.startsWith("## ")) return <h2 key={i}>{trimmed.slice(3)}</h2>;
-                  if (trimmed.startsWith("# ")) return <h1 key={i}>{trimmed.slice(2)}</h1>;
-                  if (trimmed.startsWith("- ")) return <li key={i}>{trimmed.slice(2)}</li>;
-                  return <p key={i}>{trimmed}</p>;
+                  if (!trimmed) return <br key={i} className="block h-2" />;
+                  if (trimmed.startsWith("### ")) return <h3 key={i} className="mt-8 mb-3 text-lg font-bold text-foreground">{trimmed.slice(4)}</h3>;
+                  if (trimmed.startsWith("## ")) return <h2 key={i} className="mt-10 mb-4 text-xl font-bold text-foreground">{trimmed.slice(3)}</h2>;
+                  if (trimmed.startsWith("# ")) return <h2 key={i} className="mt-10 mb-4 text-2xl font-bold text-foreground">{trimmed.slice(2)}</h2>;
+                  if (trimmed.startsWith("- ")) return <li key={i} className="ml-4 list-disc text-muted-foreground leading-relaxed">{trimmed.slice(2)}</li>;
+                  return <p key={i} className="text-muted-foreground leading-relaxed">{trimmed}</p>;
                 })}
               </div>
             )}
