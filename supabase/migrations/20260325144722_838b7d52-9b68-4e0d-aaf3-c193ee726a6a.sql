@@ -1,0 +1,1 @@
+ALTER TABLE public.cities ADD COLUMN cover_image text;
