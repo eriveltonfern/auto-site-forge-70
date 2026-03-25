@@ -95,7 +95,7 @@ export default function CityPage() {
                 <Wrench className="h-6 w-6 text-accent" /> Desentupidora em {city.name}
               </h2>
               {coverImage && (
-                <img src={coverImage} alt={`Desentupidora em ${city.name}`} className="mb-4 w-full rounded-xl object-cover max-h-80" loading="lazy" />
+                <OptimizedImage src={coverImage} alt={`Desentupidora em ${city.name}`} className="mb-4 w-full rounded-xl object-cover max-h-80" sizes="(max-width: 1024px) 100vw, 66vw" />
               )}
               <p className="text-muted-foreground leading-relaxed">{seo.intro}</p>
             </section>
