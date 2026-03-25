@@ -16,7 +16,7 @@ export function generateSeoTitle(type: "service" | "city" | "neighborhood" | "po
     case "city":
       return `Desentupidora em ${name} | Atendimento Rápido 24h`;
     case "neighborhood":
-      return `Desentupidora no ${name}${cityName ? `, ${cityName}` : ""} | Atendimento Imediato`;
+      return `Desentupidora no Setor ${name}${cityName ? `, ${cityName}` : ""} | Atendimento Imediato`;
     case "post":
       return name;
   }
