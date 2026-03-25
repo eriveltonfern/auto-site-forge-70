@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useSiteSettings, useServices, useCities, getWhatsAppUrl, getPhoneUrl } from "@/hooks/useSiteData";
-import { Phone, MessageCircle, MapPin } from "lucide-react";
+import { Phone, MessageCircle, MapPin, Mail, Clock } from "lucide-react";
 
 export function Footer() {
   const { data: settings } = useSiteSettings();
@@ -11,45 +11,65 @@ export function Footer() {
 
   return (
     <footer className="hero-bg text-primary-foreground">
-      <div className="container py-12">
-        <div className="grid gap-8 md:grid-cols-4">
+      <div className="container py-12 md:py-16">
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {/* Brand */}
           <div>
-            <h3 className="mb-3 font-display text-lg font-bold">🔧 {settings.company_name}</h3>
-            <p className="text-sm opacity-80">Atendimento 24 horas em Goiânia e região. Serviços profissionais de desentupimento com garantia.</p>
-            <div className="mt-4 flex flex-col gap-2 text-sm">
-              <a href={getPhoneUrl(settings)} className="flex items-center gap-2 opacity-90 hover:opacity-100">
-                <Phone className="h-4 w-4" /> {settings.phone}
+            <h3 className="mb-4 font-display text-lg font-bold">🔧 {settings.company_name}</h3>
+            <p className="mb-4 text-sm leading-relaxed opacity-80">
+              Atendimento 24 horas em Goiânia e região. Serviços profissionais de desentupimento com garantia e preço justo.
+            </p>
+            <div className="flex flex-col gap-2.5 text-sm">
+              <a href={getPhoneUrl(settings)} className="flex items-center gap-2 opacity-90 hover:opacity-100 transition-opacity">
+                <Phone className="h-4 w-4 shrink-0" /> {settings.phone}
               </a>
+              {settings.email && (
+                <a href={`mailto:${settings.email}`} className="flex items-center gap-2 opacity-90 hover:opacity-100 transition-opacity">
+                  <Mail className="h-4 w-4 shrink-0" /> {settings.email}
+                </a>
+              )}
               <span className="flex items-center gap-2 opacity-90">
-                <MapPin className="h-4 w-4" /> {settings.address}
+                <MapPin className="h-4 w-4 shrink-0" /> {settings.address}
+              </span>
+              <span className="flex items-center gap-2 opacity-90">
+                <Clock className="h-4 w-4 shrink-0" /> {settings.business_hours}
               </span>
             </div>
           </div>
 
+          {/* Services */}
           <div>
-            <h4 className="mb-3 font-display text-sm font-bold uppercase tracking-wider opacity-70">Serviços</h4>
-            <ul className="space-y-1.5 text-sm">
-              {(services || []).map((s) => (
+            <h4 className="mb-4 font-display text-sm font-bold uppercase tracking-wider opacity-70">Serviços</h4>
+            <ul className="space-y-2 text-sm">
+              {(services || []).slice(0, 8).map((s) => (
                 <li key={s.slug}>
-                  <Link to={`/servicos/${s.slug}`} className="opacity-80 hover:opacity-100 hover:underline">{s.name}</Link>
+                  <Link to={`/servicos/${s.slug}`} className="opacity-80 hover:opacity-100 hover:underline transition-opacity">{s.name}</Link>
                 </li>
               ))}
+              {(services || []).length > 8 && (
+                <li>
+                  <Link to="/servicos" className="font-medium opacity-90 hover:opacity-100 hover:underline transition-opacity">Ver todos →</Link>
+                </li>
+              )}
             </ul>
           </div>
 
+          {/* Cities */}
           <div>
-            <h4 className="mb-3 font-display text-sm font-bold uppercase tracking-wider opacity-70">Cidades</h4>
-            <ul className="space-y-1.5 text-sm">
+            <h4 className="mb-4 font-display text-sm font-bold uppercase tracking-wider opacity-70">Cidades</h4>
+            <ul className="space-y-2 text-sm">
               {(cities || []).map((c) => (
                 <li key={c.slug}>
-                  <Link to={`/${c.slug}`} className="opacity-80 hover:opacity-100 hover:underline">{c.name}</Link>
+                  <Link to={`/${c.slug}`} className="opacity-80 hover:opacity-100 hover:underline transition-opacity">{c.name}</Link>
                 </li>
               ))}
             </ul>
           </div>
 
+          {/* Contact CTA */}
           <div>
-            <h4 className="mb-3 font-display text-sm font-bold uppercase tracking-wider opacity-70">Contato</h4>
+            <h4 className="mb-4 font-display text-sm font-bold uppercase tracking-wider opacity-70">Contato Rápido</h4>
+            <p className="mb-4 text-sm opacity-80">Precisa de ajuda agora? Fale com nossa equipe!</p>
             <div className="flex flex-col gap-3">
               <a href={getWhatsAppUrl(settings)} target="_blank" rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 rounded-lg bg-whatsapp px-4 py-3 text-sm font-bold text-whatsapp-foreground transition-transform hover:scale-105">
@@ -63,8 +83,8 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 border-t border-primary-foreground/20 pt-6 text-center text-xs opacity-60">
-          © {new Date().getFullYear()} {settings.company_name}. Todos os direitos reservados.
+        <div className="mt-10 border-t border-primary-foreground/20 pt-6 flex flex-col items-center gap-2 text-center text-xs opacity-60">
+          <p>© {new Date().getFullYear()} {settings.company_name}. Todos os direitos reservados.</p>
         </div>
       </div>
     </footer>
