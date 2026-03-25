@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { OptimizedImage } from "@/components/OptimizedImage";
 import type { DbService } from "@/hooks/useSiteData";
 
 interface ServiceCardProps {
