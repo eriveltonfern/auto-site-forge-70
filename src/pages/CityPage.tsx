@@ -261,7 +261,7 @@ export default function CityPage() {
             {neighborhoods && neighborhoods.length > 0 && (
               <section>
                 <h2 className="mb-4 flex items-center gap-2 text-2xl font-bold text-foreground">
-                  <MapPin className="h-6 w-6 text-accent" /> Bairros atendidos em {city.name}
+                  <MapPin className="h-6 w-6 text-accent" /> Setores atendidos em {city.name}
                 </h2>
                 <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                   {neighborhoods.map((n) => (

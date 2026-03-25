@@ -111,6 +111,7 @@ export type Database = {
         Row: {
           base_content: string | null
           city_id: string
+          cover_image: string | null
           created_at: string
           h1: string | null
           id: string
@@ -124,6 +125,7 @@ export type Database = {
         Insert: {
           base_content?: string | null
           city_id: string
+          cover_image?: string | null
           created_at?: string
           h1?: string | null
           id?: string
@@ -137,6 +139,7 @@ export type Database = {
         Update: {
           base_content?: string | null
           city_id?: string
+          cover_image?: string | null
           created_at?: string
           h1?: string | null
           id?: string
