@@ -41,8 +41,19 @@ export default function ServicePage() {
             <Link to="/servicos" className="hover:underline">Serviços</Link> {" > "}
             <span>{service.name}</span>
           </nav>
-          <h1 className="text-3xl font-black md:text-4xl">{service.h1 || service.name}</h1>
-          <p className="mt-2 opacity-90">{service.short_description}</p>
+          <div className="flex flex-col gap-6 md:flex-row md:items-center">
+            {(service as any).cover_image && (
+              <img
+                src={(service as any).cover_image}
+                alt={service.name}
+                className="h-40 w-full rounded-xl object-cover md:h-48 md:w-72"
+              />
+            )}
+            <div>
+              <h1 className="text-3xl font-black md:text-4xl">{service.h1 || service.name}</h1>
+              <p className="mt-2 opacity-90">{service.short_description}</p>
+            </div>
+          </div>
         </div>
       </section>
 
