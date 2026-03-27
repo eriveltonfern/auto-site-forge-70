@@ -73,11 +73,11 @@ export default function BlogPostPage() {
       <Header />
       <FloatingCTA />
 
-      {/* Article */}
+      {/* Article — reference style: breadcrumb, clean title, content */}
       <article className="py-10 md:py-16">
         <div className="container mx-auto max-w-3xl">
           {/* Breadcrumbs */}
-          <nav className="mb-6 text-sm text-muted-foreground">
+          <nav className="mb-4 text-sm text-muted-foreground">
             <Link to="/" className="hover:text-accent transition-colors">Início</Link>
             <span className="mx-2">»</span>
             <Link to="/blog" className="hover:text-accent transition-colors">Blog</Link>
@@ -86,11 +86,11 @@ export default function BlogPostPage() {
           </nav>
 
           {/* Title */}
-          <h1 className="mb-8 text-2xl font-black leading-tight text-foreground md:text-4xl lg:text-5xl">
+          <h1 className="mb-8 text-2xl font-black leading-tight text-foreground md:text-4xl">
             {post.title}
           </h1>
 
-          {/* Featured image at top if exists and not in content */}
+          {/* Featured image */}
           {post.featured_image && !post.content?.includes(post.featured_image) && (
             <figure className="mb-8">
               <OptimizedImage
@@ -105,7 +105,7 @@ export default function BlogPostPage() {
 
           {/* Content */}
           {post.content && (
-            <div className="prose prose-lg max-w-none text-foreground prose-headings:font-display prose-headings:text-foreground prose-a:text-accent prose-strong:text-foreground prose-p:text-muted-foreground prose-p:leading-relaxed prose-li:text-muted-foreground space-y-5">
+            <div className="space-y-5">
               {post.content.split("\n").map((paragraph, i) => {
                 const trimmed = paragraph.trim();
                 if (!trimmed) return <br key={i} className="block h-2" />;
@@ -117,12 +117,7 @@ export default function BlogPostPage() {
                   if (match) {
                     return (
                       <figure key={i} className="my-8">
-                        <OptimizedImage
-                          src={match[2]}
-                          alt={match[1]}
-                          className="w-full rounded-lg object-cover"
-                          sizes="(max-width: 768px) 100vw, 768px"
-                        />
+                        <OptimizedImage src={match[2]} alt={match[1]} className="w-full rounded-lg object-cover" sizes="(max-width: 768px) 100vw, 768px" />
                       </figure>
                     );
                   }
