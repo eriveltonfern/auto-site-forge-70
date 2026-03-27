@@ -13,9 +13,7 @@ const fadeUp = {
 /* ========== CTA BANNER ========== */
 interface CtaBannerProps {
   settings: DbSettings;
-  /** The service or location name to localize the text */
   localName: string;
-  /** "Serviço de X Perto de Mim" heading — defaults to "Empresa de Desentupimento Perto de Mim" */
   heading?: string;
   variant?: 1 | 2;
 }
@@ -23,26 +21,40 @@ interface CtaBannerProps {
 export function CtaBanner({ settings, localName, heading, variant = 1 }: CtaBannerProps) {
   const h2 = heading || "Empresa de Desentupimento Perto de Mim";
   return (
-    <section className="hero-bg py-14 md:py-16">
+    <section className="hero-bg py-10 md:py-14">
       <div className="container">
-        <div className="flex flex-col items-center gap-6 text-center text-primary-foreground md:flex-row md:text-left">
-          <div className="hidden md:block shrink-0">
-            <img src="https://desentupidoras.goiania.br/wp-content/uploads/2025/07/desentupidor-300x300.png" alt="Desentupidor" className="h-28 w-28 object-contain" loading="lazy" />
+        <div className="flex flex-col items-center gap-6 md:flex-row md:gap-8">
+          {/* Mascot */}
+          <div className="shrink-0">
+            <img
+              src="https://desentupidoras.goiania.br/wp-content/uploads/2025/07/desentupidor-300x300.png"
+              alt="Desentupidor"
+              className="h-40 w-40 object-contain md:h-52 md:w-52"
+              loading="lazy"
+            />
           </div>
-          <div className="flex-1">
-            <h2 className="mb-2 text-2xl font-black md:text-3xl">{h2}</h2>
-            <p className="text-lg opacity-90">Problemas com entupimento, vazamento ou retorno de esgoto? Desentupidora 24h resolve!</p>
-            <p className="opacity-80">
+          {/* Text */}
+          <div className="flex-1 text-center md:text-left">
+            <h2 className="mb-3 text-2xl font-black text-primary-foreground md:text-3xl lg:text-4xl">
+              {h2}
+            </h2>
+            <p className="text-base text-primary-foreground/90 leading-relaxed">
+              Problemas com entupimento, vazamento ou retorno de esgoto? Desentupidora 24h resolve!
+            </p>
+            <p className="mt-1 text-base text-primary-foreground/80 leading-relaxed">
               {variant === 1
                 ? `Atendimento rápido ${localName ? `no ${localName}` : "em Goiânia"} com equipe especializada e total segurança.`
                 : `Serviço rápido ${localName ? `no ${localName}` : "em Goiânia"} com equipe especializada e total segurança.`}
             </p>
           </div>
-          <Button variant="whatsapp" size="lg" asChild className="px-8 py-6 text-lg rounded-full shrink-0">
-            <a href={getWhatsAppUrl(settings)} target="_blank" rel="noopener noreferrer">
-              <MessageCircle className="h-5 w-5" /> Chamar Agora!
-            </a>
-          </Button>
+          {/* Button */}
+          <div className="shrink-0">
+            <Button variant="whatsapp" size="lg" asChild className="px-8 py-6 text-lg rounded-full">
+              <a href={getWhatsAppUrl(settings)} target="_blank" rel="noopener noreferrer">
+                <MessageCircle className="h-5 w-5" /> Chamar Agora!
+              </a>
+            </Button>
+          </div>
         </div>
       </div>
     </section>
@@ -157,31 +169,25 @@ export function PorQueEscolher({ localName, companyName }: { localName: string; 
   );
 }
 
-/* ========== FAQ ========== */
+/* ========== FAQ — reference style: simple h3 + p stacked, no accordion ========== */
 interface FaqItem {
   question: string;
   answer: string;
 }
 
-export function FaqSection({ faqs, openFaq, setOpenFaq }: { faqs: FaqItem[]; openFaq: number | null; setOpenFaq: (v: number | null) => void }) {
+export function FaqSection({ faqs }: { faqs: FaqItem[]; openFaq?: number | null; setOpenFaq?: (v: number | null) => void }) {
   return (
-    <section className="py-16 md:py-20">
+    <section className="py-16 md:py-20 section-alt">
       <div className="container mx-auto max-w-3xl">
-        <motion.div {...fadeUp} className="mb-12 text-center">
-          <h2 className="mb-3 text-2xl font-black text-foreground md:text-4xl">Perguntas frequentes</h2>
+        <motion.div {...fadeUp} className="mb-10 text-center">
+          <h2 className="text-2xl font-black text-foreground md:text-4xl">Perguntas frequentes</h2>
         </motion.div>
-        <div className="space-y-3">
+        <div className="space-y-6">
           {faqs.map((faq, i) => (
-            <motion.div key={i} {...fadeUp} transition={{ delay: i * 0.03 }}
-              className="rounded-xl border bg-card shadow-sm overflow-hidden">
-              <button onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                className="flex w-full items-center justify-between p-5 text-left font-display font-semibold text-foreground hover:bg-muted/50 transition-colors">
-                {faq.question}
-                <ChevronDown className={`h-5 w-5 shrink-0 text-muted-foreground transition-transform duration-200 ${openFaq === i ? "rotate-180" : ""}`} />
-              </button>
-              {openFaq === i && (
-                <div className="border-t px-5 py-4 text-sm text-muted-foreground leading-relaxed">{faq.answer}</div>
-              )}
+            <motion.div key={i} {...fadeUp} transition={{ delay: i * 0.03 }}>
+              <h3 className="mb-2 text-lg font-bold text-foreground md:text-xl">{faq.question}</h3>
+              <p className="text-muted-foreground leading-relaxed">{faq.answer}</p>
+              {i < faqs.length - 1 && <hr className="mt-6 border-border" />}
             </motion.div>
           ))}
         </div>
@@ -237,7 +243,6 @@ export function ContatoSection({ settings, whatsappUrl }: { settings: DbSettings
         <motion.div {...fadeUp} className="mx-auto max-w-4xl">
           <h2 className="mb-8 text-center text-2xl font-black text-foreground md:text-4xl">Entre em contato</h2>
           <div className="grid gap-8 lg:grid-cols-2">
-            {/* Left: contact info */}
             <div className="flex flex-col items-center gap-6 text-center lg:items-start lg:text-left">
               <div className="grid w-full gap-4 sm:grid-cols-2">
                 <div className="rounded-xl border bg-card p-6 shadow-sm">
@@ -270,8 +275,6 @@ export function ContatoSection({ settings, whatsappUrl }: { settings: DbSettings
                 </a>
               </Button>
             </div>
-
-            {/* Right: Google Maps */}
             <div className="overflow-hidden rounded-xl border shadow-sm">
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d245855.47875963425!2d-49.44587820625!3d-16.686891499999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935ef0a04b987d5d%3A0x8f24ac9b2b33bbe8!2sGoi%C3%A2nia%2C%20GO!5e0!3m2!1spt-BR!2sbr!4v1700000000000!5m2!1spt-BR!2sbr"
@@ -292,7 +295,7 @@ export function ContatoSection({ settings, whatsappUrl }: { settings: DbSettings
   );
 }
 
-/* ========== BAIRROS ATENDIDOS ========== */
+/* ========== BAIRROS ATENDIDOS — black text, underline, link style ========== */
 interface NeighborhoodItem {
   name: string;
   slug: string;
@@ -301,7 +304,6 @@ interface NeighborhoodItem {
 export function BairrosAtendidos({
   neighborhoods,
   localName,
-  /** Prefix for building links: empty = /:slug, "hidrojateamento" = /hidrojateamento-:slug */
   linkPrefix,
   searchTerm,
 }: {
@@ -324,12 +326,12 @@ export function BairrosAtendidos({
             Está buscando por "<strong className="text-foreground">{term}</strong>"{localName ? ` no ${localName}` : " em Goiânia-GO"}? Estamos prontos para atender você nos principais bairros da cidade:
           </p>
         </motion.div>
-        <motion.div {...fadeUp} className="columns-2 sm:columns-3 lg:columns-4 gap-4">
+        <motion.div {...fadeUp} className="columns-2 sm:columns-3 lg:columns-4 gap-x-6">
           {neighborhoods.map((n) => (
             <Link
               key={n.slug}
               to={linkPrefix ? `/${linkPrefix}-${n.slug}` : `/${n.slug}`}
-              className="mb-2 block text-sm text-accent hover:underline transition-colors"
+              className="mb-2 block text-sm text-foreground underline decoration-foreground/40 underline-offset-2 hover:text-accent hover:decoration-accent transition-colors"
             >
               {n.name}
             </Link>
