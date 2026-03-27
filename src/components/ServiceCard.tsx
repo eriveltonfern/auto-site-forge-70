@@ -12,6 +12,8 @@ interface ServiceCardProps {
   whatsappUrl?: string;
   /** Optional city context label */
   cityLabel?: string;
+  /** Override the default link target */
+  linkTo?: string;
 }
 
 export function ServiceCard({ service, compact = false, whatsappUrl, cityLabel }: ServiceCardProps) {
