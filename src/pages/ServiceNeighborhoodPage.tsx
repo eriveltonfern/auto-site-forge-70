@@ -40,7 +40,7 @@ interface Props {
 }
 
 export default function ServiceNeighborhoodPage({ serviceSlug, neighborhoodSlug }: Props) {
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  
 
   const { data: service, isLoading: loadingService } = useQuery({
     queryKey: ["service_combo", serviceSlug],
