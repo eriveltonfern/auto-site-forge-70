@@ -30,6 +30,7 @@ export default function AdminSettings() {
           address: data.address || "", business_hours: data.business_hours || "",
           email: data.email || "", logo_url: data.logo_url || "",
           favicon_url: data.favicon_url || "", global_scripts: data.global_scripts || "",
+          hero_image: data.hero_image || "",
         });
       }
     });
