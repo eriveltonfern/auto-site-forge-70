@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useServices, useSiteSettings, getWhatsAppUrl } from "@/hooks/useSiteData";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useState } from "react";
+
 import { CtaBanner, OutrosServicos, Vantagens, PorQueEscolher, FaqSection, Depoimentos, ContatoSection, BairrosAtendidos } from "@/components/SharedSections";
 import heroBg from "@/assets/hero-bg.jpg";
 import NotFound from "./NotFound";
