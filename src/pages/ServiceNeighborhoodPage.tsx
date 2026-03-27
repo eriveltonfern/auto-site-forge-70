@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useServices, useSiteSettings, getWhatsAppUrl } from "@/hooks/useSiteData";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useState } from "react";
+
 import { CtaBanner, OutrosServicos, Vantagens, PorQueEscolher, FaqSection, Depoimentos, ContatoSection, BairrosAtendidos } from "@/components/SharedSections";
 import heroBg from "@/assets/hero-bg.jpg";
 import NotFound from "./NotFound";
@@ -40,7 +40,7 @@ interface Props {
 }
 
 export default function ServiceNeighborhoodPage({ serviceSlug, neighborhoodSlug }: Props) {
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  
 
   const { data: service, isLoading: loadingService } = useQuery({
     queryKey: ["service_combo", serviceSlug],
@@ -172,7 +172,7 @@ export default function ServiceNeighborhoodPage({ serviceSlug, neighborhoodSlug 
       <Vantagens serviceName={serviceName} />
       <PorQueEscolher localName={neighborhoodName} companyName={settings.company_name || "Desentupidora Goiânia"} />
       <CtaBanner settings={settings} localName={neighborhoodName} heading={`Serviço de ${serviceName} Perto de Mim`} variant={2} />
-      <FaqSection faqs={faqs} openFaq={openFaq} setOpenFaq={setOpenFaq} />
+      <FaqSection faqs={faqs} />
       <CtaBanner settings={settings} localName={neighborhoodName} heading={`Serviço de ${serviceName} Perto de Mim`} variant={1} />
       <Depoimentos />
       <ContatoSection settings={settings} whatsappUrl={whatsappUrl} />

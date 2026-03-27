@@ -9,7 +9,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { FloatingCTA } from "@/components/FloatingCTA";
 import { CtaBanner, OutrosServicos, Vantagens, PorQueEscolher, FaqSection, Depoimentos, ContatoSection, BairrosAtendidos } from "@/components/SharedSections";
-import { useState } from "react";
+
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import heroBg from "@/assets/hero-bg.jpg";
@@ -32,7 +32,7 @@ const fadeUp = {
 };
 
 export default function Index() {
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  
   const { data: settings } = useSiteSettings();
   const { data: services } = useServices();
 
@@ -120,7 +120,7 @@ export default function Index() {
       <Vantagens />
       <PorQueEscolher localName="" companyName={settings.company_name || "Desentupidora Goiânia"} />
       <CtaBanner settings={settings} localName="" variant={2} />
-      <FaqSection faqs={homeFaq} openFaq={openFaq} setOpenFaq={setOpenFaq} />
+      <FaqSection faqs={homeFaq} />
       <CtaBanner settings={settings} localName="" variant={1} />
       <Depoimentos />
       <ContatoSection settings={settings} />
