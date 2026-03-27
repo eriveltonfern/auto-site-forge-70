@@ -6,7 +6,7 @@ import { useSiteSettings, getWhatsAppUrl } from "@/hooks/useSiteData";
 import { MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import heroBg from "@/assets/hero-bg-2.png";
+import heroBgFallback from "@/assets/hero-bg-2.png";
 
 export default function SobrePage() {
   const { data: settings } = useSiteSettings();
