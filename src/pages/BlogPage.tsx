@@ -27,25 +27,23 @@ export default function BlogPage() {
   return (
     <>
       <SEOHead
-        title="Blog | Dicas de Desentupimento e Manutenção"
-        description="Confira dicas, novidades e artigos sobre desentupimento, manutenção hidráulica e cuidados com encanamentos."
+        title="Blog | Dicas de Desentupimento e Manutenção em Goiânia"
+        description="Confira dicas, novidades e artigos sobre desentupimento, manutenção hidráulica e cuidados com encanamentos em Goiânia."
       />
       <Header />
       <FloatingCTA />
 
-      <section className="hero-bg py-12">
-        <div className="container text-primary-foreground">
-          <nav className="mb-4 text-sm opacity-70">
-            <Link to="/" className="hover:underline">Início</Link> {" > "}
-            <span>Blog</span>
-          </nav>
-          <h1 className="text-3xl font-black md:text-4xl">Blog</h1>
-          <p className="mt-2 opacity-90">Dicas, novidades e artigos sobre desentupimento e manutenção.</p>
-        </div>
-      </section>
-
-      <section className="py-12">
+      {/* Clean page header — no hero bg, reference style */}
+      <section className="py-12 md:py-16">
         <div className="container">
+          <nav className="mb-4 text-sm text-muted-foreground">
+            <Link to="/" className="hover:text-accent transition-colors">Início</Link>
+            <span className="mx-2">»</span>
+            <span className="text-foreground">Blog</span>
+          </nav>
+
+          <h1 className="mb-8 text-3xl font-black text-foreground md:text-4xl">Blog</h1>
+
           {isLoading ? (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {[1, 2, 3].map((i) => (
@@ -53,7 +51,7 @@ export default function BlogPage() {
               ))}
             </div>
           ) : !posts || posts.length === 0 ? (
-            <p className="text-center text-muted-foreground">Nenhum artigo publicado ainda.</p>
+            <p className="text-muted-foreground">Nenhum artigo publicado ainda.</p>
           ) : (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {posts.map((post) => (
