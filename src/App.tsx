@@ -8,7 +8,7 @@ import Index from "./pages/Index.tsx";
 import ServicesHub from "./pages/ServicesHub.tsx";
 import AreasPage from "./pages/AreasPage.tsx";
 import ServicePage from "./pages/ServicePage.tsx";
-import NeighborhoodPage from "./pages/NeighborhoodPage.tsx";
+import DynamicSlugPage from "./pages/DynamicSlugPage.tsx";
 import BlogPage from "./pages/BlogPage.tsx";
 import BlogPostPage from "./pages/BlogPostPage.tsx";
 import SobrePage from "./pages/SobrePage.tsx";
@@ -63,8 +63,8 @@ const App = () => (
               <Route path="configuracoes" element={<AdminSettings />} />
             </Route>
 
-            {/* Dynamic neighborhood routes (must be after /admin) */}
-            <Route path="/:neighborhoodSlug" element={<NeighborhoodPage />} />
+            {/* Dynamic routes: neighborhood or service+neighborhood */}
+            <Route path="/:slug" element={<DynamicSlugPage />} />
 
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -12,13 +12,16 @@ interface ServiceCardProps {
   whatsappUrl?: string;
   /** Optional city context label */
   cityLabel?: string;
+  /** Override the default link target */
+  linkTo?: string;
 }
 
-export function ServiceCard({ service, compact = false, whatsappUrl, cityLabel }: ServiceCardProps) {
+export function ServiceCard({ service, compact = false, whatsappUrl, cityLabel, linkTo }: ServiceCardProps) {
+  const href = linkTo || `/servicos/${service.slug}`;
   if (compact) {
     return (
       <Link
-        to={`/servicos/${service.slug}`}
+        to={href}
         className="group flex items-center gap-3 rounded-lg border bg-card p-4 transition-all hover:shadow-sm hover:border-accent"
       >
         {service.cover_image ? (
@@ -46,7 +49,7 @@ export function ServiceCard({ service, compact = false, whatsappUrl, cityLabel }
 
   return (
     <Link
-      to={`/servicos/${service.slug}`}
+      to={href}
       className="group flex flex-col overflow-hidden rounded-xl border bg-card shadow-sm transition-all hover:shadow-md hover:-translate-y-1"
     >
       {service.cover_image ? (

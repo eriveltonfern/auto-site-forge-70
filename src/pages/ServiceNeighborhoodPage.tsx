@@ -1,5 +1,5 @@
-import { useParams, Link } from "react-router-dom";
-import { Phone, MessageCircle, CheckCircle, Shield, Clock, Star, ChevronDown, Wrench, Award, Zap, CreditCard, MapPin, HelpCircle } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Phone, MessageCircle, CheckCircle, Shield, Clock, Star, ChevronDown, Wrench, Award, Zap, CreditCard, MapPin } from "lucide-react";
 import { motion } from "framer-motion";
 import { SEOHead, getFAQSchema } from "@/components/SEOHead";
 import { Header } from "@/components/Header";
@@ -38,10 +38,10 @@ const testimonials = [
   { name: "Camila Duarte", text: "A pia da cozinha estava transbordando. Vieram no mesmo dia e deixaram tudo funcionando. Recomendo muito a empresa!" },
 ];
 
-function generateFaqs(name: string) {
+function generateFaqs(neighborhoodName: string) {
   return [
-    { question: `Quanto custa um serviço de desentupimento no ${name}?`, answer: `O valor do serviço de desentupimento no ${name} varia entre R$120,00 à R$980,00. Trabalhamos com orçamento sem compromisso via WhatsApp ou no local.` },
-    { question: `O desentupimento perto de mim é mais barato?`, answer: `Sim! Quando o nosso equipamento está próximo da sua localização no ${name}, o custo tende a ser mais baixo, já que a taxa de deslocamento é menor.` },
+    { question: `Quanto custa um serviço de desentupimento na ${neighborhoodName}?`, answer: `O valor do serviço de desentupimento na ${neighborhoodName} varia entre R$120,00 à R$980,00. Trabalhamos com orçamento sem compromisso via WhatsApp ou no local.` },
+    { question: `O desentupimento perto de mim é mais barato?`, answer: `Sim! Quando o nosso equipamento está próximo da sua localização na ${neighborhoodName}, o custo tende a ser mais baixo, já que a taxa de deslocamento é menor.` },
     { question: `Fazem desentupimento de pia de cozinha?`, answer: `Sim! Atendemos pias de cozinha e banheiro com remoção de gordura e sujeira acumulada, sem quebrar nada.` },
     { question: `A desentupidora atende à noite?`, answer: `Sim, somos uma desentupidora 24 horas, com equipe disponível inclusive de madrugada, fins de semana e feriados.` },
     { question: `Vocês atendem casas e apartamentos?`, answer: `Atendemos residências, condomínios, comércios e empresas com equipamentos adequados para cada ambiente.` },
@@ -57,7 +57,7 @@ const fadeUp = {
   viewport: { once: true },
 };
 
-function CtaBanner({ settings, name, variant = 1 }: { settings: any; name: string; variant?: number }) {
+function CtaBanner({ settings, serviceName, neighborhoodName, variant = 1 }: { settings: any; serviceName: string; neighborhoodName: string; variant?: number }) {
   return (
     <section className="hero-bg py-14 md:py-16">
       <div className="container">
@@ -66,12 +66,12 @@ function CtaBanner({ settings, name, variant = 1 }: { settings: any; name: strin
             <img src="https://desentupidoras.goiania.br/wp-content/uploads/2025/07/desentupidor-300x300.png" alt="Desentupidor" className="h-28 w-28 object-contain" loading="lazy" />
           </div>
           <div className="flex-1">
-            <h2 className="mb-2 text-2xl font-black md:text-3xl">Empresa de Desentupimento Perto de Mim</h2>
+            <h2 className="mb-2 text-2xl font-black md:text-3xl">Serviço de {serviceName} Perto de Mim</h2>
             <p className="text-lg opacity-90">Problemas com entupimento, vazamento ou retorno de esgoto? Desentupidora 24h resolve!</p>
             <p className="opacity-80">
               {variant === 1
-                ? `Atendimento rápido no ${name} com equipe especializada e total segurança.`
-                : `Serviço rápido no ${name} com equipe especializada e total segurança.`}
+                ? `Atendimento rápido na ${neighborhoodName} com equipe especializada e total segurança.`
+                : `Serviço rápido na ${neighborhoodName} com equipe especializada e total segurança.`}
             </p>
           </div>
           <Button variant="whatsapp" size="lg" asChild className="px-8 py-6 text-lg rounded-full shrink-0">
@@ -85,18 +85,36 @@ function CtaBanner({ settings, name, variant = 1 }: { settings: any; name: strin
   );
 }
 
-export default function NeighborhoodPage() {
-  const { slug, neighborhoodSlug: paramNeighborhoodSlug } = useParams();
-  const neighborhoodSlug = paramNeighborhoodSlug || slug;
+interface Props {
+  serviceSlug: string;
+  neighborhoodSlug: string;
+}
+
+export default function ServiceNeighborhoodPage({ serviceSlug, neighborhoodSlug }: Props) {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
-  const { data: neighborhood, isLoading } = useQuery({
-    queryKey: ["neighborhood_direct", neighborhoodSlug],
+  const { data: service, isLoading: loadingService } = useQuery({
+    queryKey: ["service_combo", serviceSlug],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("services")
+        .select("*")
+        .eq("slug", serviceSlug)
+        .eq("status", "published")
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!serviceSlug,
+  });
+
+  const { data: neighborhood, isLoading: loadingNeighborhood } = useQuery({
+    queryKey: ["neighborhood_combo", neighborhoodSlug],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("neighborhoods")
-        .select("*, cities(*)")
-        .eq("slug", neighborhoodSlug!)
+        .select("*")
+        .eq("slug", neighborhoodSlug)
         .eq("status", "published")
         .maybeSingle();
       if (error) throw error;
@@ -105,7 +123,7 @@ export default function NeighborhoodPage() {
     enabled: !!neighborhoodSlug,
   });
 
-  const { data: services } = useServices();
+  const { data: allServices } = useServices();
   const { data: settings } = useSiteSettings();
 
   const { data: allNeighborhoods } = useQuery({
@@ -121,16 +139,17 @@ export default function NeighborhoodPage() {
     },
   });
 
-  if (isLoading || !settings) return null;
-  if (!neighborhood) return <NotFound />;
+  if (loadingService || loadingNeighborhood || !settings) return null;
+  if (!service || !neighborhood) return <NotFound />;
 
-  const city = (neighborhood as any).cities;
-  const displayName = neighborhood.name;
-  const seoName = `Setor ${displayName}`;
-  const seoTitle = neighborhood.seo_title || `Precisando de Desentupidora 24h no ${seoName}?`;
-  const seoDesc = neighborhood.meta_description || `Desentupidora no ${seoName} em Goiânia-GO. Atendimento rápido 24h. Desentupimento de pia, vaso, esgoto e mais. Orçamento grátis pelo WhatsApp.`;
-  const faqs = generateFaqs(seoName);
-  const whatsappUrl = getWhatsAppUrl(settings, `Olá! Preciso de desentupimento no ${seoName}, Goiânia.`);
+  const serviceName = service.name;
+  const serviceNameLower = serviceName.toLowerCase();
+  const neighborhoodName = neighborhood.name;
+  const comboSlug = `${service.slug}-${neighborhood.slug}`;
+  const seoTitle = `Precisando de ${serviceName} na ${neighborhoodName}?`;
+  const seoDesc = `${serviceName} na ${neighborhoodName} em Goiânia-GO. Atendimento rápido 24h. Orçamento grátis pelo WhatsApp. Serviço profissional com garantia.`;
+  const faqs = generateFaqs(neighborhoodName);
+  const whatsappUrl = getWhatsAppUrl(settings, `Olá! Preciso de ${serviceNameLower} na ${neighborhoodName}, Goiânia.`);
   const siblings = allNeighborhoods?.filter((n) => n.slug !== neighborhood.slug) || [];
 
   return (
@@ -138,7 +157,7 @@ export default function NeighborhoodPage() {
       <SEOHead
         title={seoTitle}
         description={seoDesc}
-        canonical={`https://desentupidoras.goiania.br/${neighborhood.slug}`}
+        canonical={`https://desentupidoras.goiania.br/${comboSlug}`}
         structuredData={getFAQSchema(faqs)}
       />
       <Header />
@@ -152,7 +171,7 @@ export default function NeighborhoodPage() {
           <div className="mx-auto max-w-3xl text-center text-white">
             <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
               className="mb-5 text-3xl font-black leading-tight md:text-5xl lg:text-6xl">
-              Precisando de Desentupidora 24h no {seoName}?
+              Precisando de {serviceName} na {neighborhoodName}?
             </motion.h1>
             <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}
               className="mx-auto mb-4 max-w-2xl text-lg opacity-90 md:text-xl">
@@ -160,7 +179,7 @@ export default function NeighborhoodPage() {
             </motion.p>
             <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.15 }}
               className="mx-auto mb-8 max-w-2xl text-lg opacity-90 md:text-xl">
-              Solicite desentupimento urgente no {seoName} com atendimento imediato.
+              Solicite {serviceNameLower} 24h na {neighborhoodName} com atendimento imediato.
             </motion.p>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}
               className="flex justify-center">
@@ -175,21 +194,21 @@ export default function NeighborhoodPage() {
       </section>
 
       {/* ===== SERVIÇOS ===== */}
-      {services && services.length > 0 && (
+      {allServices && allServices.length > 0 && (
         <section className="py-16 md:py-20">
           <div className="container">
             <motion.div {...fadeUp} className="mx-auto mb-4 max-w-3xl text-center">
               <h2 className="mb-4 text-2xl font-black text-foreground md:text-4xl">
-                Empresa de Desentupimento Perto de Mim no {seoName}
+                Serviço de {serviceName} Perto de Mim na {neighborhoodName}
               </h2>
               <p className="text-muted-foreground leading-relaxed">
-                Quando você busca por "<strong className="text-foreground">desentupimento perto de mim</strong>" ou "<strong className="text-foreground">desentupidora 24h</strong>" no {seoName} em Goiânia-GO, nós entregamos um atendimento completo, com equipe experiente, atendimento rápido e recursos prontos para qualquer situação.
+                Quando você busca por "<strong className="text-foreground">{serviceNameLower} perto de mim</strong>" ou "<strong className="text-foreground">desentupidora 24h</strong>" na {neighborhoodName} em Goiânia-GO, além do {serviceNameLower} nós entregamos um serviço completo, com equipe experiente e recursos prontos para qualquer situação.
               </p>
             </motion.div>
             <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {services.map((s, i) => (
+              {allServices.map((s, i) => (
                 <motion.div key={s.slug} {...fadeUp} transition={{ delay: i * 0.05 }}>
-                  <ServiceCard service={s} whatsappUrl={getWhatsAppUrl(settings, `Olá! Preciso de ${s.name.toLowerCase()} no ${seoName}. Podem me ajudar?`)} linkTo={`/${s.slug}-${neighborhood.slug}`} />
+                  <ServiceCard service={s} whatsappUrl={getWhatsAppUrl(settings, `Olá! Preciso de ${s.name.toLowerCase()} na ${neighborhoodName}. Podem me ajudar?`)} />
                 </motion.div>
               ))}
             </div>
@@ -228,14 +247,14 @@ export default function NeighborhoodPage() {
       </section>
 
       {/* ===== CTA BANNER 1 ===== */}
-      <CtaBanner settings={settings} name={seoName} variant={1} />
+      <CtaBanner settings={settings} serviceName={serviceName} neighborhoodName={neighborhoodName} variant={1} />
 
       {/* ===== VANTAGENS ===== */}
       <section className="py-16 md:py-20">
         <div className="container">
           <motion.div {...fadeUp} className="mx-auto mb-12 max-w-2xl text-center">
             <h2 className="mb-3 text-2xl font-black text-foreground md:text-4xl">
-              Vantagens de contratar serviço de desentupimento próximo a mim
+              Vantagens de contratar serviço de {serviceNameLower} próximo a mim
             </h2>
           </motion.div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -258,10 +277,10 @@ export default function NeighborhoodPage() {
         <div className="container">
           <motion.div {...fadeUp} className="mx-auto max-w-3xl text-center">
             <h2 className="mb-4 text-2xl font-black text-foreground md:text-4xl">
-              Por que escolher o Desentupidora 24 horas no {seoName}?
+              Por que escolher o Desentupidora 24 horas na {neighborhoodName}?
             </h2>
             <p className="mb-4 text-muted-foreground leading-relaxed">
-              Precisando de uma <strong className="text-foreground">empresa desentupidora com preço justo e serviço rápido</strong>? Atendemos no {seoName} com soluções eficientes, sem quebra e com garantia.
+              Precisando de uma <strong className="text-foreground">empresa desentupidora com preço justo e serviço rápido</strong>? Atendemos na {neighborhoodName} com soluções eficientes, sem quebra e com garantia.
             </p>
             <p className="mb-4 text-foreground font-bold">
               Elimine entupimentos com a desentupidora mais próxima de você!
@@ -277,7 +296,7 @@ export default function NeighborhoodPage() {
       </section>
 
       {/* ===== CTA BANNER 2 ===== */}
-      <CtaBanner settings={settings} name={seoName} variant={2} />
+      <CtaBanner settings={settings} serviceName={serviceName} neighborhoodName={neighborhoodName} variant={2} />
 
       {/* ===== FAQ ===== */}
       <section className="py-16 md:py-20">
@@ -304,7 +323,7 @@ export default function NeighborhoodPage() {
       </section>
 
       {/* ===== CTA BANNER 3 ===== */}
-      <CtaBanner settings={settings} name={seoName} variant={1} />
+      <CtaBanner settings={settings} serviceName={serviceName} neighborhoodName={neighborhoodName} variant={1} />
 
       {/* ===== DEPOIMENTOS ===== */}
       <section className="py-16 md:py-20">
@@ -363,15 +382,15 @@ export default function NeighborhoodPage() {
           <div className="container">
             <motion.div {...fadeUp} className="mx-auto mb-8 max-w-3xl text-center">
               <h2 className="mb-3 text-2xl font-black text-foreground md:text-4xl">
-                Atendemos no {seoName} e Toda a Região em Goiânia
+                Atendemos na {neighborhoodName} e Toda a Região em Goiânia
               </h2>
               <p className="text-muted-foreground">
-                Está buscando por "<strong className="text-foreground">desentupidora próxima de mim</strong>" no {seoName}? Estamos prontos para atender você nos principais bairros da cidade:
+                Está buscando por "<strong className="text-foreground">{serviceNameLower} próximo de mim</strong>" na {neighborhoodName}? Estamos prontos para atender você nos principais bairros da cidade:
               </p>
             </motion.div>
             <motion.div {...fadeUp} className="columns-2 sm:columns-3 lg:columns-4 gap-4">
               {siblings.map((n) => (
-                <Link key={n.slug} to={`/${n.slug}`} className="mb-2 block text-sm text-accent hover:underline transition-colors">
+                <Link key={n.slug} to={`/${service.slug}-${n.slug}`} className="mb-2 block text-sm text-accent hover:underline transition-colors">
                   {n.name}
                 </Link>
               ))}
