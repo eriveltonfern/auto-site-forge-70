@@ -86,7 +86,8 @@ function CtaBanner({ settings, name, variant = 1 }: { settings: any; name: strin
 }
 
 export default function NeighborhoodPage() {
-  const { neighborhoodSlug } = useParams();
+  const { slug, neighborhoodSlug: paramNeighborhoodSlug } = useParams();
+  const neighborhoodSlug = paramNeighborhoodSlug || slug;
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const { data: neighborhood, isLoading } = useQuery({
