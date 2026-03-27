@@ -8,7 +8,6 @@ import Index from "./pages/Index.tsx";
 import ServicesHub from "./pages/ServicesHub.tsx";
 import AreasPage from "./pages/AreasPage.tsx";
 import ServicePage from "./pages/ServicePage.tsx";
-import CityPage from "./pages/CityPage.tsx";
 import NeighborhoodPage from "./pages/NeighborhoodPage.tsx";
 import BlogPage from "./pages/BlogPage.tsx";
 import BlogPostPage from "./pages/BlogPostPage.tsx";
@@ -64,9 +63,8 @@ const App = () => (
               <Route path="configuracoes" element={<AdminSettings />} />
             </Route>
 
-            {/* Dynamic city/neighborhood routes (must be after /admin) */}
-            <Route path="/:citySlug" element={<CityPage />} />
-            <Route path="/:citySlug/:neighborhoodSlug" element={<NeighborhoodPage />} />
+            {/* Dynamic neighborhood routes (must be after /admin) */}
+            <Route path="/:neighborhoodSlug" element={<NeighborhoodPage />} />
 
             <Route path="*" element={<NotFound />} />
           </Routes>
