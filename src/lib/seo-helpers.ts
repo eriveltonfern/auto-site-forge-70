@@ -9,40 +9,34 @@ export function generateSlug(text: string): string {
     .replace(/^-|-$/g, "");
 }
 
-export function generateSeoTitle(type: "service" | "city" | "neighborhood" | "post", name: string, cityName?: string): string {
+export function generateSeoTitle(type: "service" | "neighborhood" | "post", name: string): string {
   switch (type) {
     case "service":
       return `${name} em Goiânia | Atendimento 24h`;
-    case "city":
-      return `Desentupidora em ${name} | Atendimento Rápido 24h`;
     case "neighborhood":
-      return `Desentupidora no Setor ${name}${cityName ? `, ${cityName}` : ""} | Atendimento Imediato`;
+      return `Precisando de Desentupidora 24h no Setor ${name}?`;
     case "post":
       return name;
   }
 }
 
-export function generateMetaDescription(type: "service" | "city" | "neighborhood" | "post", name: string, cityName?: string): string {
+export function generateMetaDescription(type: "service" | "neighborhood" | "post", name: string): string {
   switch (type) {
     case "service":
       return `Serviço profissional de ${name.toLowerCase()} em Goiânia e região. Atendimento 24 horas com garantia. Solicite orçamento grátis pelo WhatsApp.`;
-    case "city":
-      return `Desentupidora em ${name} com atendimento rápido 24h. Serviços de desentupimento de pia, vaso, esgoto e mais. Ligue agora ou fale no WhatsApp.`;
     case "neighborhood":
-      return `Desentupidora no Setor ${name}${cityName ? ` em ${cityName}` : ""}. Atendimento rápido e profissional. Fale no WhatsApp.`;
+      return `Desentupidora no Setor ${name} em Goiânia-GO. Atendimento rápido 24h. Desentupimento de pia, vaso, esgoto e mais. Orçamento grátis pelo WhatsApp.`;
     case "post":
       return `${name} - Dicas e informações sobre desentupimento.`;
   }
 }
 
-export function generateH1(type: "service" | "city" | "neighborhood" | "post", name: string): string {
+export function generateH1(type: "service" | "neighborhood" | "post", name: string): string {
   switch (type) {
     case "service":
       return name;
-    case "city":
-      return `Desentupidora em ${name}`;
     case "neighborhood":
-      return `Desentupidora no Setor ${name}`;
+      return `Precisando de Desentupidora 24h no Setor ${name}?`;
     case "post":
       return name;
   }
