@@ -16,11 +16,12 @@ interface ServiceCardProps {
   linkTo?: string;
 }
 
-export function ServiceCard({ service, compact = false, whatsappUrl, cityLabel }: ServiceCardProps) {
+export function ServiceCard({ service, compact = false, whatsappUrl, cityLabel, linkTo }: ServiceCardProps) {
+  const href = linkTo || `/servicos/${service.slug}`;
   if (compact) {
     return (
       <Link
-        to={`/servicos/${service.slug}`}
+        to={href}
         className="group flex items-center gap-3 rounded-lg border bg-card p-4 transition-all hover:shadow-sm hover:border-accent"
       >
         {service.cover_image ? (
