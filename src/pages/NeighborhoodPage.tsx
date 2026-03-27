@@ -37,7 +37,7 @@ const fadeUp = {
 export default function NeighborhoodPage() {
   const { slug, neighborhoodSlug: paramNeighborhoodSlug } = useParams();
   const neighborhoodSlug = paramNeighborhoodSlug || slug;
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  
 
   const { data: neighborhood, isLoading } = useQuery({
     queryKey: ["neighborhood_direct", neighborhoodSlug],
