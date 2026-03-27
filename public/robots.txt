@@ -15,4 +15,3 @@ Allow: /
 Disallow: /admin/
 
 Sitemap: https://desentupidoras.goiania.br/sitemap.xml
-Allow: /
