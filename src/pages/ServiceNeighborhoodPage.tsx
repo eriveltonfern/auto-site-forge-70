@@ -172,7 +172,7 @@ export default function ServiceNeighborhoodPage({ serviceSlug, neighborhoodSlug 
       <Vantagens serviceName={serviceName} />
       <PorQueEscolher localName={neighborhoodName} companyName={settings.company_name || "Desentupidora Goiânia"} />
       <CtaBanner settings={settings} localName={neighborhoodName} heading={`Serviço de ${serviceName} Perto de Mim`} variant={2} />
-      <FaqSection faqs={faqs} openFaq={openFaq} setOpenFaq={setOpenFaq} />
+      <FaqSection faqs={faqs} />
       <CtaBanner settings={settings} localName={neighborhoodName} heading={`Serviço de ${serviceName} Perto de Mim`} variant={1} />
       <Depoimentos />
       <ContatoSection settings={settings} whatsappUrl={whatsappUrl} />
