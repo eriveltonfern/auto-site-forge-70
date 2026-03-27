@@ -63,7 +63,7 @@ export default function Index() {
       {/* ===== HERO ===== */}
       <section className="relative overflow-hidden bg-foreground">
         <div className="absolute inset-0">
-          <img src={heroBg} alt="" className="h-full w-full object-cover" width={1920} height={1080} />
+          <img src={settings.hero_image || heroBgFallback} alt="" className="h-full w-full object-cover" width={1920} height={1080} />
         </div>
         <div className="absolute inset-0 bg-black/60" />
         <div className="container relative py-24 md:py-32 lg:py-40">
