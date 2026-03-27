@@ -232,6 +232,7 @@ export type Database = {
           email: string | null
           favicon_url: string | null
           global_scripts: string | null
+          hero_image: string | null
           id: string
           logo_url: string | null
           phone: string | null
@@ -247,6 +248,7 @@ export type Database = {
           email?: string | null
           favicon_url?: string | null
           global_scripts?: string | null
+          hero_image?: string | null
           id?: string
           logo_url?: string | null
           phone?: string | null
@@ -262,6 +264,7 @@ export type Database = {
           email?: string | null
           favicon_url?: string | null
           global_scripts?: string | null
+          hero_image?: string | null
           id?: string
           logo_url?: string | null
           phone?: string | null
