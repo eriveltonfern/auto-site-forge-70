@@ -17,6 +17,7 @@ export default function AdminSettings() {
     company_name: "", phone: "", whatsapp: "", whatsapp_message: "",
     address: "", business_hours: "", email: "",
     logo_url: "", favicon_url: "", global_scripts: "",
+    hero_image: "",
   });
 
   useEffect(() => {
