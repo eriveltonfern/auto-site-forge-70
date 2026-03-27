@@ -12,7 +12,7 @@ import { CtaBanner, OutrosServicos, Vantagens, PorQueEscolher, FaqSection, Depoi
 
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import heroBg from "@/assets/hero-bg.jpg";
+import heroBgFallback from "@/assets/hero-bg.jpg";
 
 const homeFaq = [
   { question: "Quanto custa um serviço de desentupimento em Goiânia?", answer: "O valor depende do tipo de entupimento e da estrutura, varia entre R$120,00 à R$980,00. Trabalhamos com orçamento sem compromisso via WhatsApp ou no local." },
@@ -63,7 +63,7 @@ export default function Index() {
       {/* ===== HERO ===== */}
       <section className="relative overflow-hidden bg-foreground">
         <div className="absolute inset-0">
-          <img src={heroBg} alt="" className="h-full w-full object-cover" width={1920} height={1080} />
+          <img src={settings.hero_image || heroBgFallback} alt="" className="h-full w-full object-cover" width={1920} height={1080} />
         </div>
         <div className="absolute inset-0 bg-black/60" />
         <div className="container relative py-24 md:py-32 lg:py-40">

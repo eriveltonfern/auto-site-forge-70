@@ -17,6 +17,7 @@ export default function AdminSettings() {
     company_name: "", phone: "", whatsapp: "", whatsapp_message: "",
     address: "", business_hours: "", email: "",
     logo_url: "", favicon_url: "", global_scripts: "",
+    hero_image: "",
   });
 
   useEffect(() => {
@@ -29,12 +30,13 @@ export default function AdminSettings() {
           address: data.address || "", business_hours: data.business_hours || "",
           email: data.email || "", logo_url: data.logo_url || "",
           favicon_url: data.favicon_url || "", global_scripts: data.global_scripts || "",
+          hero_image: data.hero_image || "",
         });
       }
     });
   }, []);
 
-  const handleFileUpload = async (file: File, field: "logo_url" | "favicon_url") => {
+  const handleFileUpload = async (file: File, field: "logo_url" | "favicon_url" | "hero_image") => {
     const compressed = await compressImageToWebP(file);
     const path = `${field.replace("_url", "")}-${Date.now()}.webp`;
     const { error } = await supabase.storage.from("uploads").upload(path, compressed, { contentType: "image/webp" });
@@ -85,6 +87,12 @@ export default function AdminSettings() {
               <Label>Favicon</Label>
               <Input type="file" accept="image/*" onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], "favicon_url")} className="mt-1" />
               {form.favicon_url && <img src={form.favicon_url} alt="Favicon" className="mt-2 h-8 object-contain" />}
+            </div>
+            <div className="sm:col-span-2">
+              <Label>Imagem Hero (Banner Principal)</Label>
+              <p className="text-xs text-muted-foreground mb-1">Recomendado: 1920×1080px. Usada como fundo da seção principal do site.</p>
+              <Input type="file" accept="image/*" onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], "hero_image")} className="mt-1" />
+              {form.hero_image && <img src={form.hero_image} alt="Hero" className="mt-2 h-32 w-full object-cover rounded-lg" />}
             </div>
           </div>
         </div>

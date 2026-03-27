@@ -6,7 +6,7 @@ import { useSiteSettings, getWhatsAppUrl } from "@/hooks/useSiteData";
 import { MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import heroBg from "@/assets/hero-bg-2.png";
+import heroBgFallback from "@/assets/hero-bg-2.png";
 
 export default function SobrePage() {
   const { data: settings } = useSiteSettings();
@@ -24,7 +24,7 @@ export default function SobrePage() {
       {/* Hero with uploaded image */}
       <section className="relative overflow-hidden bg-foreground">
         <div className="absolute inset-0">
-          <img src={heroBg} alt="" className="h-full w-full object-cover" width={1920} height={1080} />
+          <img src={settings.hero_image || heroBgFallback} alt="" className="h-full w-full object-cover" width={1920} height={1080} />
         </div>
         <div className="absolute inset-0 bg-black/60" />
         <div className="container relative py-20 md:py-28">

@@ -21,6 +21,7 @@ const DEFAULT_SETTINGS: DbSettings = {
   logo_url: null,
   favicon_url: null,
   global_scripts: null,
+  hero_image: null,
   created_at: "",
   updated_at: "",
 };
