@@ -64,9 +64,8 @@ const App = () => (
               <Route path="configuracoes" element={<AdminSettings />} />
             </Route>
 
-            {/* Dynamic city/neighborhood routes (must be after /admin) */}
-            <Route path="/:citySlug" element={<CityPage />} />
-            <Route path="/:citySlug/:neighborhoodSlug" element={<NeighborhoodPage />} />
+            {/* Dynamic neighborhood routes (must be after /admin) */}
+            <Route path="/:neighborhoodSlug" element={<NeighborhoodPage />} />
 
             <Route path="*" element={<NotFound />} />
           </Routes>

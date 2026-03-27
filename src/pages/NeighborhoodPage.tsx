@@ -1,364 +1,383 @@
 import { useParams, Link } from "react-router-dom";
+import { Phone, MessageCircle, CheckCircle, Shield, Clock, Star, ChevronDown, Wrench, Award, Zap, CreditCard, MapPin, HelpCircle } from "lucide-react";
+import { motion } from "framer-motion";
 import { SEOHead, getFAQSchema } from "@/components/SEOHead";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { FloatingCTA } from "@/components/FloatingCTA";
-import { OptimizedImage } from "@/components/OptimizedImage";
-import { useNeighborhoodBySlug, useNeighborhoodsByCity, useServices, useSiteSettings, getWhatsAppUrl, getPhoneUrl, generateNeighborhoodContent } from "@/hooks/useSiteData";
 import { ServiceCard } from "@/components/ServiceCard";
 import { Button } from "@/components/ui/button";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { MessageCircle, Phone, Clock, CheckCircle, Shield, DollarSign, Wrench, Lightbulb, Star, MapPin } from "lucide-react";
+import { useServices, useSiteSettings, getWhatsAppUrl, getPhoneUrl } from "@/hooks/useSiteData";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useState } from "react";
 import NotFound from "./NotFound";
 
-function generateNeighborhoodFaqs(name: string, cityName: string) {
+const otherServices = [
+  "Limpeza de caixa de gordura",
+  "Inspeção de tubulação com câmera",
+  "Localização de obstruções invisíveis",
+  "Desentupimento de coluna de prédio",
+  "Manutenção preventiva de encanamentos",
+  "Desentupimento industrial com alta pressão",
+  "Solução para retorno de esgoto em calhas e quintais",
+  "Controle de odores em redes de esgoto",
+];
+
+const advantages = [
+  { icon: Zap, title: "Atendimento Imediato", desc: "Chegamos rápido em todo a região com técnicos preparados para resolver na hora." },
+  { icon: Shield, title: "Segurança e profissionalismo", desc: "Nossa equipe é treinada para executar o serviço com total atenção e segurança." },
+  { icon: CheckCircle, title: "Sem Quebra de Piso", desc: "Usamos tecnologia que desentope sem necessidade de quebrar azulejos ou pisos." },
+  { icon: Award, title: "Garantia no serviço", desc: "Serviços com garantia e suporte caso ocorra qualquer imprevisto." },
+  { icon: CreditCard, title: "Pagamento facilitado", desc: "Aceitamos Pix, cartões de crédito e débito para sua maior comodidade." },
+];
+
+const testimonials = [
+  { name: "Patrícia Gomes", text: "Meu vaso entupiu no fim de semana e fui atendida em menos de 40 minutos. Serviço limpo, rápido e com preço justo!" },
+  { name: "Rodrigo Silva", text: "Chamei para desentupir o esgoto da casa da minha mãe. Atendimento excelente, técnico educado e resolveu na hora." },
+  { name: "Camila Duarte", text: "A pia da cozinha estava transbordando. Vieram no mesmo dia e deixaram tudo funcionando. Recomendo muito a empresa!" },
+];
+
+function generateFaqs(name: string) {
   return [
-    { question: `Vocês atendem o Setor ${name}?`, answer: `Sim! Temos equipes disponíveis para atendimento imediato no Setor ${name}, ${cityName}.` },
-    { question: `Quanto tempo para chegar no Setor ${name}?`, answer: `Em média, nossa equipe chega em 20 a 40 minutos no Setor ${name}, dependendo do horário e condições de trânsito.` },
-    { question: `Qual o preço do desentupimento no Setor ${name}?`, answer: `O valor varia conforme o serviço. Fazemos orçamento gratuito e sem compromisso pelo WhatsApp.` },
-    { question: `Vocês trabalham aos finais de semana no Setor ${name}?`, answer: `Sim! Nosso atendimento no Setor ${name} funciona 24 horas, 7 dias por semana, incluindo feriados.` },
-    { question: `Quais formas de pagamento são aceitas no Setor ${name}?`, answer: `Aceitamos dinheiro, PIX, cartão de débito e crédito. Parcelamos em até 12x no cartão.` },
-    { question: `A desentupidora no Setor ${name} oferece garantia?`, answer: `Sim! Todos os nossos serviços possuem garantia por escrito. A garantia varia conforme o tipo de serviço realizado.` },
-    { question: `Preciso estar presente durante o serviço no Setor ${name}?`, answer: `Idealmente sim, mas caso não possa, basta que alguém autorizado libere o acesso ao local.` },
-    { question: `Vocês fazem orçamento gratuito no Setor ${name}?`, answer: `Sim! O orçamento é totalmente gratuito e sem compromisso. Basta entrar em contato pelo WhatsApp ou telefone.` },
+    { question: `Quanto custa um serviço de desentupimento no ${name}?`, answer: `O valor do serviço de desentupimento no ${name} varia entre R$120,00 à R$980,00. Trabalhamos com orçamento sem compromisso via WhatsApp ou no local.` },
+    { question: `O desentupimento perto de mim é mais barato?`, answer: `Sim! Quando o nosso equipamento está próximo da sua localização no ${name}, o custo tende a ser mais baixo, já que a taxa de deslocamento é menor.` },
+    { question: `Fazem desentupimento de pia de cozinha?`, answer: `Sim! Atendemos pias de cozinha e banheiro com remoção de gordura e sujeira acumulada, sem quebrar nada.` },
+    { question: `A desentupidora atende à noite?`, answer: `Sim, somos uma desentupidora 24 horas, com equipe disponível inclusive de madrugada, fins de semana e feriados.` },
+    { question: `Vocês atendem casas e apartamentos?`, answer: `Atendemos residências, condomínios, comércios e empresas com equipamentos adequados para cada ambiente.` },
+    { question: `Quais formas de pagamento vocês aceitam?`, answer: `Trabalhamos com diversas formas de pagamento: dinheiro, Pix, cartões de crédito e débito, além de transferências bancárias.` },
+    { question: `O serviço suja muito o local?`, answer: `Não! Utilizamos métodos modernos e protegemos o ambiente para evitar sujeira durante e após o serviço.` },
+    { question: `Fazem limpeza de fossa séptica?`, answer: `Sim, contamos com caminhão apropriado para limpeza e esgotamento de fossas residenciais e comerciais.` },
   ];
+}
+
+const fadeUp = {
+  initial: { opacity: 0, y: 24 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true },
+};
+
+function CtaBanner({ settings, name, variant = 1 }: { settings: any; name: string; variant?: number }) {
+  return (
+    <section className="hero-bg py-14 md:py-16">
+      <div className="container">
+        <div className="flex flex-col items-center gap-6 text-center text-primary-foreground md:flex-row md:text-left">
+          <div className="hidden md:block shrink-0">
+            <img src="https://desentupidoras.goiania.br/wp-content/uploads/2025/07/desentupidor-300x300.png" alt="Desentupidor" className="h-28 w-28 object-contain" loading="lazy" />
+          </div>
+          <div className="flex-1">
+            <h2 className="mb-2 text-2xl font-black md:text-3xl">Empresa de Desentupimento Perto de Mim</h2>
+            <p className="text-lg opacity-90">Problemas com entupimento, vazamento ou retorno de esgoto? Desentupidora 24h resolve!</p>
+            <p className="opacity-80">
+              {variant === 1
+                ? `Atendimento rápido no ${name} com equipe especializada e total segurança.`
+                : `Serviço rápido no ${name} com equipe especializada e total segurança.`}
+            </p>
+          </div>
+          <Button variant="whatsapp" size="lg" asChild className="px-8 py-6 text-lg rounded-full shrink-0">
+            <a href={getWhatsAppUrl(settings)} target="_blank" rel="noopener noreferrer">
+              <MessageCircle className="h-5 w-5" /> Chamar Agora!
+            </a>
+          </Button>
+        </div>
+      </div>
+    </section>
+  );
 }
 
 export default function NeighborhoodPage() {
   const { neighborhoodSlug } = useParams();
-  const { data: result, isLoading } = useNeighborhoodBySlug(neighborhoodSlug || "");
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+  const { data: neighborhood, isLoading } = useQuery({
+    queryKey: ["neighborhood_direct", neighborhoodSlug],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("neighborhoods")
+        .select("*, cities(*)")
+        .eq("slug", neighborhoodSlug!)
+        .eq("status", "published")
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!neighborhoodSlug,
+  });
+
   const { data: services } = useServices();
   const { data: settings } = useSiteSettings();
 
-  const neighborhood = result;
-  const city = result?.cities;
-  const cityId = city?.id;
-
-  const { data: otherNeighborhoods } = useNeighborhoodsByCity(cityId);
+  const { data: allNeighborhoods } = useQuery({
+    queryKey: ["all_neighborhoods_published"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("neighborhoods")
+        .select("name, slug")
+        .eq("status", "published")
+        .order("name");
+      if (error) throw error;
+      return data;
+    },
+  });
 
   if (isLoading || !settings) return null;
-  if (!result || !city) return <NotFound />;
+  if (!neighborhood) return <NotFound />;
 
-  const seo = {
-    title: neighborhood.seo_title || generateNeighborhoodContent(neighborhood.name, city.name).title,
-    metaDescription: neighborhood.meta_description || generateNeighborhoodContent(neighborhood.name, city.name).metaDescription,
-    h1: neighborhood.h1 || `Desentupidora no Setor ${neighborhood.name} em ${city.name}`,
-    intro: neighborhood.base_content || generateNeighborhoodContent(neighborhood.name, city.name).intro,
-  };
-
-  const coverImage = (neighborhood as any).cover_image;
-  const faqs = generateNeighborhoodFaqs(neighborhood.name, city.name);
-  const whatsappUrl = getWhatsAppUrl(settings, `Olá! Preciso de desentupimento no Setor ${neighborhood.name}, ${city.name}.`);
-  const siblings = otherNeighborhoods?.filter((n) => n.id !== neighborhood.id) || [];
+  const city = (neighborhood as any).cities;
+  const displayName = neighborhood.name;
+  const seoName = `Setor ${displayName}`;
+  const seoTitle = neighborhood.seo_title || `Precisando de Desentupidora 24h no ${seoName}?`;
+  const seoDesc = neighborhood.meta_description || `Desentupidora no ${seoName} em Goiânia-GO. Atendimento rápido 24h. Desentupimento de pia, vaso, esgoto e mais. Orçamento grátis pelo WhatsApp.`;
+  const faqs = generateFaqs(seoName);
+  const whatsappUrl = getWhatsAppUrl(settings, `Olá! Preciso de desentupimento no ${seoName}, Goiânia.`);
+  const siblings = allNeighborhoods?.filter((n) => n.slug !== neighborhood.slug) || [];
 
   return (
     <>
       <SEOHead
-        title={seo.title}
-        description={seo.metaDescription}
-        canonical={`https://desentupidoras.goiania.br/${city.slug}/${neighborhood.slug}`}
+        title={seoTitle}
+        description={seoDesc}
+        canonical={`https://desentupidoras.goiania.br/${neighborhood.slug}`}
         structuredData={getFAQSchema(faqs)}
       />
       <Header />
       <FloatingCTA />
 
-      {/* Hero */}
-      <section className="relative hero-bg py-16 md:py-20">
-        {coverImage && (
-          <div className="absolute inset-0">
-            <OptimizedImage src={coverImage} alt={`Setor ${neighborhood.name}`} className="h-full w-full object-cover opacity-20" priority />
-          </div>
-        )}
-        <div className="container relative text-primary-foreground">
-          <nav className="mb-4 text-sm opacity-70">
-            <Link to="/" className="hover:underline">Início</Link> {" > "}
-            <Link to={`/${city.slug}`} className="hover:underline">{city.name}</Link> {" > "}
-            <span>Setor {neighborhood.name}</span>
-          </nav>
-          <h1 className="text-3xl font-black md:text-5xl">{seo.h1}</h1>
-          <p className="mt-3 max-w-2xl text-lg opacity-90">{seo.intro.slice(0, 160)}...</p>
-          <div className="mt-3 flex items-center gap-2 text-sm opacity-90">
-            <Clock className="h-4 w-4" /> Tempo estimado de chegada: 20 a 40 minutos
-          </div>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Button variant="hero" size="lg" asChild>
-              <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-                <MessageCircle className="h-5 w-5" /> Solicitar Orçamento Grátis
-              </a>
-            </Button>
-            <Button variant="hero-phone" size="lg" asChild>
-              <a href={getPhoneUrl(settings)}>
-                <Phone className="h-5 w-5" /> Ligar Agora
-              </a>
-            </Button>
+      {/* ===== HERO ===== */}
+      <section className="relative overflow-hidden bg-foreground">
+        <div className="absolute inset-0 bg-[url('https://desentupidoras.goiania.br/wp-content/uploads/2025/07/fundo-desentupidora-1-scaled.jpg')] bg-cover bg-center" />
+        <div className="absolute inset-0 bg-black/60" />
+        <div className="container relative py-24 md:py-32 lg:py-40">
+          <div className="mx-auto max-w-3xl text-center text-white">
+            <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
+              className="mb-5 text-3xl font-black leading-tight md:text-5xl lg:text-6xl">
+              Precisando de Desentupidora 24h no {seoName}?
+            </motion.h1>
+            <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}
+              className="mx-auto mb-4 max-w-2xl text-lg opacity-90 md:text-xl">
+              Problemas com esgoto ou entupimento?
+            </motion.p>
+            <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.15 }}
+              className="mx-auto mb-8 max-w-2xl text-lg opacity-90 md:text-xl">
+              Solicite desentupimento urgente no {seoName} com atendimento imediato.
+            </motion.p>
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}
+              className="flex justify-center">
+              <Button variant="whatsapp" size="lg" asChild className="px-10 py-6 text-lg rounded-full">
+                <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+                  <MessageCircle className="h-5 w-5" /> Chame Agora!
+                </a>
+              </Button>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Main content */}
-      <div className="container py-12">
-        <div className="grid gap-10 lg:grid-cols-3">
-          <div className="lg:col-span-2 space-y-12">
-
-            {/* H2: Intro */}
-            <section>
-              <h2 className="mb-4 flex items-center gap-2 text-2xl font-bold text-foreground">
-                <Wrench className="h-6 w-6 text-accent" /> Desentupidora no Setor {neighborhood.name} em {city.name}
-              </h2>
-              {coverImage && (
-                <OptimizedImage src={coverImage} alt={`Desentupidora no Setor ${neighborhood.name}`} className="mb-4 w-full rounded-xl object-cover max-h-80" sizes="(max-width: 1024px) 100vw, 66vw" />
-              )}
-              <p className="text-muted-foreground leading-relaxed">{seo.intro}</p>
-            </section>
-
-            {/* H2: Como contratar */}
-            <section>
-              <h2 className="mb-4 flex items-center gap-2 text-2xl font-bold text-foreground">
-                <Phone className="h-6 w-6 text-accent" /> Como contratar uma desentupidora no Setor {neighborhood.name} em {city.name}
-              </h2>
-              <p className="text-muted-foreground leading-relaxed mb-4">
-                Contratar uma desentupidora no Setor {neighborhood.name} é simples e rápido. Basta entrar em contato pelo nosso WhatsApp ou telefone, informar o tipo de problema e sua localização. Em poucos minutos, enviaremos um profissional qualificado até o local para realizar uma avaliação e apresentar o orçamento — sem compromisso.
-              </p>
-              <div className="grid gap-4 sm:grid-cols-3">
-                {[
-                  { step: "1", title: "Entre em Contato", desc: "Fale conosco pelo WhatsApp ou telefone" },
-                  { step: "2", title: "Receba o Orçamento", desc: "Avaliação gratuita e sem compromisso" },
-                  { step: "3", title: "Problema Resolvido", desc: "Equipe técnica resolve rapidamente" },
-                ].map((s) => (
-                  <div key={s.step} className="rounded-xl border bg-card p-5 text-center shadow-sm">
-                    <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-accent text-accent-foreground font-bold">{s.step}</div>
-                    <h3 className="font-display text-sm font-bold text-foreground">{s.title}</h3>
-                    <p className="mt-1 text-xs text-muted-foreground">{s.desc}</p>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            {/* H2: Precisando */}
-            <section className="rounded-xl border-2 border-accent/30 bg-accent/5 p-6 md:p-8">
-              <h2 className="mb-3 text-2xl font-bold text-foreground">
-                Precisando de desentupidora no Setor {neighborhood.name}?
-              </h2>
-              <p className="text-muted-foreground leading-relaxed mb-4">
-                Sabemos que um entupimento pode causar grandes transtornos no dia a dia. Por isso, nosso atendimento no Setor {neighborhood.name} é ágil e eficiente. Não espere o problema se agravar — quanto antes você nos acionar, mais rápido e econômico será o serviço. Estamos disponíveis 24 horas, prontos para resolver qualquer emergência.
-              </p>
-              <Button variant="cta" size="lg" asChild>
-                <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-                  <MessageCircle className="h-5 w-5" /> Fale Agora no WhatsApp
-                </a>
-              </Button>
-            </section>
-
-            {/* H2: Forma mais econômica */}
-            <section>
-              <h2 className="mb-4 flex items-center gap-2 text-2xl font-bold text-foreground">
-                <DollarSign className="h-6 w-6 text-accent" /> Qual a forma mais econômica de contratar uma desentupidora no Setor {neighborhood.name}?
+      {/* ===== SERVIÇOS ===== */}
+      {services && services.length > 0 && (
+        <section className="py-16 md:py-20">
+          <div className="container">
+            <motion.div {...fadeUp} className="mx-auto mb-4 max-w-3xl text-center">
+              <h2 className="mb-4 text-2xl font-black text-foreground md:text-4xl">
+                Empresa de Desentupimento Perto de Mim no {seoName}
               </h2>
               <p className="text-muted-foreground leading-relaxed">
-                A forma mais econômica é agir rapidamente ao primeiro sinal de entupimento. Quanto mais cedo o problema for identificado, menor será a complexidade e o custo do serviço. Oferecemos orçamento gratuito e transparente, sem taxas ocultas. Compare sempre os valores e priorize empresas com garantia — como a nossa.
+                Quando você busca por "<strong className="text-foreground">desentupimento perto de mim</strong>" ou "<strong className="text-foreground">desentupidora 24h</strong>" no {seoName} em Goiânia-GO, nós entregamos um atendimento completo, com equipe experiente, atendimento rápido e recursos prontos para qualquer situação.
               </p>
-            </section>
-
-            {/* H2: Garantia */}
-            <section>
-              <h2 className="mb-4 flex items-center gap-2 text-2xl font-bold text-foreground">
-                <Shield className="h-6 w-6 text-accent" /> Desentupidora com garantia no Setor {neighborhood.name}
-              </h2>
-              <p className="text-muted-foreground leading-relaxed">
-                Todos os nossos serviços de desentupimento no Setor {neighborhood.name} contam com garantia por escrito. Utilizamos equipamentos modernos e técnicas avançadas que asseguram a qualidade e durabilidade do serviço. Caso o problema retorne dentro do período de garantia, refazemos o serviço sem custo adicional.
-              </p>
-            </section>
-
-            {/* H2: Desentupimento no Setor */}
-            <section>
-              <h2 className="mb-4 flex items-center gap-2 text-2xl font-bold text-foreground">
-                <Star className="h-6 w-6 text-accent" /> Desentupimento no Setor {neighborhood.name} em {city.name}
-              </h2>
-              <p className="text-muted-foreground leading-relaxed">
-                Realizamos todos os tipos de desentupimento no Setor {neighborhood.name}: pias, vasos sanitários, ralos, caixas de gordura, esgoto, tubulações industriais e muito mais. Nossos profissionais são treinados para lidar com qualquer nível de complexidade, utilizando hidrojateamento, sondas elétricas e equipamentos de última geração.
-              </p>
-            </section>
-
-            {/* H2: Como é cobrado */}
-            <section>
-              <h2 className="mb-4 flex items-center gap-2 text-2xl font-bold text-foreground">
-                <DollarSign className="h-6 w-6 text-accent" /> Como é cobrado o desentupimento de cano no Setor {neighborhood.name}?
-              </h2>
-              <p className="text-muted-foreground leading-relaxed">
-                O valor do desentupimento no Setor {neighborhood.name} varia de acordo com o tipo de serviço, a complexidade do entupimento, o diâmetro da tubulação e a acessibilidade do local. Trabalhamos com preço justo e transparente, sem cobranças surpresa. Após a avaliação no local, informamos o valor exato antes de iniciar qualquer serviço — e o orçamento é gratuito.
-              </p>
-            </section>
-
-            {/* H2: Serviços */}
-            {services && services.length > 0 && (
-              <section>
-                <h2 className="mb-6 flex items-center gap-2 text-2xl font-bold text-foreground">
-                  <Wrench className="h-6 w-6 text-accent" /> Quais são os serviços de desentupimento realizados no Setor {neighborhood.name}?
-                </h2>
-                <div className="grid gap-5 sm:grid-cols-2">
-                  {services.map((s) => (
-                    <ServiceCard key={s.slug} service={s} whatsappUrl={whatsappUrl} />
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {/* H2: Desentupidor caseiro */}
-            <section className="rounded-xl border bg-card p-6 md:p-8 shadow-sm">
-              <h2 className="mb-4 flex items-center gap-2 text-2xl font-bold text-foreground">
-                <Lightbulb className="h-6 w-6 text-accent" /> Você que mora no Setor {neighborhood.name}, aprenda a fazer um desentupidor caseiro
-              </h2>
-              <p className="text-muted-foreground leading-relaxed mb-4">
-                Para entupimentos leves, você pode tentar algumas soluções caseiras antes de chamar um profissional. Lembre-se: essas dicas funcionam apenas para obstruções simples. Para casos mais graves, sempre conte com uma desentupidora profissional.
-              </p>
-              <div className="space-y-3">
-                {[
-                  { title: "Água fervente", desc: "Despeje água fervente diretamente no ralo. Funciona bem para dissolver gordura acumulada." },
-                  { title: "Bicarbonato + vinagre", desc: "Coloque 4 colheres de bicarbonato no ralo, adicione 1/2 copo de vinagre e aguarde 30 minutos. Depois enxágue com água quente." },
-                  { title: "Detergente + água quente", desc: "Despeje detergente no vaso sanitário, aguarde 15 minutos e jogue água quente (não fervente) para desobstruir." },
-                ].map((tip, i) => (
-                  <div key={i} className="flex gap-3 rounded-lg bg-muted/50 p-4">
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground text-xs font-bold">{i + 1}</span>
-                    <div>
-                      <h3 className="font-display text-sm font-bold text-foreground">{tip.title}</h3>
-                      <p className="text-xs text-muted-foreground">{tip.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <p className="mt-4 text-sm text-muted-foreground italic">
-                ⚠️ Se o problema persistir, não insista com métodos caseiros. Entre em contato conosco para um serviço profissional e seguro.
-              </p>
-            </section>
-
-            {/* H2: Preço */}
-            <section>
-              <h2 className="mb-4 flex items-center gap-2 text-2xl font-bold text-foreground">
-                <DollarSign className="h-6 w-6 text-accent" /> Qual o preço para desentupir no Setor {neighborhood.name}?
-              </h2>
-              <p className="text-muted-foreground leading-relaxed mb-4">
-                Os preços para desentupimento no Setor {neighborhood.name} variam conforme o tipo de serviço. Abaixo uma estimativa geral para referência:
-              </p>
-              <div className="overflow-hidden rounded-xl border">
-                <table className="w-full text-sm">
-                  <thead className="bg-muted/50">
-                    <tr>
-                      <th className="px-4 py-3 text-left font-semibold text-foreground">Serviço</th>
-                      <th className="px-4 py-3 text-left font-semibold text-foreground">Faixa de Preço</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {[
-                      ["Desentupimento de pia", "R$ 150 - R$ 350"],
-                      ["Desentupimento de vaso sanitário", "R$ 150 - R$ 400"],
-                      ["Desentupimento de ralo", "R$ 120 - R$ 300"],
-                      ["Desentupimento de esgoto", "R$ 250 - R$ 800"],
-                      ["Desentupimento de caixa de gordura", "R$ 200 - R$ 500"],
-                      ["Hidrojateamento", "R$ 400 - R$ 1.500"],
-                    ].map(([service, price], i) => (
-                      <tr key={i} className="border-t hover:bg-muted/30">
-                        <td className="px-4 py-3 text-foreground">{service}</td>
-                        <td className="px-4 py-3 font-semibold text-accent">{price}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <p className="mt-3 text-xs text-muted-foreground">* Valores aproximados. O preço final é definido após avaliação no local. Orçamento gratuito.</p>
-            </section>
-
-            {/* H2: Setores atendidos */}
-            {siblings.length > 0 && (
-              <section>
-                <h2 className="mb-4 flex items-center gap-2 text-2xl font-bold text-foreground">
-                  <MapPin className="h-6 w-6 text-accent" /> Setores atendidos em {city.name}
-                </h2>
-                <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                  {siblings.map((n) => (
-                    <Link key={n.slug} to={`/${city.slug}/${n.slug}`}
-                      className="flex items-center gap-2 rounded-lg border bg-card p-3 transition-all hover:shadow-sm hover:border-accent">
-                      <MapPin className="h-4 w-4 shrink-0 text-accent" />
-                      <span className="text-sm font-medium text-foreground">{n.name}</span>
-                    </Link>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {/* H2: FAQ */}
-            <section>
-              <h2 className="mb-6 flex items-center gap-2 text-2xl font-bold text-foreground">
-                Perguntas Frequentes — Desentupidora no Setor {neighborhood.name}
-              </h2>
-              <Accordion type="single" collapsible className="w-full">
-                {faqs.map((faq, i) => (
-                  <AccordionItem key={i} value={`faq-${i}`}>
-                    <AccordionTrigger className="text-left font-display text-sm font-bold text-foreground">
-                      {faq.question}
-                    </AccordionTrigger>
-                    <AccordionContent className="text-muted-foreground">
-                      {faq.answer}
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            </section>
-
-            <div>
-              <Link to={`/${city.slug}`} className="text-sm font-medium text-accent hover:underline">
-                ← Ver todos os setores de {city.name}
-              </Link>
+            </motion.div>
+            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {services.map((s, i) => (
+                <motion.div key={s.slug} {...fadeUp} transition={{ delay: i * 0.05 }}>
+                  <ServiceCard service={s} whatsappUrl={getWhatsAppUrl(settings, `Olá! Preciso de ${s.name.toLowerCase()} no ${seoName}. Podem me ajudar?`)} />
+                </motion.div>
+              ))}
             </div>
           </div>
+        </section>
+      )}
 
-          {/* Sidebar */}
-          <aside>
-            <div className="sticky top-28 space-y-6">
-              <div className="rounded-xl border bg-card p-6 shadow-sm text-center">
-                <h3 className="mb-2 font-display text-lg font-bold text-foreground">Atendimento no Setor {neighborhood.name}</h3>
-                <div className="mb-4 flex items-center justify-center gap-2 text-sm text-accent">
-                  <Clock className="h-4 w-4" /> Chegada em 20-40 min
-                </div>
-                <div className="flex flex-col gap-3">
-                  <Button variant="whatsapp" size="lg" asChild className="w-full">
-                    <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-                      <MessageCircle className="h-5 w-5" /> WhatsApp
-                    </a>
-                  </Button>
-                  <Button variant="phone" size="lg" asChild className="w-full">
-                    <a href={getPhoneUrl(settings)}>
-                      <Phone className="h-5 w-5" /> Ligar Agora
-                    </a>
-                  </Button>
-                </div>
-                <div className="mt-4 space-y-2 text-left text-xs text-muted-foreground">
-                  {["Orçamento grátis", "Sem taxa de visita", "Atendimento 24h", "Garantia no serviço"].map((d, i) => (
-                    <div key={i} className="flex items-center gap-1.5">
-                      <CheckCircle className="h-3.5 w-3.5 text-accent" /> {d}
-                    </div>
-                  ))}
-                </div>
-              </div>
+      {/* ===== OUTROS SERVIÇOS ===== */}
+      <section className="section-alt py-16 md:py-20">
+        <div className="container">
+          <div className="grid items-center gap-10 lg:grid-cols-2">
+            <motion.div {...fadeUp}>
+              <h2 className="mb-4 text-2xl font-black text-foreground md:text-3xl">
+                Outros serviços da Desentupidora em Goiânia
+              </h2>
+              <p className="mb-6 text-muted-foreground leading-relaxed">
+                Além dos desentupimentos tradicionais, a <strong className="text-foreground">{settings.company_name}</strong> realiza serviços especializados com agilidade e segurança, como:
+              </p>
+              <ul className="space-y-3">
+                {otherServices.map((s, i) => (
+                  <li key={i} className="flex items-center gap-3 text-muted-foreground">
+                    <CheckCircle className="h-5 w-5 shrink-0 text-accent" />
+                    {s}
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-6 text-muted-foreground leading-relaxed">
+                Todos os atendimentos são feitos com <strong className="text-foreground">equipamentos modernos</strong>, por <strong className="text-foreground">técnicos especializados</strong>, oferecendo <strong className="text-foreground">diagnóstico preciso</strong> e solução eficaz no menor tempo possível.
+              </p>
+            </motion.div>
+            <motion.div {...fadeUp} transition={{ delay: 0.15 }} className="flex justify-center">
+              <img src="https://desentupidoras.goiania.br/wp-content/uploads/2025/07/desentupidor-1.png" alt="Desentupidor profissional" className="max-h-96 w-auto object-contain" loading="lazy" />
+            </motion.div>
+          </div>
+        </div>
+      </section>
 
+      {/* ===== CTA BANNER 1 ===== */}
+      <CtaBanner settings={settings} name={seoName} variant={1} />
+
+      {/* ===== VANTAGENS ===== */}
+      <section className="py-16 md:py-20">
+        <div className="container">
+          <motion.div {...fadeUp} className="mx-auto mb-12 max-w-2xl text-center">
+            <h2 className="mb-3 text-2xl font-black text-foreground md:text-4xl">
+              Vantagens de contratar serviço de desentupimento próximo a mim
+            </h2>
+          </motion.div>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {advantages.map((a, i) => (
+              <motion.div key={i} {...fadeUp} transition={{ delay: i * 0.1 }}
+                className="group rounded-xl border bg-card p-6 shadow-sm transition-all hover:shadow-lg hover:border-accent/50 hover:-translate-y-1">
+                <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-accent/10 transition-colors group-hover:bg-accent/20">
+                  <a.icon className="h-7 w-7 text-accent" />
+                </div>
+                <h3 className="mb-2 font-display text-lg font-bold text-foreground">{a.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{a.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== POR QUE ESCOLHER ===== */}
+      <section className="section-alt py-16 md:py-20">
+        <div className="container">
+          <motion.div {...fadeUp} className="mx-auto max-w-3xl text-center">
+            <h2 className="mb-4 text-2xl font-black text-foreground md:text-4xl">
+              Por que escolher o Desentupidora 24 horas no {seoName}?
+            </h2>
+            <p className="mb-4 text-muted-foreground leading-relaxed">
+              Precisando de uma <strong className="text-foreground">empresa desentupidora com preço justo e serviço rápido</strong>? Atendemos no {seoName} com soluções eficientes, sem quebra e com garantia.
+            </p>
+            <p className="mb-4 text-foreground font-bold">
+              Elimine entupimentos com a desentupidora mais próxima de você!
+            </p>
+            <p className="mb-4 text-muted-foreground leading-relaxed">
+              Somos especialistas em desentupimento de esgoto, pia, vaso sanitário, ralo e fossa. Atendemos residências, comércios e indústrias com equipamentos modernos.
+            </p>
+            <p className="text-muted-foreground leading-relaxed">
+              A <strong className="text-foreground">{settings.company_name}</strong> está sempre por perto, pronta para agir com agilidade, segurança e profissionais capacitados. Atendimento imediato no WhatsApp!
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ===== CTA BANNER 2 ===== */}
+      <CtaBanner settings={settings} name={seoName} variant={2} />
+
+      {/* ===== FAQ ===== */}
+      <section className="py-16 md:py-20">
+        <div className="container mx-auto max-w-3xl">
+          <motion.div {...fadeUp} className="mb-12 text-center">
+            <h2 className="mb-3 text-2xl font-black text-foreground md:text-4xl">Perguntas frequentes</h2>
+          </motion.div>
+          <div className="space-y-3">
+            {faqs.map((faq, i) => (
+              <motion.div key={i} {...fadeUp} transition={{ delay: i * 0.03 }}
+                className="rounded-xl border bg-card shadow-sm overflow-hidden">
+                <button onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                  className="flex w-full items-center justify-between p-5 text-left font-display font-semibold text-foreground hover:bg-muted/50 transition-colors">
+                  {faq.question}
+                  <ChevronDown className={`h-5 w-5 shrink-0 text-muted-foreground transition-transform duration-200 ${openFaq === i ? "rotate-180" : ""}`} />
+                </button>
+                {openFaq === i && (
+                  <div className="border-t px-5 py-4 text-sm text-muted-foreground leading-relaxed">{faq.answer}</div>
+                )}
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== CTA BANNER 3 ===== */}
+      <CtaBanner settings={settings} name={seoName} variant={1} />
+
+      {/* ===== DEPOIMENTOS ===== */}
+      <section className="py-16 md:py-20">
+        <div className="container">
+          <motion.div {...fadeUp} className="mx-auto mb-12 max-w-2xl text-center">
+            <h2 className="mb-3 text-2xl font-black text-foreground md:text-4xl">Depoimentos de clientes em Goiânia-GO</h2>
+          </motion.div>
+          <div className="grid gap-6 md:grid-cols-3">
+            {testimonials.map((t, i) => (
+              <motion.div key={i} {...fadeUp} transition={{ delay: i * 0.1 }}
+                className="rounded-xl border bg-card p-6 shadow-sm transition-shadow hover:shadow-md">
+                <p className="mb-4 text-sm text-muted-foreground italic leading-relaxed">"{t.text}"</p>
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground font-display font-bold text-sm">
+                    {t.name.charAt(0)}
+                  </div>
+                  <p className="font-display text-sm font-bold text-foreground">{t.name}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== CONTATO ===== */}
+      <section className="section-alt py-16 md:py-20">
+        <div className="container">
+          <motion.div {...fadeUp} className="mx-auto max-w-xl text-center">
+            <h2 className="mb-6 text-2xl font-black text-foreground md:text-4xl">Entre em contato</h2>
+            <div className="grid gap-4 sm:grid-cols-2 mb-6">
               <div className="rounded-xl border bg-card p-6 shadow-sm">
-                <h3 className="mb-3 font-display text-sm font-bold text-foreground">Por que nos escolher?</h3>
-                <div className="space-y-3">
-                  {[
-                    { icon: Clock, text: "Chegamos em até 40 min" },
-                    { icon: Shield, text: "Garantia por escrito" },
-                    { icon: DollarSign, text: "Orçamento gratuito" },
-                    { icon: Star, text: "Profissionais experientes" },
-                  ].map(({ icon: Icon, text }, i) => (
-                    <div key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Icon className="h-4 w-4 text-accent" /> {text}
-                    </div>
-                  ))}
-                </div>
+                <p className="text-sm text-muted-foreground mb-2">Telefone</p>
+                <a href={getPhoneUrl(settings)} className="font-display text-lg font-bold text-accent hover:underline">
+                  {settings.phone}
+                </a>
+              </div>
+              <div className="rounded-xl border bg-card p-6 shadow-sm">
+                <p className="text-sm text-muted-foreground mb-2">WhatsApp</p>
+                <a href={getWhatsAppUrl(settings)} target="_blank" rel="noopener noreferrer" className="font-display text-lg font-bold text-accent hover:underline">
+                  {settings.phone}
+                </a>
               </div>
             </div>
-          </aside>
+            <Button variant="whatsapp" size="lg" asChild className="px-8 py-6 text-lg rounded-full">
+              <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+                <MessageCircle className="h-5 w-5" /> Chamar Agora!
+              </a>
+            </Button>
+          </motion.div>
         </div>
-      </div>
+      </section>
+
+      {/* ===== BAIRROS ATENDIDOS ===== */}
+      {siblings.length > 0 && (
+        <section className="py-16 md:py-20">
+          <div className="container">
+            <motion.div {...fadeUp} className="mx-auto mb-8 max-w-3xl text-center">
+              <h2 className="mb-3 text-2xl font-black text-foreground md:text-4xl">
+                Atendemos no {seoName} e Toda a Região em Goiânia
+              </h2>
+              <p className="text-muted-foreground">
+                Está buscando por "<strong className="text-foreground">desentupidora próxima de mim</strong>" no {seoName}? Estamos prontos para atender você nos principais bairros da cidade:
+              </p>
+            </motion.div>
+            <motion.div {...fadeUp} className="columns-2 sm:columns-3 lg:columns-4 gap-4">
+              {siblings.map((n) => (
+                <Link key={n.slug} to={`/${n.slug}`} className="mb-2 block text-sm text-accent hover:underline transition-colors">
+                  {n.name}
+                </Link>
+              ))}
+            </motion.div>
+          </div>
+        </section>
+      )}
 
       <Footer />
     </>

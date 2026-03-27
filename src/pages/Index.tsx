@@ -352,7 +352,7 @@ export default function Index() {
               {neighborhoods.map((n: any) => (
                 <Link
                   key={n.slug}
-                  to={`/${n.cities?.slug || "goiania"}/${n.slug}`}
+                  to={`/${n.slug}`}
                   className="mb-2 block text-sm text-accent hover:underline transition-colors"
                 >
                   {n.name}
