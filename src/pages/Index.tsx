@@ -32,7 +32,7 @@ const fadeUp = {
 };
 
 export default function Index() {
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  
   const { data: settings } = useSiteSettings();
   const { data: services } = useServices();
 
