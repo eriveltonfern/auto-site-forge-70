@@ -88,6 +88,12 @@ export default function AdminSettings() {
               <Input type="file" accept="image/*" onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], "favicon_url")} className="mt-1" />
               {form.favicon_url && <img src={form.favicon_url} alt="Favicon" className="mt-2 h-8 object-contain" />}
             </div>
+            <div className="sm:col-span-2">
+              <Label>Imagem Hero (Banner Principal)</Label>
+              <p className="text-xs text-muted-foreground mb-1">Recomendado: 1920×1080px. Usada como fundo da seção principal do site.</p>
+              <Input type="file" accept="image/*" onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], "hero_image")} className="mt-1" />
+              {form.hero_image && <img src={form.hero_image} alt="Hero" className="mt-2 h-32 w-full object-cover rounded-lg" />}
+            </div>
           </div>
         </div>
 
