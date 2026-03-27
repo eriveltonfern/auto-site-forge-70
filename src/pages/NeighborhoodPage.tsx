@@ -152,7 +152,7 @@ export default function NeighborhoodPage() {
       <Vantagens />
       <PorQueEscolher localName={seoName} companyName={settings.company_name || "Desentupidora Goiânia"} />
       <CtaBanner settings={settings} localName={seoName} variant={2} />
-      <FaqSection faqs={faqs} openFaq={openFaq} setOpenFaq={setOpenFaq} />
+      <FaqSection faqs={faqs} />
       <CtaBanner settings={settings} localName={seoName} variant={1} />
       <Depoimentos />
       <ContatoSection settings={settings} whatsappUrl={whatsappUrl} />

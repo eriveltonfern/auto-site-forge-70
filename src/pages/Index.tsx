@@ -120,7 +120,7 @@ export default function Index() {
       <Vantagens />
       <PorQueEscolher localName="" companyName={settings.company_name || "Desentupidora Goiânia"} />
       <CtaBanner settings={settings} localName="" variant={2} />
-      <FaqSection faqs={homeFaq} openFaq={openFaq} setOpenFaq={setOpenFaq} />
+      <FaqSection faqs={homeFaq} />
       <CtaBanner settings={settings} localName="" variant={1} />
       <Depoimentos />
       <ContatoSection settings={settings} />
