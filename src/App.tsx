@@ -8,7 +8,7 @@ import Index from "./pages/Index.tsx";
 import ServicesHub from "./pages/ServicesHub.tsx";
 import AreasPage from "./pages/AreasPage.tsx";
 import ServicePage from "./pages/ServicePage.tsx";
-import NeighborhoodPage from "./pages/NeighborhoodPage.tsx";
+import DynamicSlugPage from "./pages/DynamicSlugPage.tsx";
 import BlogPage from "./pages/BlogPage.tsx";
 import BlogPostPage from "./pages/BlogPostPage.tsx";
 import SobrePage from "./pages/SobrePage.tsx";
