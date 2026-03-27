@@ -63,8 +63,8 @@ const App = () => (
               <Route path="configuracoes" element={<AdminSettings />} />
             </Route>
 
-            {/* Dynamic neighborhood routes (must be after /admin) */}
-            <Route path="/:neighborhoodSlug" element={<NeighborhoodPage />} />
+            {/* Dynamic routes: neighborhood or service+neighborhood */}
+            <Route path="/:slug" element={<DynamicSlugPage />} />
 
             <Route path="*" element={<NotFound />} />
           </Routes>
