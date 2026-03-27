@@ -36,7 +36,7 @@ export default function AdminSettings() {
     });
   }, []);
 
-  const handleFileUpload = async (file: File, field: "logo_url" | "favicon_url") => {
+  const handleFileUpload = async (file: File, field: "logo_url" | "favicon_url" | "hero_image") => {
     const compressed = await compressImageToWebP(file);
     const path = `${field.replace("_url", "")}-${Date.now()}.webp`;
     const { error } = await supabase.storage.from("uploads").upload(path, compressed, { contentType: "image/webp" });
