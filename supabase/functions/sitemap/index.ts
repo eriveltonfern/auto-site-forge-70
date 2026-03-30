@@ -9,14 +9,16 @@ Deno.serve(async () => {
   );
 
   // Fetch all data in parallel
-  const [servicesRes, neighborhoodsRes, blogRes] = await Promise.all([
+  const [servicesRes, neighborhoodsRes, citiesRes, blogRes] = await Promise.all([
     supabase.from("services").select("slug, updated_at").eq("status", "published").order("sort_order"),
     supabase.from("neighborhoods").select("slug, updated_at").eq("status", "published").order("name"),
+    supabase.from("cities").select("slug, updated_at").eq("status", "published").order("name"),
     supabase.from("blog_posts").select("slug, updated_at").eq("status", "published").order("published_at", { ascending: false }),
   ]);
 
   const services = servicesRes.data || [];
   const neighborhoods = neighborhoodsRes.data || [];
+  const cities = citiesRes.data || [];
   const blogPosts = blogRes.data || [];
 
   const today = new Date().toISOString().split("T")[0];
