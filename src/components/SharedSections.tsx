@@ -321,10 +321,10 @@ export function BairrosAtendidos({
       <div className="container">
         <motion.div {...fadeUp} className="mx-auto mb-8 max-w-3xl text-center">
           <h2 className="mb-3 text-2xl font-black text-foreground md:text-4xl">
-            Atendemos {localName ? `no ${localName} e ` : ""}Toda a Região em Goiânia
+            Atendemos {localName ? `${noNa(localName)} e ` : ""}Toda a Região em Goiânia
           </h2>
           <p className="text-muted-foreground">
-            Está buscando por "<strong className="text-foreground">{term}</strong>"{localName ? ` no ${localName}` : " em Goiânia-GO"}? Estamos prontos para atender você nos principais bairros da cidade:
+            Está buscando por "<strong className="text-foreground">{term}</strong>"{localName ? ` ${noNa(localName)}` : " em Goiânia-GO"}? Estamos prontos para atender você nos principais bairros da cidade:
           </p>
         </motion.div>
         <motion.div {...fadeUp} className="columns-2 sm:columns-3 lg:columns-4 gap-x-6">
