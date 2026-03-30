@@ -136,7 +136,7 @@ export default function NeighborhoodPage() {
                 Empresa de Desentupimento Perto de Mim {loc}
               </h2>
               <p className="text-muted-foreground leading-relaxed">
-                Quando você busca por "<strong className="text-foreground">desentupimento perto de mim</strong>" ou "<strong className="text-foreground">desentupidora 24h</strong>" no {seoName} em Goiânia-GO, nós entregamos um atendimento completo, com equipe experiente, atendimento rápido e recursos prontos para qualquer situação.
+                Quando você busca por "<strong className="text-foreground">desentupimento perto de mim</strong>" ou "<strong className="text-foreground">desentupidora 24h</strong>" {loc} em Goiânia-GO, nós entregamos um atendimento completo, com equipe experiente, atendimento rápido e recursos prontos para qualquer situação.
               </p>
             </motion.div>
             <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
