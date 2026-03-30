@@ -17,9 +17,10 @@ import heroBgFallback from "@/assets/hero-bg.jpg";
 import NotFound from "./NotFound";
 
 function generateFaqs(neighborhoodName: string) {
+  const loc = noNa(neighborhoodName);
   return [
-    { question: `Quanto custa um serviço de desentupimento na ${neighborhoodName}?`, answer: `O valor do serviço de desentupimento na ${neighborhoodName} varia entre R$120,00 à R$980,00. Trabalhamos com orçamento sem compromisso via WhatsApp ou no local.` },
-    { question: `O desentupimento perto de mim é mais barato?`, answer: `Sim! Quando o nosso equipamento está próximo da sua localização na ${neighborhoodName}, o custo tende a ser mais baixo, já que a taxa de deslocamento é menor.` },
+    { question: `Quanto custa um serviço de desentupimento ${loc}?`, answer: `O valor do serviço de desentupimento ${loc} varia entre R$120,00 à R$980,00. Trabalhamos com orçamento sem compromisso via WhatsApp ou no local.` },
+    { question: `O desentupimento perto de mim é mais barato?`, answer: `Sim! Quando o nosso equipamento está próximo da sua localização ${loc}, o custo tende a ser mais baixo, já que a taxa de deslocamento é menor.` },
     { question: `Fazem desentupimento de pia de cozinha?`, answer: `Sim! Atendemos pias de cozinha e banheiro com remoção de gordura e sujeira acumulada, sem quebrar nada.` },
     { question: `A desentupidora atende à noite?`, answer: `Sim, somos uma desentupidora 24 horas, com equipe disponível inclusive de madrugada, fins de semana e feriados.` },
     { question: `Vocês atendem casas e apartamentos?`, answer: `Atendemos residências, condomínios, comércios e empresas com equipamentos adequados para cada ambiente.` },
