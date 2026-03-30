@@ -25,8 +25,9 @@ function generateCityFaqs(cityName: string) {
 }
 
 export default function CityPage() {
-  const { citySlug } = useParams();
-  const { data: city, isLoading } = useCityBySlug(citySlug || "");
+  const { citySlug, slug } = useParams();
+  const resolvedSlug = citySlug || slug;
+  const { data: city, isLoading } = useCityBySlug(resolvedSlug || "");
   const { data: neighborhoods } = useNeighborhoodsByCity(city?.id);
   const { data: services } = useServices();
   const { data: settings } = useSiteSettings();
