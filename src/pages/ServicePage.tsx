@@ -59,7 +59,9 @@ export default function ServicePage() {
 
   const serviceName = service.name;
   const serviceNameLower = serviceName.toLowerCase();
-  const seoTitle = service.seo_title || `Precisando de ${serviceName} em Goiânia?`;
+  // Build "Desentupidora de X" style title matching reference site
+  const heroTitle = service.h1 || `Precisando de Desentupidora de ${serviceName} em Goiânia?`;
+  const seoTitle = service.seo_title || `Precisando de Desentupidora de ${serviceName} em Goiânia?`;
   const seoDesc = service.meta_description || `${serviceName} em Goiânia-GO. Atendimento rápido 24h. Orçamento grátis pelo WhatsApp. Serviço profissional com garantia.`;
   const customFaqs = (service.faq as { question: string; answer: string }[]) || [];
   const faqs = customFaqs.length > 0 ? customFaqs : generateServiceFaqs(serviceName);
