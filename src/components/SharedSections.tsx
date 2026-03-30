@@ -74,14 +74,14 @@ const otherServicesList = [
   "Controle de odores em redes de esgoto",
 ];
 
-export function OutrosServicos({ companyName }: { companyName: string }) {
+export function OutrosServicos({ companyName, serviceName }: { companyName: string; serviceName?: string }) {
   return (
     <section className="section-alt py-16 md:py-20">
       <div className="container">
         <div className="grid items-center gap-10 lg:grid-cols-2">
           <motion.div {...fadeUp}>
             <h2 className="mb-4 text-2xl font-black text-foreground md:text-3xl">
-              Outros serviços da Desentupidora em Goiânia
+              Outros serviços da Desentupidora{serviceName ? ` de ${serviceName}` : ""} em Goiânia
             </h2>
             <p className="mb-6 text-muted-foreground leading-relaxed">
               Além dos desentupimentos tradicionais, a <strong className="text-foreground">{companyName}</strong> realiza serviços especializados com agilidade e segurança, como:
