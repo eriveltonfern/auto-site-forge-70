@@ -15,19 +15,24 @@ import { CtaBanner, OutrosServicos, Vantagens, PorQueEscolher, FaqSection, Depoi
 import heroBgFallback from "@/assets/hero-bg.jpg";
 import NotFound from "./NotFound";
 
-function generateServiceFaqs(serviceName: string) {
-  const sn = serviceName.toLowerCase();
-  return [
-    { question: `Quanto custa um serviço de ${sn} em Goiânia?`, answer: `O valor do serviço de ${sn} em Goiânia varia entre R$120,00 à R$980,00. Trabalhamos com orçamento sem compromisso via WhatsApp ou no local.` },
-    { question: `O ${sn} perto de mim é mais barato?`, answer: `Sim! Quando o nosso equipamento está próximo da sua localização em Goiânia, o custo tende a ser mais baixo, já que a taxa de deslocamento é menor.` },
-    { question: `Fazem ${sn} de emergência?`, answer: `Sim! Somos uma empresa 24 horas, com equipe disponível inclusive de madrugada, fins de semana e feriados.` },
-    { question: `Vocês atendem casas e apartamentos?`, answer: `Atendemos residências, condomínios, comércios e empresas com equipamentos adequados para cada ambiente.` },
-    { question: `Quais formas de pagamento vocês aceitam?`, answer: `Trabalhamos com diversas formas de pagamento: dinheiro, Pix, cartões de crédito e débito, além de transferências bancárias.` },
-    { question: `O serviço suja muito o local?`, answer: `Não! Utilizamos métodos modernos e protegemos o ambiente para evitar sujeira durante e após o serviço.` },
-    { question: `Vocês fazem orçamento grátis?`, answer: `Sim! Fazemos orçamento sem compromisso via WhatsApp ou presencial no local.` },
-    { question: `Quanto tempo demora o serviço?`, answer: `Na maioria dos casos, o serviço é concluído em até 1 hora. Casos mais complexos podem levar um pouco mais, mas sempre informamos antes de iniciar.` },
-  ];
+/** Extract short noun from service name: "Desentupimento de Pia" → "Pia" */
+function getShortName(name: string): string {
+  return name
+    .replace(/^Desentupimento de /i, "")
+    .replace(/^Limpeza de /i, "");
 }
+
+/** Same generic FAQs used on the reference site for ALL service pages */
+const genericFaqs = [
+  { question: "Quanto custa um serviço de desentupimento em Goiânia?", answer: "O valor do serviço de desentupimento em Goiânia varia entre R$120,00 à R$980,00. Trabalhamos com orçamento sem compromisso via WhatsApp ou no local." },
+  { question: "O desentupimento perto de mim é mais barato?", answer: "Sim! Quando o nosso equipamento está próximo da sua localização em Goiânia, o custo tende a ser mais baixo, já que a taxa de deslocamento é menor." },
+  { question: "Fazem desentupimento de pia de cozinha?", answer: "Sim! Atendemos pias de cozinha e banheiro com remoção de gordura e sujeira acumulada, sem quebrar nada." },
+  { question: "A desentupidora atende à noite?", answer: "Sim, somos uma desentupidora 24 horas, com equipe disponível inclusive de madrugada, fins de semana e feriados." },
+  { question: "Vocês atendem casas e apartamentos?", answer: "Atendemos residências, condomínios, comércios e empresas com equipamentos adequados para cada ambiente." },
+  { question: "Quais formas de pagamento vocês aceitam?", answer: "Trabalhamos com diversas formas de pagamento: dinheiro, Pix, cartões de crédito e débito, além de transferências bancárias." },
+  { question: "O serviço suja muito o local?", answer: "Não! Utilizamos métodos modernos e protegemos o ambiente para evitar sujeira durante e após o serviço." },
+  { question: "Fazem limpeza de fossa séptica?", answer: "Sim, contamos com caminhão apropriado para limpeza e esgotamento de fossas residenciais e comerciais." },
+];
 
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
@@ -57,14 +62,19 @@ export default function ServicePage() {
   if (isLoading || !settings) return null;
   if (!service) return <NotFound />;
 
-  const serviceName = service.name;
+  const serviceName = service.name; // e.g. "Desentupimento de Pia"
   const serviceNameLower = serviceName.toLowerCase();
-  // Build "Desentupidora de X" style title matching reference site
-  const heroTitle = service.h1 || `Precisando de Desentupidora de ${serviceName} em Goiânia?`;
-  const seoTitle = service.seo_title || `Precisando de Desentupidora de ${serviceName} em Goiânia?`;
+  const shortName = getShortName(serviceName); // e.g. "Pia"
+  const shortNameLower = shortName.toLowerCase();
+
+  // Reference pattern: "Precisando de Desentupidora de Pia em Goiânia?"
+  const heroTitle = service.h1 || `Precisando de Desentupidora de ${shortName} em Goiânia?`;
+  const seoTitle = service.seo_title || `Precisando de Desentupidora de ${shortName} em Goiânia?`;
   const seoDesc = service.meta_description || `${serviceName} em Goiânia-GO. Atendimento rápido 24h. Orçamento grátis pelo WhatsApp. Serviço profissional com garantia.`;
+  
+  // Use custom FAQs from DB if available, otherwise generic home FAQs (matches reference)
   const customFaqs = (service.faq as { question: string; answer: string }[]) || [];
-  const faqs = customFaqs.length > 0 ? customFaqs : generateServiceFaqs(serviceName);
+  const faqs = customFaqs.length > 0 ? customFaqs : genericFaqs;
   const whatsappUrl = getWhatsAppUrl(settings, `Olá! Preciso de ${serviceNameLower} em Goiânia.`);
 
   return (
@@ -92,7 +102,7 @@ export default function ServicePage() {
             </motion.h1>
             <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}
               className="mx-auto mb-4 max-w-2xl text-lg opacity-90 md:text-xl">
-              {service.short_description || "Problemas com esgoto ou entupimento?"}
+              {service.short_description || `${shortName} entupida ou com problemas?`}
             </motion.p>
             <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.15 }}
               className="mx-auto mb-8 max-w-2xl text-lg opacity-90 md:text-xl">
@@ -119,7 +129,7 @@ export default function ServicePage() {
                 Empresa de {serviceName} Perto de Mim em Goiânia
               </h2>
               <p className="text-muted-foreground leading-relaxed">
-                Quando você busca por "<strong className="text-foreground">empresa de {serviceNameLower} perto de mim</strong>" ou "<strong className="text-foreground">desentupidora de {serviceNameLower} 24h</strong>" em Goiânia-GO, além do {serviceNameLower} nós entregamos um serviço completo, com equipe experiente e recursos prontos para qualquer situação.
+                Quando você busca por "<strong className="text-foreground">empresa de {serviceNameLower} perto de mim</strong>" ou "<strong className="text-foreground">desentupidora de {shortNameLower} 24h</strong>" em Goiânia-GO, além do {serviceNameLower} nós entregamos um serviço completo, com equipe experiente e recursos prontos para qualquer situação.
               </p>
             </motion.div>
             <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -133,22 +143,35 @@ export default function ServicePage() {
         </section>
       )}
 
-      <OutrosServicos companyName={settings.company_name || "Desentupidora Goiânia"} />
-      <CtaBanner settings={settings} localName="Goiânia" heading={`${serviceName} Perto de Mim`} variant={1} />
-      <Vantagens serviceName={serviceName} />
+      {/* Reference: "Outros serviços da Desentupidora de Pia em Goiânia" */}
+      <OutrosServicos companyName={settings.company_name || "Desentupidora Goiânia"} serviceName={shortName} />
+
+      {/* Reference: two CTA banners back to back (variant 1 + 2) */}
+      <CtaBanner settings={settings} localName="Goiânia" heading={`Desentupidora de ${shortName} Perto de Mim`} variant={1} />
+      <CtaBanner settings={settings} localName="Goiânia" heading={`Desentupidora de ${shortName} Perto de Mim`} variant={2} />
+
+      {/* Reference: generic "desentupimento" — no service-specific name */}
+      <Vantagens />
+
       <PorQueEscolher localName="Goiânia" companyName={settings.company_name || "Desentupidora Goiânia"} />
-      <CtaBanner settings={settings} localName="Goiânia" heading={`${serviceName} Perto de Mim`} variant={2} />
+
+      <CtaBanner settings={settings} localName="Goiânia" heading={`Desentupidora de ${shortName} Perto de Mim`} variant={1} />
+      <CtaBanner settings={settings} localName="Goiânia" heading={`Desentupidora de ${shortName} Perto de Mim`} variant={2} />
+
       <FaqSection faqs={faqs} />
-      <CtaBanner settings={settings} localName="Goiânia" heading={`${serviceName} Perto de Mim`} variant={1} />
+
+      <CtaBanner settings={settings} localName="Goiânia" heading={`Desentupidora de ${shortName} Perto de Mim`} variant={1} />
+      <CtaBanner settings={settings} localName="Goiânia" heading={`Desentupidora de ${shortName} Perto de Mim`} variant={2} />
+
       <Depoimentos />
       <ContatoSection settings={settings} whatsappUrl={whatsappUrl} />
 
-      {/* Bairros atendidos — link para combo service+bairro */}
+      {/* Reference: "desentupidora de pia próxima de mim" */}
       <BairrosAtendidos
         neighborhoods={allNeighborhoods || []}
         localName="Goiânia"
         linkPrefix={service.slug}
-        searchTerm={`${serviceNameLower} próximo de mim`}
+        searchTerm={`desentupidora de ${shortNameLower} próxima de mim`}
       />
 
       <Footer />
