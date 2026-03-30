@@ -162,7 +162,7 @@ export default function ServiceNeighborhoodPage({ serviceSlug, neighborhoodSlug 
             <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {allServices.map((s, i) => (
                 <motion.div key={s.slug} {...fadeUp} transition={{ delay: i * 0.05 }}>
-                  <ServiceCard service={s} whatsappUrl={getWhatsAppUrl(settings, `Olá! Preciso de ${s.name.toLowerCase()} na ${neighborhoodName}. Podem me ajudar?`)} linkTo={`/${s.slug}-${neighborhood.slug}`} />
+                  <ServiceCard service={s} whatsappUrl={getWhatsAppUrl(settings, `Olá! Preciso de ${s.name.toLowerCase()} ${loc}. Podem me ajudar?`)} linkTo={`/${s.slug}-${neighborhood.slug}`} />
                 </motion.div>
               ))}
             </div>
