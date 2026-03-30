@@ -59,7 +59,9 @@ export default function ServicePage() {
 
   const serviceName = service.name;
   const serviceNameLower = serviceName.toLowerCase();
-  const seoTitle = service.seo_title || `Precisando de ${serviceName} em Goiânia?`;
+  // Build "Desentupidora de X" style title matching reference site
+  const heroTitle = service.h1 || `Precisando de Desentupidora de ${serviceName} em Goiânia?`;
+  const seoTitle = service.seo_title || `Precisando de Desentupidora de ${serviceName} em Goiânia?`;
   const seoDesc = service.meta_description || `${serviceName} em Goiânia-GO. Atendimento rápido 24h. Orçamento grátis pelo WhatsApp. Serviço profissional com garantia.`;
   const customFaqs = (service.faq as { question: string; answer: string }[]) || [];
   const faqs = customFaqs.length > 0 ? customFaqs : generateServiceFaqs(serviceName);
@@ -86,11 +88,11 @@ export default function ServicePage() {
           <div className="mx-auto max-w-3xl text-center text-white">
             <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
               className="mb-5 text-3xl font-black leading-tight md:text-5xl lg:text-6xl">
-              Precisando de {serviceName} em Goiânia?
+              {heroTitle}
             </motion.h1>
             <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}
               className="mx-auto mb-4 max-w-2xl text-lg opacity-90 md:text-xl">
-              Problemas com esgoto ou entupimento?
+              {service.short_description || "Problemas com esgoto ou entupimento?"}
             </motion.p>
             <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.15 }}
               className="mx-auto mb-8 max-w-2xl text-lg opacity-90 md:text-xl">
