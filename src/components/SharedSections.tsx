@@ -74,7 +74,7 @@ const otherServicesList = [
   "Controle de odores em redes de esgoto",
 ];
 
-export function OutrosServicos({ companyName }: { companyName: string }) {
+export function OutrosServicos({ companyName, serviceName }: { companyName: string; serviceName?: string }) {
   return (
     <section className="section-alt py-16 md:py-20">
       <div className="container">
