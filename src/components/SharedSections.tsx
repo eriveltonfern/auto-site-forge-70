@@ -3,6 +3,7 @@ import { Phone, MessageCircle, CheckCircle, Shield, ChevronDown, Award, Zap, Cre
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { getWhatsAppUrl, getPhoneUrl, type DbSettings } from "@/hooks/useSiteData";
+import { noNa } from "@/lib/preposition";
 
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
