@@ -77,10 +77,11 @@ export default function NeighborhoodPage() {
 
   const displayName = neighborhood.name;
   const seoName = displayName;
-  const seoTitle = neighborhood.seo_title || `Precisando de Desentupidora 24h no ${seoName}?`;
-  const seoDesc = neighborhood.meta_description || `Desentupidora no ${seoName} em Goiânia-GO. Atendimento rápido 24h. Desentupimento de pia, vaso, esgoto e mais. Orçamento grátis pelo WhatsApp.`;
+  const loc = noNa(seoName);
+  const seoTitle = neighborhood.seo_title || `Precisando de Desentupidora 24h ${loc}?`;
+  const seoDesc = neighborhood.meta_description || `Desentupidora ${loc} em Goiânia-GO. Atendimento rápido 24h. Desentupimento de pia, vaso, esgoto e mais. Orçamento grátis pelo WhatsApp.`;
   const faqs = generateFaqs(seoName);
-  const whatsappUrl = getWhatsAppUrl(settings, `Olá! Preciso de desentupimento no ${seoName}, Goiânia.`);
+  const whatsappUrl = getWhatsAppUrl(settings, `Olá! Preciso de desentupimento ${loc}, Goiânia.`);
   const siblings = (allNeighborhoods || []).filter((n) => n.slug !== neighborhood.slug);
 
   return (
