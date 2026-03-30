@@ -1,5 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { MessageCircle } from "lucide-react";
+import { noNa } from "@/lib/preposition";
 import { motion } from "framer-motion";
 import { SEOHead, getFAQSchema } from "@/components/SEOHead";
 import { Header } from "@/components/Header";
