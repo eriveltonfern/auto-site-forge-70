@@ -113,7 +113,7 @@ export default function NeighborhoodPage() {
             </motion.p>
             <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.15 }}
               className="mx-auto mb-8 max-w-2xl text-lg opacity-90 md:text-xl">
-              Solicite desentupimento urgente no {seoName} com atendimento imediato.
+              Solicite desentupimento urgente {loc} com atendimento imediato.
             </motion.p>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}
               className="flex justify-center">
