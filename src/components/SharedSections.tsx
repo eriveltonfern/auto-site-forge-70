@@ -44,8 +44,8 @@ export function CtaBanner({ settings, localName, heading, variant = 1 }: CtaBann
             </p>
             <p className="mt-1 text-base text-primary-foreground/80 leading-relaxed">
               {variant === 1
-                ? `Atendimento rápido ${localName ? `no ${localName}` : "em Goiânia"} com equipe especializada e total segurança.`
-                : `Serviço rápido ${localName ? `no ${localName}` : "em Goiânia"} com equipe especializada e total segurança.`}
+                ? `Atendimento rápido ${localName ? `${noNa(localName)}` : "em Goiânia"} com equipe especializada e total segurança.`
+                : `Serviço rápido ${localName ? `${noNa(localName)}` : "em Goiânia"} com equipe especializada e total segurança.`}
             </p>
           </div>
           {/* Button */}
