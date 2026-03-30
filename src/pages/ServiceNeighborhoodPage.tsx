@@ -156,7 +156,7 @@ export default function ServiceNeighborhoodPage({ serviceSlug, neighborhoodSlug 
                 Serviço de {serviceName} Perto de Mim {loc}
               </h2>
               <p className="text-muted-foreground leading-relaxed">
-                Quando você busca por "<strong className="text-foreground">{serviceNameLower} perto de mim</strong>" ou "<strong className="text-foreground">desentupidora 24h</strong>" na {neighborhoodName} em Goiânia-GO, além do {serviceNameLower} nós entregamos um serviço completo, com equipe experiente e recursos prontos para qualquer situação.
+                Quando você busca por "<strong className="text-foreground">{serviceNameLower} perto de mim</strong>" ou "<strong className="text-foreground">desentupidora 24h</strong>" {loc} em Goiânia-GO, além do {serviceNameLower} nós entregamos um serviço completo, com equipe experiente e recursos prontos para qualquer situação.
               </p>
             </motion.div>
             <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
