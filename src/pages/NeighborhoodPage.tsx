@@ -1,5 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { MessageCircle } from "lucide-react";
+import { noNa } from "@/lib/preposition";
 import { motion } from "framer-motion";
 import { SEOHead, getFAQSchema } from "@/components/SEOHead";
 import { Header } from "@/components/Header";
@@ -16,9 +17,10 @@ import heroBgFallback from "@/assets/hero-bg.jpg";
 import NotFound from "./NotFound";
 
 function generateFaqs(name: string) {
+  const loc = noNa(name);
   return [
-    { question: `Quanto custa um serviço de desentupimento no ${name}?`, answer: `O valor do serviço de desentupimento no ${name} varia entre R$120,00 à R$980,00. Trabalhamos com orçamento sem compromisso via WhatsApp ou no local.` },
-    { question: `O desentupimento perto de mim é mais barato?`, answer: `Sim! Quando o nosso equipamento está próximo da sua localização no ${name}, o custo tende a ser mais baixo, já que a taxa de deslocamento é menor.` },
+    { question: `Quanto custa um serviço de desentupimento ${loc}?`, answer: `O valor do serviço de desentupimento ${loc} varia entre R$120,00 à R$980,00. Trabalhamos com orçamento sem compromisso via WhatsApp ou no local.` },
+    { question: `O desentupimento perto de mim é mais barato?`, answer: `Sim! Quando o nosso equipamento está próximo da sua localização ${loc}, o custo tende a ser mais baixo, já que a taxa de deslocamento é menor.` },
     { question: `Fazem desentupimento de pia de cozinha?`, answer: `Sim! Atendemos pias de cozinha e banheiro com remoção de gordura e sujeira acumulada, sem quebrar nada.` },
     { question: `A desentupidora atende à noite?`, answer: `Sim, somos uma desentupidora 24 horas, com equipe disponível inclusive de madrugada, fins de semana e feriados.` },
     { question: `Vocês atendem casas e apartamentos?`, answer: `Atendemos residências, condomínios, comércios e empresas com equipamentos adequados para cada ambiente.` },
@@ -75,10 +77,11 @@ export default function NeighborhoodPage() {
 
   const displayName = neighborhood.name;
   const seoName = displayName;
-  const seoTitle = neighborhood.seo_title || `Precisando de Desentupidora 24h no ${seoName}?`;
-  const seoDesc = neighborhood.meta_description || `Desentupidora no ${seoName} em Goiânia-GO. Atendimento rápido 24h. Desentupimento de pia, vaso, esgoto e mais. Orçamento grátis pelo WhatsApp.`;
+  const loc = noNa(seoName);
+  const seoTitle = neighborhood.seo_title || `Precisando de Desentupidora 24h ${loc}?`;
+  const seoDesc = neighborhood.meta_description || `Desentupidora ${loc} em Goiânia-GO. Atendimento rápido 24h. Desentupimento de pia, vaso, esgoto e mais. Orçamento grátis pelo WhatsApp.`;
   const faqs = generateFaqs(seoName);
-  const whatsappUrl = getWhatsAppUrl(settings, `Olá! Preciso de desentupimento no ${seoName}, Goiânia.`);
+  const whatsappUrl = getWhatsAppUrl(settings, `Olá! Preciso de desentupimento ${loc}, Goiânia.`);
   const siblings = (allNeighborhoods || []).filter((n) => n.slug !== neighborhood.slug);
 
   return (
@@ -102,7 +105,7 @@ export default function NeighborhoodPage() {
           <div className="mx-auto max-w-3xl text-center text-white">
             <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
               className="mb-5 text-3xl font-black leading-tight md:text-5xl lg:text-6xl">
-              Precisando de Desentupidora 24h no {seoName}?
+              Precisando de Desentupidora 24h {loc}?
             </motion.h1>
             <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}
               className="mx-auto mb-4 max-w-2xl text-lg opacity-90 md:text-xl">
@@ -110,7 +113,7 @@ export default function NeighborhoodPage() {
             </motion.p>
             <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.15 }}
               className="mx-auto mb-8 max-w-2xl text-lg opacity-90 md:text-xl">
-              Solicite desentupimento urgente no {seoName} com atendimento imediato.
+              Solicite desentupimento urgente {loc} com atendimento imediato.
             </motion.p>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}
               className="flex justify-center">
@@ -130,16 +133,16 @@ export default function NeighborhoodPage() {
           <div className="container">
             <motion.div {...fadeUp} className="mx-auto mb-4 max-w-3xl text-center">
               <h2 className="mb-4 text-2xl font-black text-foreground md:text-4xl">
-                Empresa de Desentupimento Perto de Mim no {seoName}
+                Empresa de Desentupimento Perto de Mim {loc}
               </h2>
               <p className="text-muted-foreground leading-relaxed">
-                Quando você busca por "<strong className="text-foreground">desentupimento perto de mim</strong>" ou "<strong className="text-foreground">desentupidora 24h</strong>" no {seoName} em Goiânia-GO, nós entregamos um atendimento completo, com equipe experiente, atendimento rápido e recursos prontos para qualquer situação.
+                Quando você busca por "<strong className="text-foreground">desentupimento perto de mim</strong>" ou "<strong className="text-foreground">desentupidora 24h</strong>" {loc} em Goiânia-GO, nós entregamos um atendimento completo, com equipe experiente, atendimento rápido e recursos prontos para qualquer situação.
               </p>
             </motion.div>
             <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {services.map((s, i) => (
                 <motion.div key={s.slug} {...fadeUp} transition={{ delay: i * 0.05 }}>
-                  <ServiceCard service={s} whatsappUrl={getWhatsAppUrl(settings, `Olá! Preciso de ${s.name.toLowerCase()} no ${seoName}. Podem me ajudar?`)} linkTo={`/${s.slug}-${neighborhood.slug}`} />
+                  <ServiceCard service={s} whatsappUrl={getWhatsAppUrl(settings, `Olá! Preciso de ${s.name.toLowerCase()} ${loc}. Podem me ajudar?`)} linkTo={`/${s.slug}-${neighborhood.slug}`} />
                 </motion.div>
               ))}
             </div>

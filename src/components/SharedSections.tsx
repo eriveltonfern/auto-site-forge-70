@@ -3,6 +3,7 @@ import { Phone, MessageCircle, CheckCircle, Shield, ChevronDown, Award, Zap, Cre
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { getWhatsAppUrl, getPhoneUrl, type DbSettings } from "@/hooks/useSiteData";
+import { noNa } from "@/lib/preposition";
 
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
@@ -43,8 +44,8 @@ export function CtaBanner({ settings, localName, heading, variant = 1 }: CtaBann
             </p>
             <p className="mt-1 text-base text-primary-foreground/80 leading-relaxed">
               {variant === 1
-                ? `Atendimento rápido ${localName ? `no ${localName}` : "em Goiânia"} com equipe especializada e total segurança.`
-                : `Serviço rápido ${localName ? `no ${localName}` : "em Goiânia"} com equipe especializada e total segurança.`}
+                ? `Atendimento rápido ${localName ? `${noNa(localName)}` : "em Goiânia"} com equipe especializada e total segurança.`
+                : `Serviço rápido ${localName ? `${noNa(localName)}` : "em Goiânia"} com equipe especializada e total segurança.`}
             </p>
           </div>
           {/* Button */}
@@ -149,10 +150,10 @@ export function PorQueEscolher({ localName, companyName }: { localName: string; 
       <div className="container">
         <motion.div {...fadeUp} className="mx-auto max-w-3xl text-center">
           <h2 className="mb-4 text-2xl font-black text-foreground md:text-4xl">
-            Por que escolher o Desentupidora 24 horas {localName ? `no ${localName}` : "Goiânia"}?
+            Por que escolher o Desentupidora 24 horas {localName ? `${noNa(localName)}` : "Goiânia"}?
           </h2>
           <p className="mb-4 text-muted-foreground leading-relaxed">
-            Precisando de uma <strong className="text-foreground">empresa desentupidora com preço justo e serviço rápido</strong>? Atendemos {localName ? `no ${localName}` : "toda Goiânia"} com soluções eficientes, sem quebra e com garantia.
+            Precisando de uma <strong className="text-foreground">empresa desentupidora com preço justo e serviço rápido</strong>? Atendemos {localName ? `${noNa(localName)}` : "toda Goiânia"} com soluções eficientes, sem quebra e com garantia.
           </p>
           <p className="mb-4 text-foreground font-bold">
             Elimine entupimentos com a desentupidora mais próxima de você!
@@ -320,10 +321,10 @@ export function BairrosAtendidos({
       <div className="container">
         <motion.div {...fadeUp} className="mx-auto mb-8 max-w-3xl text-center">
           <h2 className="mb-3 text-2xl font-black text-foreground md:text-4xl">
-            Atendemos {localName ? `no ${localName} e ` : ""}Toda a Região em Goiânia
+            Atendemos {localName ? `${noNa(localName)} e ` : ""}Toda a Região em Goiânia
           </h2>
           <p className="text-muted-foreground">
-            Está buscando por "<strong className="text-foreground">{term}</strong>"{localName ? ` no ${localName}` : " em Goiânia-GO"}? Estamos prontos para atender você nos principais bairros da cidade:
+            Está buscando por "<strong className="text-foreground">{term}</strong>"{localName ? ` ${noNa(localName)}` : " em Goiânia-GO"}? Estamos prontos para atender você nos principais bairros da cidade:
           </p>
         </motion.div>
         <motion.div {...fadeUp} className="columns-2 sm:columns-3 lg:columns-4 gap-x-6">
