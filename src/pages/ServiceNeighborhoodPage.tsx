@@ -153,7 +153,7 @@ export default function ServiceNeighborhoodPage({ serviceSlug, neighborhoodSlug 
           <div className="container">
             <motion.div {...fadeUp} className="mx-auto mb-4 max-w-3xl text-center">
               <h2 className="mb-4 text-2xl font-black text-foreground md:text-4xl">
-                Serviço de {serviceName} Perto de Mim na {neighborhoodName}
+                Serviço de {serviceName} Perto de Mim {loc}
               </h2>
               <p className="text-muted-foreground leading-relaxed">
                 Quando você busca por "<strong className="text-foreground">{serviceNameLower} perto de mim</strong>" ou "<strong className="text-foreground">desentupidora 24h</strong>" na {neighborhoodName} em Goiânia-GO, além do {serviceNameLower} nós entregamos um serviço completo, com equipe experiente e recursos prontos para qualquer situação.
