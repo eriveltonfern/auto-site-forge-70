@@ -74,7 +74,7 @@ export default function NeighborhoodPage() {
   if (!neighborhood) return <NotFound />;
 
   const displayName = neighborhood.name;
-  const seoName = `Setor ${displayName}`;
+  const seoName = displayName;
   const seoTitle = neighborhood.seo_title || `Precisando de Desentupidora 24h no ${seoName}?`;
   const seoDesc = neighborhood.meta_description || `Desentupidora no ${seoName} em Goiânia-GO. Atendimento rápido 24h. Desentupimento de pia, vaso, esgoto e mais. Orçamento grátis pelo WhatsApp.`;
   const faqs = generateFaqs(seoName);
