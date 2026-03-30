@@ -3,11 +3,12 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import NeighborhoodPage from "./NeighborhoodPage";
 import ServiceNeighborhoodPage from "./ServiceNeighborhoodPage";
+import CityPage from "./CityPage";
 import NotFound from "./NotFound";
 
 /**
- * Smart router: given a slug like "setor-bueno" or "hidrojateamento-setor-bueno",
- * determines whether it's a neighborhood page or a service+neighborhood combo page.
+ * Smart router: given a slug like "setor-bueno", "hidrojateamento-setor-bueno",
+ * or "desentupidora-em-trindade", determines the correct page to render.
  */
 export default function DynamicSlugPage() {
   const { slug } = useParams();
@@ -27,7 +28,19 @@ export default function DynamicSlugPage() {
         return { type: "neighborhood" as const, neighborhoodSlug: slug! };
       }
 
-      // 2. Try service+neighborhood combo: check all services
+      // 2. Try direct city match (slug like "desentupidora-em-trindade" or just city slug)
+      const { data: city } = await supabase
+        .from("cities")
+        .select("slug")
+        .eq("slug", slug!)
+        .eq("status", "published")
+        .maybeSingle();
+
+      if (city) {
+        return { type: "city" as const, citySlug: slug! };
+      }
+
+      // 3. Try service+neighborhood combo: check all services
       const { data: services } = await supabase
         .from("services")
         .select("slug")
@@ -69,6 +82,10 @@ export default function DynamicSlugPage() {
 
   if (data.type === "neighborhood") {
     return <NeighborhoodPage />;
+  }
+
+  if (data.type === "city") {
+    return <CityPage />;
   }
 
   return <ServiceNeighborhoodPage serviceSlug={data.serviceSlug!} neighborhoodSlug={data.neighborhoodSlug} />;
