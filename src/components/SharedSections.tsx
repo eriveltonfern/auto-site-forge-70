@@ -150,10 +150,10 @@ export function PorQueEscolher({ localName, companyName }: { localName: string; 
       <div className="container">
         <motion.div {...fadeUp} className="mx-auto max-w-3xl text-center">
           <h2 className="mb-4 text-2xl font-black text-foreground md:text-4xl">
-            Por que escolher o Desentupidora 24 horas {localName ? `no ${localName}` : "Goiânia"}?
+            Por que escolher o Desentupidora 24 horas {localName ? `${noNa(localName)}` : "Goiânia"}?
           </h2>
           <p className="mb-4 text-muted-foreground leading-relaxed">
-            Precisando de uma <strong className="text-foreground">empresa desentupidora com preço justo e serviço rápido</strong>? Atendemos {localName ? `no ${localName}` : "toda Goiânia"} com soluções eficientes, sem quebra e com garantia.
+            Precisando de uma <strong className="text-foreground">empresa desentupidora com preço justo e serviço rápido</strong>? Atendemos {localName ? `${noNa(localName)}` : "toda Goiânia"} com soluções eficientes, sem quebra e com garantia.
           </p>
           <p className="mb-4 text-foreground font-bold">
             Elimine entupimentos com a desentupidora mais próxima de você!
