@@ -105,7 +105,7 @@ export default function NeighborhoodPage() {
           <div className="mx-auto max-w-3xl text-center text-white">
             <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
               className="mb-5 text-3xl font-black leading-tight md:text-5xl lg:text-6xl">
-              Precisando de Desentupidora 24h no {seoName}?
+              Precisando de Desentupidora 24h {loc}?
             </motion.h1>
             <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}
               className="mx-auto mb-4 max-w-2xl text-lg opacity-90 md:text-xl">
