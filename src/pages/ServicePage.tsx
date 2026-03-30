@@ -1,28 +1,69 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { MessageCircle } from "lucide-react";
+import { motion } from "framer-motion";
 import { SEOHead, getFAQSchema } from "@/components/SEOHead";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { FloatingCTA } from "@/components/FloatingCTA";
-import { OptimizedImage } from "@/components/OptimizedImage";
-import { useServiceBySlug, useCities, useSiteSettings, getWhatsAppUrl, getPhoneUrl } from "@/hooks/useSiteData";
+import { ServiceCard } from "@/components/ServiceCard";
 import { Button } from "@/components/ui/button";
-import { MessageCircle, Phone, CheckCircle, ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { useServiceBySlug, useServices, useSiteSettings, getWhatsAppUrl } from "@/hooks/useSiteData";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+
+import { CtaBanner, OutrosServicos, Vantagens, PorQueEscolher, FaqSection, Depoimentos, ContatoSection, BairrosAtendidos } from "@/components/SharedSections";
+import heroBgFallback from "@/assets/hero-bg.jpg";
 import NotFound from "./NotFound";
+
+function generateServiceFaqs(serviceName: string) {
+  const sn = serviceName.toLowerCase();
+  return [
+    { question: `Quanto custa um serviço de ${sn} em Goiânia?`, answer: `O valor do serviço de ${sn} em Goiânia varia entre R$120,00 à R$980,00. Trabalhamos com orçamento sem compromisso via WhatsApp ou no local.` },
+    { question: `O ${sn} perto de mim é mais barato?`, answer: `Sim! Quando o nosso equipamento está próximo da sua localização em Goiânia, o custo tende a ser mais baixo, já que a taxa de deslocamento é menor.` },
+    { question: `Fazem ${sn} de emergência?`, answer: `Sim! Somos uma empresa 24 horas, com equipe disponível inclusive de madrugada, fins de semana e feriados.` },
+    { question: `Vocês atendem casas e apartamentos?`, answer: `Atendemos residências, condomínios, comércios e empresas com equipamentos adequados para cada ambiente.` },
+    { question: `Quais formas de pagamento vocês aceitam?`, answer: `Trabalhamos com diversas formas de pagamento: dinheiro, Pix, cartões de crédito e débito, além de transferências bancárias.` },
+    { question: `O serviço suja muito o local?`, answer: `Não! Utilizamos métodos modernos e protegemos o ambiente para evitar sujeira durante e após o serviço.` },
+    { question: `Vocês fazem orçamento grátis?`, answer: `Sim! Fazemos orçamento sem compromisso via WhatsApp ou presencial no local.` },
+    { question: `Quanto tempo demora o serviço?`, answer: `Na maioria dos casos, o serviço é concluído em até 1 hora. Casos mais complexos podem levar um pouco mais, mas sempre informamos antes de iniciar.` },
+  ];
+}
+
+const fadeUp = {
+  initial: { opacity: 0, y: 24 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true },
+};
 
 export default function ServicePage() {
   const { serviceSlug } = useParams();
   const { data: service, isLoading } = useServiceBySlug(serviceSlug || "");
-  const { data: cities } = useCities();
+  const { data: allServices } = useServices();
   const { data: settings } = useSiteSettings();
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+  const { data: allNeighborhoods } = useQuery({
+    queryKey: ["all_neighborhoods_published"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("neighborhoods")
+        .select("name, slug")
+        .eq("status", "published")
+        .order("name");
+      if (error) throw error;
+      return data || [];
+    },
+  });
 
   if (isLoading || !settings) return null;
   if (!service) return <NotFound />;
 
-  const seoTitle = service.seo_title || `${service.name} em Goiânia | Atendimento 24h`;
-  const seoDesc = service.meta_description || `Serviço profissional de ${service.name.toLowerCase()} em Goiânia e região. Atendimento 24 horas com garantia.`;
-  const faq = (service.faq as { question: string; answer: string }[]) || [];
+  const serviceName = service.name;
+  const serviceNameLower = serviceName.toLowerCase();
+  const seoTitle = service.seo_title || `Precisando de ${serviceName} em Goiânia?`;
+  const seoDesc = service.meta_description || `${serviceName} em Goiânia-GO. Atendimento rápido 24h. Orçamento grátis pelo WhatsApp. Serviço profissional com garantia.`;
+  const customFaqs = (service.faq as { question: string; answer: string }[]) || [];
+  const faqs = customFaqs.length > 0 ? customFaqs : generateServiceFaqs(serviceName);
+  const whatsappUrl = getWhatsAppUrl(settings, `Olá! Preciso de ${serviceNameLower} em Goiânia.`);
 
   return (
     <>
@@ -30,142 +71,83 @@ export default function ServicePage() {
         title={seoTitle}
         description={seoDesc}
         canonical={`https://desentupidoras.goiania.br/servicos/${service.slug}`}
-        structuredData={getFAQSchema(faq)}
+        structuredData={getFAQSchema(faqs)}
       />
       <Header />
       <FloatingCTA />
 
-      <section className="hero-bg py-12">
-        <div className="container text-primary-foreground">
-          <nav className="mb-4 text-sm opacity-70">
-            <Link to="/" className="hover:underline">Início</Link> {" > "}
-            <Link to="/servicos" className="hover:underline">Serviços</Link> {" > "}
-            <span>{service.name}</span>
-          </nav>
-          <div className="flex flex-col gap-6 md:flex-row md:items-center">
-            {(service as any).cover_image && (
-              <OptimizedImage
-                src={(service as any).cover_image}
-                alt={service.name}
-                className="h-40 w-full rounded-xl object-cover md:h-48 md:w-72"
-                priority
-                sizes="(max-width: 768px) 100vw, 288px"
-              />
-            )}
-            <div>
-              <h1 className="text-3xl font-black md:text-4xl">{service.h1 || service.name}</h1>
-              <p className="mt-2 opacity-90">{service.short_description}</p>
-            </div>
+      {/* ===== HERO ===== */}
+      <section className="relative overflow-hidden bg-foreground">
+        <div className="absolute inset-0">
+          <img src={settings.hero_image || heroBgFallback} alt="" className="h-full w-full object-cover" width={1920} height={1080} />
+        </div>
+        <div className="absolute inset-0 bg-black/60" />
+        <div className="container relative py-24 md:py-32 lg:py-40">
+          <div className="mx-auto max-w-3xl text-center text-white">
+            <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
+              className="mb-5 text-3xl font-black leading-tight md:text-5xl lg:text-6xl">
+              Precisando de {serviceName} em Goiânia?
+            </motion.h1>
+            <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}
+              className="mx-auto mb-4 max-w-2xl text-lg opacity-90 md:text-xl">
+              Problemas com esgoto ou entupimento?
+            </motion.p>
+            <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.15 }}
+              className="mx-auto mb-8 max-w-2xl text-lg opacity-90 md:text-xl">
+              Solicite {serviceNameLower} em Goiânia com atendimento imediato.
+            </motion.p>
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}
+              className="flex justify-center">
+              <Button variant="whatsapp" size="lg" asChild className="px-10 py-6 text-lg rounded-full">
+                <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+                  <MessageCircle className="h-5 w-5" /> Chame Agora!
+                </a>
+              </Button>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      <section className="py-12">
-        <div className="container grid gap-8 lg:grid-cols-3">
-          <div className="lg:col-span-2 space-y-8">
-            {service.long_description && (
-              <div>
-                <h2 className="mb-4 text-xl font-bold text-foreground">Sobre o serviço</h2>
-                <div className="prose prose-lg max-w-none text-muted-foreground prose-headings:font-display prose-headings:text-foreground prose-p:text-muted-foreground prose-p:leading-relaxed prose-li:text-muted-foreground space-y-4">
-                  {service.long_description.split("\n").map((paragraph, i) => {
-                    const trimmed = paragraph.trim();
-                    if (!trimmed) return null;
-                    if (trimmed.startsWith("### ")) return <h3 key={i} className="mt-6 mb-2 text-lg font-bold text-foreground">{trimmed.slice(4)}</h3>;
-                    if (trimmed.startsWith("## ")) return <h2 key={i} className="mt-8 mb-3 text-xl font-bold text-foreground">{trimmed.slice(3)}</h2>;
-                    if (trimmed.startsWith("# ")) return <h2 key={i} className="mt-8 mb-3 text-xl font-bold text-foreground">{trimmed.slice(2)}</h2>;
-                    if (trimmed.startsWith("- ")) return <li key={i} className="ml-4 list-disc text-muted-foreground leading-relaxed">{trimmed.slice(2)}</li>;
-                    return <p key={i} className="text-muted-foreground leading-relaxed">{trimmed}</p>;
-                  })}
-                </div>
-              </div>
-            )}
-
-            {service.problems && service.problems.length > 0 && (
-              <div>
-                <h2 className="mb-3 text-xl font-bold text-foreground">Problemas comuns</h2>
-                <ul className="grid gap-2 sm:grid-cols-2">
-                  {service.problems.map((p, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
-                      <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-accent" /> {p}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {service.benefits && service.benefits.length > 0 && (
-              <div>
-                <h2 className="mb-3 text-xl font-bold text-foreground">Benefícios</h2>
-                <ul className="grid gap-2 sm:grid-cols-2">
-                  {service.benefits.map((b, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
-                      <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-accent" /> {b}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {faq.length > 0 && (
-              <div>
-                <h2 className="mb-4 text-xl font-bold text-foreground">Perguntas Frequentes</h2>
-                <div className="space-y-3">
-                  {faq.map((f, i) => (
-                    <div key={i} className="rounded-lg border bg-card shadow-sm">
-                      <button
-                        onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                        className="flex w-full items-center justify-between p-4 text-left font-display text-sm font-semibold text-foreground"
-                      >
-                        {f.question}
-                        <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${openFaq === i ? "rotate-180" : ""}`} />
-                      </button>
-                      {openFaq === i && (
-                        <div className="border-t px-4 py-3 text-sm text-muted-foreground">{f.answer}</div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {cities && cities.length > 0 && (
-              <div>
-                <h2 className="mb-3 text-xl font-bold text-foreground">{service.name} nas cidades</h2>
-                <div className="flex flex-wrap gap-2">
-                  {cities.map((c) => (
-                    <Link key={c.slug} to={`/${c.slug}`}
-                      className="rounded-full border bg-card px-3 py-1 text-sm text-muted-foreground hover:text-accent hover:border-accent transition-colors">
-                      {c.name}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          <aside className="space-y-4">
-            <div className="sticky top-28 space-y-4">
-              <div className="rounded-xl border bg-card p-6 shadow-sm text-center">
-                <span className="mb-3 block text-5xl">{service.icon || "🔧"}</span>
-                <h3 className="mb-2 font-display text-lg font-bold text-foreground">Precisa desse serviço?</h3>
-                <p className="mb-4 text-sm text-muted-foreground">Orçamento grátis e sem compromisso</p>
-                <div className="flex flex-col gap-3">
-                  <Button variant="whatsapp" size="lg" asChild className="w-full">
-                    <a href={getWhatsAppUrl(settings, `Olá! Preciso de ${service.name.toLowerCase()}. Podem me ajudar?`)} target="_blank" rel="noopener noreferrer">
-                      <MessageCircle className="h-5 w-5" /> WhatsApp
-                    </a>
-                  </Button>
-                  <Button variant="phone" size="lg" asChild className="w-full">
-                    <a href={getPhoneUrl(settings)}>
-                      <Phone className="h-5 w-5" /> Ligar Agora
-                    </a>
-                  </Button>
-                </div>
-              </div>
+      {/* ===== SERVIÇOS ===== */}
+      {allServices && allServices.length > 0 && (
+        <section className="py-16 md:py-20">
+          <div className="container">
+            <motion.div {...fadeUp} className="mx-auto mb-4 max-w-3xl text-center">
+              <h2 className="mb-4 text-2xl font-black text-foreground md:text-4xl">
+                Empresa de {serviceName} Perto de Mim em Goiânia
+              </h2>
+              <p className="text-muted-foreground leading-relaxed">
+                Quando você busca por "<strong className="text-foreground">empresa de {serviceNameLower} perto de mim</strong>" ou "<strong className="text-foreground">desentupidora de {serviceNameLower} 24h</strong>" em Goiânia-GO, além do {serviceNameLower} nós entregamos um serviço completo, com equipe experiente e recursos prontos para qualquer situação.
+              </p>
+            </motion.div>
+            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {allServices.map((s, i) => (
+                <motion.div key={s.slug} {...fadeUp} transition={{ delay: i * 0.05 }}>
+                  <ServiceCard service={s} whatsappUrl={getWhatsAppUrl(settings, `Olá! Preciso de ${s.name.toLowerCase()} em Goiânia. Podem me ajudar?`)} linkTo={`/servicos/${s.slug}`} />
+                </motion.div>
+              ))}
             </div>
-          </aside>
-        </div>
-      </section>
+          </div>
+        </section>
+      )}
+
+      <OutrosServicos companyName={settings.company_name || "Desentupidora Goiânia"} />
+      <CtaBanner settings={settings} localName="Goiânia" heading={`${serviceName} Perto de Mim`} variant={1} />
+      <Vantagens serviceName={serviceName} />
+      <PorQueEscolher localName="Goiânia" companyName={settings.company_name || "Desentupidora Goiânia"} />
+      <CtaBanner settings={settings} localName="Goiânia" heading={`${serviceName} Perto de Mim`} variant={2} />
+      <FaqSection faqs={faqs} />
+      <CtaBanner settings={settings} localName="Goiânia" heading={`${serviceName} Perto de Mim`} variant={1} />
+      <Depoimentos />
+      <ContatoSection settings={settings} whatsappUrl={whatsappUrl} />
+
+      {/* Bairros atendidos — link para combo service+bairro */}
+      <BairrosAtendidos
+        neighborhoods={allNeighborhoods || []}
+        localName="Goiânia"
+        linkPrefix={service.slug}
+        searchTerm={`${serviceNameLower} próximo de mim`}
+      />
 
       <Footer />
     </>
