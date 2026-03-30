@@ -96,11 +96,12 @@ export default function ServiceNeighborhoodPage({ serviceSlug, neighborhoodSlug 
   const serviceName = service.name;
   const serviceNameLower = serviceName.toLowerCase();
   const neighborhoodName = neighborhood.name;
+  const loc = noNa(neighborhoodName);
   const comboSlug = `${service.slug}-${neighborhood.slug}`;
-  const seoTitle = `Precisando de ${serviceName} na ${neighborhoodName}?`;
-  const seoDesc = `${serviceName} na ${neighborhoodName} em Goiânia-GO. Atendimento rápido 24h. Orçamento grátis pelo WhatsApp. Serviço profissional com garantia.`;
+  const seoTitle = `Precisando de ${serviceName} ${loc}?`;
+  const seoDesc = `${serviceName} ${loc} em Goiânia-GO. Atendimento rápido 24h. Orçamento grátis pelo WhatsApp. Serviço profissional com garantia.`;
   const faqs = generateFaqs(neighborhoodName);
-  const whatsappUrl = getWhatsAppUrl(settings, `Olá! Preciso de ${serviceNameLower} na ${neighborhoodName}, Goiânia.`);
+  const whatsappUrl = getWhatsAppUrl(settings, `Olá! Preciso de ${serviceNameLower} ${loc}, Goiânia.`);
   const siblings = (allNeighborhoods || []).filter((n) => n.slug !== neighborhood.slug);
 
   return (
