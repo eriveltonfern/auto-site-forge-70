@@ -43,6 +43,16 @@ Deno.serve(async () => {
     });
   }
 
+  // City pages
+  for (const c of cities) {
+    urls.push({
+      loc: `${SITE_URL}/${c.slug}`,
+      lastmod: c.updated_at?.split("T")[0] || today,
+      priority: "0.8",
+      changefreq: "weekly",
+    });
+  }
+
   // Neighborhood pages
   for (const n of neighborhoods) {
     urls.push({
