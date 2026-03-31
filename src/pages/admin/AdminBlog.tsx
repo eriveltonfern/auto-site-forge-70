@@ -63,6 +63,8 @@ export default function AdminBlog() {
                       <div className="hidden group-hover:flex gap-2 mt-0.5 text-[12px]">
                         <Link to={`/admin/blog/${p.id}`} className="text-[#2271b1] hover:text-[#135e96] hover:underline">Editar</Link>
                         <span className="text-[#c3c4c7]">|</span>
+                        <a href={`/blog/${p.slug}`} target="_blank" rel="noopener noreferrer" className="text-[#2271b1] hover:text-[#135e96] hover:underline">Ver</a>
+                        <span className="text-[#c3c4c7]">|</span>
                         <button onClick={() => { if (confirm("Excluir este post?")) deleteMutation.mutate(p.id); }} className="text-[#b32d2e] hover:text-[#a02122] hover:underline">Excluir</button>
                       </div>
                     </div>

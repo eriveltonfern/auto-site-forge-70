@@ -69,6 +69,8 @@ export default function AdminCities() {
                       <div className="hidden group-hover:flex gap-2 mt-0.5 text-[12px]">
                         <Link to={`/admin/cidades/${c.id}`} className="text-[#2271b1] hover:text-[#135e96] hover:underline">Editar</Link>
                         <span className="text-[#c3c4c7]">|</span>
+                        <a href={`/${c.slug}`} target="_blank" rel="noopener noreferrer" className="text-[#2271b1] hover:text-[#135e96] hover:underline">Ver</a>
+                        <span className="text-[#c3c4c7]">|</span>
                         <button onClick={() => { if (confirm("Excluir esta cidade e seus bairros?")) deleteMutation.mutate(c.id); }} className="text-[#b32d2e] hover:text-[#a02122] hover:underline">Excluir</button>
                       </div>
                     </div>
