@@ -14,4 +14,4 @@ User-agent: *
 Allow: /
 Disallow: /admin/
 
-Sitemap: https://desentupidoras.goiania.br/sitemap.xml
+Sitemap: https://ntpwjzrhpmkuhzvmwaeg.supabase.co/functions/v1/sitemap
