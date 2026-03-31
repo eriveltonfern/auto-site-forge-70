@@ -2,14 +2,9 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { generateSlug, generateSeoTitle, generateMetaDescription, generateH1 } from "@/lib/seo-helpers";
 import { compressImageToWebP } from "@/lib/image-compressor";
-import { Upload, X } from "lucide-react";
 
 export default function AdminNeighborhoodForm() {
   const { id } = useParams();
@@ -17,7 +12,6 @@ export default function AdminNeighborhoodForm() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
-  const [uploading, setUploading] = useState(false);
 
   const { data: citiesList } = useQuery({
     queryKey: ["cities-list"],
@@ -54,39 +48,30 @@ export default function AdminNeighborhoodForm() {
     if (isNew || !form.meta_description) updates.meta_description = generateMetaDescription("neighborhood", name, cityName);
     if (isNew || !form.h1) updates.h1 = generateH1("neighborhood", name);
     if (isNew || !form.base_content) {
-      updates.base_content = `Atendemos diariamente o Setor ${name}${cityName ? ` em ${cityName}` : ""}, oferecendo soluções rápidas e profissionais para problemas de entupimento.`;
+      updates.base_content = `Atendemos diariamente o Setor ${name}${cityName ? ` em ${cityName}` : ""}, oferecendo soluções rápidas e profissionais.`;
     }
     setForm((f) => ({ ...f, ...updates }));
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setUploading(true);
+  const handleImageUpload = async (file: File) => {
     const compressed = await compressImageToWebP(file);
     const path = `neighborhoods/${Date.now()}.webp`;
     const { error } = await supabase.storage.from("uploads").upload(path, compressed, { contentType: "image/webp" });
-    if (error) {
-      toast({ title: "Erro no upload", description: error.message, variant: "destructive" });
-    } else {
-      const { data: urlData } = supabase.storage.from("uploads").getPublicUrl(path);
-      setForm((f) => ({ ...f, cover_image: urlData.publicUrl }));
-    }
-    setUploading(false);
+    if (error) { toast({ title: "Erro no upload", description: error.message, variant: "destructive" }); return; }
+    const { data: urlData } = supabase.storage.from("uploads").getPublicUrl(path);
+    setForm((f) => ({ ...f, cover_image: urlData.publicUrl }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.city_id) { toast({ title: "Selecione uma cidade", variant: "destructive" }); return; }
     setLoading(true);
-
     let error;
     if (isNew) {
       ({ error } = await supabase.from("neighborhoods").insert(form as any));
     } else {
       ({ error } = await supabase.from("neighborhoods").update(form as any).eq("id", id));
     }
-
     setLoading(false);
     if (error) {
       toast({ title: "Erro", description: error.message, variant: "destructive" });
@@ -96,73 +81,87 @@ export default function AdminNeighborhoodForm() {
     }
   };
 
+  const inputClass = "w-full border border-[#8c8f94] rounded-[4px] px-2 py-[5px] text-[14px] text-[#2c3338] focus:border-[#2271b1] focus:shadow-[0_0_0_1px_#2271b1] outline-none bg-white";
+
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
-      <h1 className="font-display text-2xl font-bold text-foreground">{isNew ? "Novo Setor" : "Editar Setor"}</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="sm:col-span-2">
-            <Label>Nome do Setor *</Label>
-            <Input value={form.name} onChange={(e) => handleNameChange(e.target.value)} required />
-          </div>
-          <div>
-            <Label>Slug</Label>
-            <Input value={form.slug} onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))} />
-          </div>
-          <div>
-            <Label>Cidade *</Label>
-            <select className="mt-1 block w-full rounded-md border bg-card px-3 py-2 text-sm text-foreground"
-              value={form.city_id} onChange={(e) => setForm((f) => ({ ...f, city_id: e.target.value }))} required>
-              <option value="">Selecione...</option>
-              {citiesList?.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-            </select>
-          </div>
-        </div>
+    <div>
+      <h1 className="text-[23px] font-normal text-[#1d2327] mb-4">{isNew ? "Adicionar Novo Setor" : "Editar Setor"}</h1>
+      <form onSubmit={handleSubmit}>
+        <div className="flex flex-col lg:flex-row gap-5">
+          <div className="flex-1 space-y-4">
+            <input value={form.name} onChange={(e) => handleNameChange(e.target.value)} placeholder="Nome do setor" required
+              className="w-full border border-[#8c8f94] rounded-[4px] px-3 py-2 text-[24px] font-normal text-[#1d2327] outline-none focus:border-[#2271b1] focus:shadow-[0_0_0_1px_#2271b1] bg-white" />
 
-        {/* Image Upload */}
-        <div>
-          <Label>Imagem de Destaque</Label>
-          {form.cover_image ? (
-            <div className="relative mt-2 w-full max-w-md">
-              <img src={form.cover_image} alt="Preview" className="h-48 w-full rounded-lg object-cover border" />
-              <Button type="button" variant="destructive" size="icon"
-                className="absolute right-2 top-2 h-7 w-7"
-                onClick={() => setForm((f) => ({ ...f, cover_image: "" }))}>
-                <X className="h-4 w-4" />
-              </Button>
+            <div className="text-[13px] text-[#50575e]">
+              <strong>Slug:</strong> <span className="text-[#2271b1]">/{form.slug}</span>
+              <button type="button" onClick={() => { const s = prompt("Slug:", form.slug); if (s) setForm(f => ({...f, slug: s})); }} className="ml-2 text-[#2271b1] hover:underline">Editar</button>
             </div>
-          ) : (
-            <label className="mt-2 flex h-32 w-full max-w-md cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/30 hover:border-accent transition-colors">
-              <div className="text-center text-sm text-muted-foreground">
-                <Upload className="mx-auto mb-1 h-6 w-6" />
-                {uploading ? "Enviando..." : "Clique para enviar"}
+
+            {/* Content */}
+            <div className="bg-white border border-[#c3c4c7] shadow-sm">
+              <div className="bg-[#f6f7f7] border-b border-[#c3c4c7] px-3 py-1.5 text-[12px] font-semibold text-[#1d2327]">Conteúdo</div>
+              <textarea value={form.base_content} onChange={(e) => setForm(f => ({...f, base_content: e.target.value}))}
+                rows={10} placeholder="Conteúdo da página..." className="w-full px-3 py-3 text-[14px] text-[#2c3338] outline-none resize-y min-h-[200px] bg-white" />
+            </div>
+
+            {/* SEO */}
+            <div className="bg-white border border-[#c3c4c7] shadow-sm">
+              <div className="px-3 py-2 border-b border-[#c3c4c7] text-[14px] font-semibold text-[#1d2327]">SEO</div>
+              <div className="p-3 space-y-3">
+                <div><label className="block text-[13px] font-semibold text-[#1d2327] mb-1">Título SEO</label><input value={form.seo_title} onChange={(e) => setForm(f => ({...f, seo_title: e.target.value}))} className={inputClass} /></div>
+                <div><label className="block text-[13px] font-semibold text-[#1d2327] mb-1">Meta Description</label><textarea value={form.meta_description} onChange={(e) => setForm(f => ({...f, meta_description: e.target.value}))} rows={2} className={`${inputClass} resize-y`} /></div>
+                <div><label className="block text-[13px] font-semibold text-[#1d2327] mb-1">H1</label><input value={form.h1} onChange={(e) => setForm(f => ({...f, h1: e.target.value}))} className={inputClass} /></div>
               </div>
-              <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} disabled={uploading} />
-            </label>
-          )}
-        </div>
+            </div>
+          </div>
 
-        <div className="rounded-lg border bg-muted/30 p-4 space-y-3">
-          <h3 className="font-display text-sm font-bold text-foreground">SEO</h3>
-          <div><Label>Título SEO</Label><Input value={form.seo_title} onChange={(e) => setForm((f) => ({ ...f, seo_title: e.target.value }))} /></div>
-          <div><Label>Meta Description</Label><Textarea value={form.meta_description} onChange={(e) => setForm((f) => ({ ...f, meta_description: e.target.value }))} rows={2} /></div>
-          <div><Label>H1</Label><Input value={form.h1} onChange={(e) => setForm((f) => ({ ...f, h1: e.target.value }))} /></div>
-        </div>
+          {/* Sidebar */}
+          <div className="lg:w-[280px] space-y-4">
+            <div className="bg-white border border-[#c3c4c7] shadow-sm">
+              <div className="px-3 py-2 border-b border-[#c3c4c7] text-[14px] font-semibold text-[#1d2327]">Publicar</div>
+              <div className="p-3 space-y-3">
+                <div className="flex items-center justify-between text-[13px]">
+                  <span>Status:</span>
+                  <select value={form.status} onChange={(e) => setForm(f => ({...f, status: e.target.value}))} className="border border-[#8c8f94] rounded-[3px] px-1 py-0.5 text-[13px] bg-white">
+                    <option value="draft">Rascunho</option>
+                    <option value="published">Publicado</option>
+                  </select>
+                </div>
+                <div className="text-[13px]">
+                  <span className="text-[#1d2327] block mb-1">Cidade:</span>
+                  <select value={form.city_id} onChange={(e) => setForm(f => ({...f, city_id: e.target.value}))} required
+                    className="w-full border border-[#8c8f94] rounded-[3px] px-1 py-0.5 text-[13px] bg-white">
+                    <option value="">Selecione...</option>
+                    {citiesList?.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                  </select>
+                </div>
+              </div>
+              <div className="px-3 py-2 border-t border-[#c3c4c7] bg-[#f6f7f7] flex justify-between items-center">
+                <button type="button" onClick={() => navigate("/admin/bairros")} className="text-[13px] text-[#b32d2e] hover:underline">Cancelar</button>
+                <button type="submit" disabled={loading} className="bg-[#2271b1] text-white text-[13px] rounded-[3px] px-3 py-[5px] border border-[#2271b1] hover:bg-[#135e96] disabled:opacity-60">
+                  {loading ? "Salvando..." : form.status === "published" ? "Publicar" : "Salvar Rascunho"}
+                </button>
+              </div>
+            </div>
 
-        <div><Label>Conteúdo Base</Label><Textarea value={form.base_content} onChange={(e) => setForm((f) => ({ ...f, base_content: e.target.value }))} rows={4} /></div>
-
-        <div>
-          <Label>Status</Label>
-          <select className="mt-1 block w-full rounded-md border bg-card px-3 py-2 text-sm text-foreground"
-            value={form.status} onChange={(e) => setForm((f) => ({ ...f, status: e.target.value }))}>
-            <option value="draft">Rascunho</option>
-            <option value="published">Publicado</option>
-          </select>
-        </div>
-
-        <div className="flex gap-3">
-          <Button type="submit" variant="cta" disabled={loading}>{loading ? "Salvando..." : isNew ? "Criar Setor" : "Salvar"}</Button>
-          <Button type="button" variant="outline" onClick={() => navigate("/admin/bairros")}>Cancelar</Button>
+            {/* Featured Image */}
+            <div className="bg-white border border-[#c3c4c7] shadow-sm">
+              <div className="px-3 py-2 border-b border-[#c3c4c7] text-[14px] font-semibold text-[#1d2327]">Imagem Destacada</div>
+              <div className="p-3">
+                {form.cover_image ? (
+                  <div>
+                    <img src={form.cover_image} alt="Destaque" className="w-full h-32 object-cover mb-2" />
+                    <button type="button" onClick={() => setForm(f => ({...f, cover_image: ""}))} className="text-[12px] text-[#b32d2e] hover:underline">Remover</button>
+                  </div>
+                ) : (
+                  <label className="block cursor-pointer">
+                    <span className="text-[13px] text-[#2271b1] hover:underline">Definir imagem destacada</span>
+                    <input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleImageUpload(f); }} />
+                  </label>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
       </form>
     </div>
