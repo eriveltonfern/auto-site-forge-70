@@ -12,6 +12,7 @@ import {
   ExternalLink,
   Menu,
   File,
+  Users,
   ChevronDown,
   ChevronRight,
 } from "lucide-react";
@@ -88,6 +89,14 @@ const menuItems: MenuItem[] = [
       { title: "Todos os Setores", url: "/admin/bairros" },
       { title: "Adicionar Novo", url: "/admin/bairros/novo" },
       { title: "Importar", url: "/admin/bairros/importar" },
+    ],
+  },
+  {
+    title: "Usuários",
+    url: "/admin/usuarios",
+    icon: Users,
+    children: [
+      { title: "Adicionar Novo", url: "/admin/usuarios" },
     ],
   },
   { title: "Configurações", url: "/admin/configuracoes", icon: Settings },
