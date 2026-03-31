@@ -51,6 +51,7 @@ const App = () => (
             <Route path="/sobre" element={<SobrePage />} />
             <Route path="/contato" element={<ContatoPage />} />
             <Route path="/sitemap" element={<SitemapPage />} />
+            <Route path="/sitemap.xml" element={<SitemapXmlRedirect />} />
 
             {/* Admin routes */}
             <Route path="/admin" element={<AdminLayout />}>
