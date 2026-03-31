@@ -13,7 +13,7 @@ interface SitemapSection {
 }
 
 export default function SitemapPage() {
-  const { settings } = useSiteData();
+  const { data: settings } = useSiteSettings();
   const [sections, setSections] = useState<SitemapSection[]>([]);
   const [loading, setLoading] = useState(true);
 
