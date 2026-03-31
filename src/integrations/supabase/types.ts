@@ -160,6 +160,51 @@ export type Database = {
           },
         ]
       }
+      pages: {
+        Row: {
+          content: string | null
+          created_at: string
+          featured_image: string | null
+          h1: string | null
+          id: string
+          meta_description: string | null
+          page_type: string
+          seo_title: string | null
+          slug: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          featured_image?: string | null
+          h1?: string | null
+          id?: string
+          meta_description?: string | null
+          page_type?: string
+          seo_title?: string | null
+          slug: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          featured_image?: string | null
+          h1?: string | null
+          id?: string
+          meta_description?: string | null
+          page_type?: string
+          seo_title?: string | null
+          slug?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       services: {
         Row: {
           benefits: string[] | null

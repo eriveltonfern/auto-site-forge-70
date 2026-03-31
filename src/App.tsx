@@ -26,6 +26,8 @@ import AdminBlog from "./pages/admin/AdminBlog.tsx";
 import AdminBlogForm from "./pages/admin/AdminBlogForm.tsx";
 import AdminSettings from "./pages/admin/AdminSettings.tsx";
 import AdminBulkImport from "./pages/admin/AdminBulkImport.tsx";
+import AdminPages from "./pages/admin/AdminPages.tsx";
+import AdminPageForm from "./pages/admin/AdminPageForm.tsx";
 
 const queryClient = new QueryClient();
 
@@ -60,6 +62,8 @@ const App = () => (
               <Route path="bairros/:id" element={<AdminNeighborhoodForm />} />
               <Route path="blog" element={<AdminBlog />} />
               <Route path="blog/:id" element={<AdminBlogForm />} />
+              <Route path="paginas" element={<AdminPages />} />
+              <Route path="paginas/:id" element={<AdminPageForm />} />
               <Route path="configuracoes" element={<AdminSettings />} />
             </Route>
 
