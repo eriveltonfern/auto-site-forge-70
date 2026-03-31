@@ -13,6 +13,7 @@ import BlogPage from "./pages/BlogPage.tsx";
 import BlogPostPage from "./pages/BlogPostPage.tsx";
 import SobrePage from "./pages/SobrePage.tsx";
 import ContatoPage from "./pages/ContatoPage.tsx";
+import SitemapPage from "./pages/SitemapPage.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import AdminLayout from "./pages/admin/AdminLayout.tsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.tsx";
@@ -49,6 +50,7 @@ const App = () => (
             <Route path="/blog/:slug" element={<BlogPostPage />} />
             <Route path="/sobre" element={<SobrePage />} />
             <Route path="/contato" element={<ContatoPage />} />
+            <Route path="/sitemap" element={<SitemapPage />} />
 
             {/* Admin routes */}
             <Route path="/admin" element={<AdminLayout />}>
