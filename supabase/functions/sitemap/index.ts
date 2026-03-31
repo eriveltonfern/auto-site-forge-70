@@ -1,6 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const SITE_URL = "https://desentupidoras.goiania.br";
+const SITE_URL = "https://www.desentupidoraemgoiania24h.com.br";
 
 Deno.serve(async () => {
   const supabase = createClient(
