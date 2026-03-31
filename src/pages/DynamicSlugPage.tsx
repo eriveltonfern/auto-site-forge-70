@@ -4,11 +4,12 @@ import { supabase } from "@/integrations/supabase/client";
 import NeighborhoodPage from "./NeighborhoodPage";
 import ServiceNeighborhoodPage from "./ServiceNeighborhoodPage";
 import CityPage from "./CityPage";
+import GenericPage from "./GenericPage";
 import NotFound from "./NotFound";
 
 /**
  * Smart router: given a slug like "setor-bueno", "hidrojateamento-setor-bueno",
- * or "desentupidora-em-trindade", determines the correct page to render.
+ * "desentupidora-em-trindade", or a custom page slug, determines the correct page to render.
  */
 export default function DynamicSlugPage() {
   const { slug } = useParams();
@@ -28,7 +29,7 @@ export default function DynamicSlugPage() {
         return { type: "neighborhood" as const, neighborhoodSlug: slug! };
       }
 
-      // 2. Try direct city match (slug like "desentupidora-em-trindade" or just city slug)
+      // 2. Try direct city match
       const { data: city } = await supabase
         .from("cities")
         .select("slug")
@@ -40,7 +41,7 @@ export default function DynamicSlugPage() {
         return { type: "city" as const, citySlug: slug! };
       }
 
-      // 3. Try service+neighborhood combo: check all services
+      // 3. Try service+neighborhood combo
       const { data: services } = await supabase
         .from("services")
         .select("slug")
@@ -71,6 +72,18 @@ export default function DynamicSlugPage() {
         }
       }
 
+      // 4. Try CMS page match
+      const { data: page } = await supabase
+        .from("pages")
+        .select("*")
+        .eq("slug", slug!)
+        .eq("status", "published")
+        .maybeSingle();
+
+      if (page) {
+        return { type: "page" as const, page };
+      }
+
       return { type: "not_found" as const };
     },
     enabled: !!slug,
@@ -86,6 +99,10 @@ export default function DynamicSlugPage() {
 
   if (data.type === "city") {
     return <CityPage />;
+  }
+
+  if (data.type === "page") {
+    return <GenericPage page={data.page} />;
   }
 
   return <ServiceNeighborhoodPage serviceSlug={data.serviceSlug!} neighborhoodSlug={data.neighborhoodSlug} />;
