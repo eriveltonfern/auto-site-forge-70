@@ -109,7 +109,7 @@ export default function SitemapPage() {
       <SEOHead
         title={`Mapa do Site - ${companyName}`}
         description={`Mapa completo do site ${companyName}. Encontre todos os serviços, áreas atendidas, posts do blog e páginas.`}
-        canonicalUrl="/sitemap"
+        canonical="/sitemap"
       />
       <Header />
 
