@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import FloatingCTA from "@/components/FloatingCTA";
-import SEOHead from "@/components/SEOHead";
-import { useSiteData } from "@/hooks/useSiteData";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { FloatingCTA } from "@/components/FloatingCTA";
+import { SEOHead } from "@/components/SEOHead";
+import { useSiteSettings } from "@/hooks/useSiteData";
 
 interface SitemapSection {
   title: string;
