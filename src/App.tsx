@@ -31,6 +31,7 @@ import AdminBulkImport from "./pages/admin/AdminBulkImport.tsx";
 import AdminPages from "./pages/admin/AdminPages.tsx";
 import AdminPageForm from "./pages/admin/AdminPageForm.tsx";
 import AdminUsers from "./pages/admin/AdminUsers.tsx";
+import GlobalScripts from "./components/GlobalScripts";
 
 const queryClient = new QueryClient();
 
