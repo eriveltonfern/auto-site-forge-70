@@ -18,7 +18,7 @@ export default function ServicesHub() {
       <SEOHead
         title="Serviços de Desentupimento em Goiânia | Todos os Serviços"
         description="Conheça todos os nossos serviços de desentupimento em Goiânia. Pia, vaso, esgoto, ralo, caixa de gordura e limpa fossa. Atendimento 24h."
-        canonical="https://desentupidoras.goiania.br/servicos"
+        canonical="https://www.desentupidoraemgoiania24h.com.br/servicos"
       />
       <Header />
       <FloatingCTA />

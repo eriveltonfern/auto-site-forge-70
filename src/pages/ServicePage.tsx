@@ -82,7 +82,7 @@ export default function ServicePage() {
       <SEOHead
         title={seoTitle}
         description={seoDesc}
-        canonical={`https://desentupidoras.goiania.br/servicos/${service.slug}`}
+        canonical={`https://www.desentupidoraemgoiania24h.com.br/servicos/${service.slug}`}
         structuredData={getFAQSchema(faqs)}
       />
       <Header />

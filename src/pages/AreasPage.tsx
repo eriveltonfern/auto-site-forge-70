@@ -32,7 +32,7 @@ export default function AreasPage() {
       <SEOHead
         title="Onde Atendemos em Goiânia-GO | Desentupidora 24h"
         description="Confira todos os bairros e setores atendidos pela nossa equipe de desentupimento em Goiânia. Atendimento rápido 24h."
-        canonical="https://desentupidoras.goiania.br/onde-atendemos"
+        canonical="https://www.desentupidoraemgoiania24h.com.br/onde-atendemos"
       />
       <Header />
       <FloatingCTA />

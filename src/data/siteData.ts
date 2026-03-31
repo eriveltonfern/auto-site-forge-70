@@ -6,7 +6,7 @@ export const SITE_CONFIG = {
   whatsappMessage: "Olá! Preciso de um serviço de desentupimento. Podem me ajudar?",
   address: "Goiânia, GO",
   hours: "24 horas - 7 dias por semana",
-  domain: "desentupidoras.goiania.br",
+  domain: "www.desentupidoraemgoiania24h.com.br",
 };
 
 export function getWhatsAppUrl(message?: string) {

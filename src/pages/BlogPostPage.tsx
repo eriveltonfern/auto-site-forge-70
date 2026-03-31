@@ -59,7 +59,7 @@ export default function BlogPostPage() {
       <SEOHead
         title={seoTitle}
         description={seoDesc}
-        canonical={`https://desentupidoras.goiania.br/blog/${post.slug}`}
+        canonical={`https://www.desentupidoraemgoiania24h.com.br/blog/${post.slug}`}
         structuredData={{
           "@context": "https://schema.org",
           "@type": "BlogPosting",

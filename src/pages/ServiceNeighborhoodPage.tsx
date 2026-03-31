@@ -109,7 +109,7 @@ export default function ServiceNeighborhoodPage({ serviceSlug, neighborhoodSlug 
       <SEOHead
         title={seoTitle}
         description={seoDesc}
-        canonical={`https://desentupidoras.goiania.br/${comboSlug}`}
+        canonical={`https://www.desentupidoraemgoiania24h.com.br/${comboSlug}`}
         structuredData={getFAQSchema(faqs)}
       />
       <Header />

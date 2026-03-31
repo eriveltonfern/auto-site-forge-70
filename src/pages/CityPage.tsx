@@ -53,7 +53,7 @@ export default function CityPage() {
       <SEOHead
         title={seoTitle}
         description={seoDesc}
-        canonical={`https://desentupidoras.goiania.br/${city.slug}`}
+        canonical={`https://www.desentupidoraemgoiania24h.com.br/${city.slug}`}
         structuredData={getFAQSchema(faqs)}
       />
       <Header />

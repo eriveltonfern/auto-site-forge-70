@@ -24,7 +24,7 @@ export default function GenericPage({ page }: { page: Page }) {
       <SEOHead
         title={seoTitle}
         description={seoDesc}
-        canonical={`https://desentupidoras.goiania.br/${page.slug}`}
+        canonical={`https://www.desentupidoraemgoiania24h.com.br/${page.slug}`}
       />
       <Header />
       <FloatingCTA />
