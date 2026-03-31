@@ -1,12 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { compressImageToWebP } from "@/lib/image-compressor";
-import { Save } from "lucide-react";
 
 export default function AdminSettings() {
   const { toast } = useToast();
@@ -58,56 +53,105 @@ export default function AdminSettings() {
     }
   };
 
+  const inputClass = "w-full border border-[#8c8f94] rounded-[4px] px-2 py-[5px] text-[14px] text-[#2c3338] focus:border-[#2271b1] focus:shadow-[0_0_0_1px_#2271b1] outline-none bg-white";
+
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
-      <h1 className="font-display text-2xl font-bold text-foreground">Configurações Gerais</h1>
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="rounded-lg border bg-card p-6 space-y-4">
-          <h2 className="font-display text-lg font-bold text-foreground">Dados da Empresa</h2>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="sm:col-span-2"><Label>Nome da Empresa</Label><Input value={form.company_name} onChange={(e) => setForm((f) => ({ ...f, company_name: e.target.value }))} /></div>
-            <div><Label>Telefone</Label><Input value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} /></div>
-            <div><Label>WhatsApp (com DDI)</Label><Input value={form.whatsapp} onChange={(e) => setForm((f) => ({ ...f, whatsapp: e.target.value }))} /></div>
-            <div className="sm:col-span-2"><Label>Mensagem Padrão WhatsApp</Label><Input value={form.whatsapp_message} onChange={(e) => setForm((f) => ({ ...f, whatsapp_message: e.target.value }))} /></div>
-            <div><Label>Endereço</Label><Input value={form.address} onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))} /></div>
-            <div><Label>Horário de Atendimento</Label><Input value={form.business_hours} onChange={(e) => setForm((f) => ({ ...f, business_hours: e.target.value }))} /></div>
-            <div><Label>E-mail</Label><Input type="email" value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} /></div>
-          </div>
-        </div>
+    <div className="max-w-[800px]">
+      <h1 className="text-[23px] font-normal text-[#1d2327] mb-4">Configurações</h1>
 
-        <div className="rounded-lg border bg-card p-6 space-y-4">
-          <h2 className="font-display text-lg font-bold text-foreground">Imagens</h2>
-          <div className="grid gap-4 sm:grid-cols-2">
+      <form onSubmit={handleSubmit}>
+        {/* Dados da empresa */}
+        <div className="bg-white border border-[#c3c4c7] shadow-sm mb-5">
+          <h2 className="text-[14px] font-semibold text-[#1d2327] px-3 py-2 border-b border-[#c3c4c7]">
+            Dados da Empresa
+          </h2>
+          <div className="p-3 space-y-3">
             <div>
-              <Label>Logo do Site</Label>
-              <Input type="file" accept="image/*" onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], "logo_url")} className="mt-1" />
-              {form.logo_url && <img src={form.logo_url} alt="Logo" className="mt-2 h-16 object-contain" />}
+              <label className="block text-[14px] font-semibold text-[#1d2327] mb-1">Nome da Empresa</label>
+              <input value={form.company_name} onChange={(e) => setForm((f) => ({ ...f, company_name: e.target.value }))} className={inputClass} />
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div>
+                <label className="block text-[14px] font-semibold text-[#1d2327] mb-1">Telefone</label>
+                <input value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} className={inputClass} />
+              </div>
+              <div>
+                <label className="block text-[14px] font-semibold text-[#1d2327] mb-1">WhatsApp (com DDI)</label>
+                <input value={form.whatsapp} onChange={(e) => setForm((f) => ({ ...f, whatsapp: e.target.value }))} className={inputClass} />
+              </div>
             </div>
             <div>
-              <Label>Favicon</Label>
-              <Input type="file" accept="image/*" onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], "favicon_url")} className="mt-1" />
-              {form.favicon_url && <img src={form.favicon_url} alt="Favicon" className="mt-2 h-8 object-contain" />}
+              <label className="block text-[14px] font-semibold text-[#1d2327] mb-1">Mensagem Padrão WhatsApp</label>
+              <input value={form.whatsapp_message} onChange={(e) => setForm((f) => ({ ...f, whatsapp_message: e.target.value }))} className={inputClass} />
             </div>
-            <div className="sm:col-span-2">
-              <Label>Imagem Hero (Banner Principal)</Label>
-              <p className="text-xs text-muted-foreground mb-1">Recomendado: 1920×1080px. Usada como fundo da seção principal do site.</p>
-              <Input type="file" accept="image/*" onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], "hero_image")} className="mt-1" />
-              {form.hero_image && <img src={form.hero_image} alt="Hero" className="mt-2 h-32 w-full object-cover rounded-lg" />}
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div>
+                <label className="block text-[14px] font-semibold text-[#1d2327] mb-1">Endereço</label>
+                <input value={form.address} onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))} className={inputClass} />
+              </div>
+              <div>
+                <label className="block text-[14px] font-semibold text-[#1d2327] mb-1">Horário</label>
+                <input value={form.business_hours} onChange={(e) => setForm((f) => ({ ...f, business_hours: e.target.value }))} className={inputClass} />
+              </div>
+            </div>
+            <div>
+              <label className="block text-[14px] font-semibold text-[#1d2327] mb-1">E-mail</label>
+              <input type="email" value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} className={inputClass} />
             </div>
           </div>
         </div>
 
-        <div className="rounded-lg border bg-card p-6 space-y-4">
-          <h2 className="font-display text-lg font-bold text-foreground">Scripts Globais</h2>
-          <div>
-            <Label>Scripts (Analytics, Pixel, etc)</Label>
-            <Textarea value={form.global_scripts} onChange={(e) => setForm((f) => ({ ...f, global_scripts: e.target.value }))} rows={5} placeholder="Cole aqui os scripts de analytics, pixel, etc." />
+        {/* Imagens */}
+        <div className="bg-white border border-[#c3c4c7] shadow-sm mb-5">
+          <h2 className="text-[14px] font-semibold text-[#1d2327] px-3 py-2 border-b border-[#c3c4c7]">
+            Imagens
+          </h2>
+          <div className="p-3 space-y-3">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div>
+                <label className="block text-[14px] font-semibold text-[#1d2327] mb-1">Logo do Site</label>
+                <input type="file" accept="image/*" onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], "logo_url")} className="text-[13px]" />
+                {form.logo_url && <img src={form.logo_url} alt="Logo" className="mt-2 h-16 object-contain" />}
+              </div>
+              <div>
+                <label className="block text-[14px] font-semibold text-[#1d2327] mb-1">Favicon</label>
+                <input type="file" accept="image/*" onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], "favicon_url")} className="text-[13px]" />
+                {form.favicon_url && <img src={form.favicon_url} alt="Favicon" className="mt-2 h-8 object-contain" />}
+              </div>
+            </div>
+            <div>
+              <label className="block text-[14px] font-semibold text-[#1d2327] mb-1">Imagem Hero (Banner Principal)</label>
+              <p className="text-[12px] text-[#50575e] mb-1">Recomendado: 1920×1080px. Usada como fundo da seção principal.</p>
+              <input type="file" accept="image/*" onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], "hero_image")} className="text-[13px]" />
+              {form.hero_image && <img src={form.hero_image} alt="Hero" className="mt-2 h-32 w-full object-cover" />}
+            </div>
           </div>
         </div>
 
-        <Button type="submit" variant="cta" disabled={loading}>
-          <Save className="h-4 w-4" /> {loading ? "Salvando..." : "Salvar Configurações"}
-        </Button>
+        {/* Scripts */}
+        <div className="bg-white border border-[#c3c4c7] shadow-sm mb-5">
+          <h2 className="text-[14px] font-semibold text-[#1d2327] px-3 py-2 border-b border-[#c3c4c7]">
+            Scripts Globais
+          </h2>
+          <div className="p-3">
+            <label className="block text-[14px] font-semibold text-[#1d2327] mb-1">Scripts (Analytics, Pixel, etc)</label>
+            <textarea
+              value={form.global_scripts}
+              onChange={(e) => setForm((f) => ({ ...f, global_scripts: e.target.value }))}
+              rows={5}
+              placeholder="Cole aqui os scripts de analytics, pixel, etc."
+              className={`${inputClass} resize-y`}
+            />
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="bg-[#2271b1] text-white text-[13px] rounded-[3px] px-3 py-[6px] border border-[#2271b1] hover:bg-[#135e96] disabled:opacity-60 transition-colors"
+        >
+          {loading ? "Salvando..." : "Salvar Alterações"}
+        </button>
       </form>
     </div>
   );
