@@ -89,7 +89,7 @@ export default function NeighborhoodPage() {
       <SEOHead
         title={seoTitle}
         description={seoDesc}
-        canonical={`https://desentupidoras.goiania.br/${neighborhood.slug}`}
+        canonical={`https://www.desentupidoraemgoiania24h.com.br/${neighborhood.slug}`}
         structuredData={getFAQSchema(faqs)}
       />
       <Header />
