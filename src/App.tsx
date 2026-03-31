@@ -64,6 +64,7 @@ const App = () => (
               <Route path="blog/:id" element={<AdminBlogForm />} />
               <Route path="paginas" element={<AdminPages />} />
               <Route path="paginas/:id" element={<AdminPageForm />} />
+              <Route path="usuarios" element={<AdminUsers />} />
               <Route path="configuracoes" element={<AdminSettings />} />
             </Route>
 

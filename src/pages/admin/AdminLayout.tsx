@@ -91,6 +91,14 @@ const menuItems: MenuItem[] = [
       { title: "Importar", url: "/admin/bairros/importar" },
     ],
   },
+  {
+    title: "Usuários",
+    url: "/admin/usuarios",
+    icon: Users,
+    children: [
+      { title: "Adicionar Novo", url: "/admin/usuarios" },
+    ],
+  },
   { title: "Configurações", url: "/admin/configuracoes", icon: Settings },
 ];
 
