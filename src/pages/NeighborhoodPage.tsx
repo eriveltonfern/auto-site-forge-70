@@ -98,14 +98,14 @@ export default function NeighborhoodPage() {
       {/* ===== HERO ===== */}
       <section className="relative overflow-hidden bg-foreground">
         <div className="absolute inset-0">
-          <img src={settings.hero_image || heroBgFallback} alt="" className="h-full w-full object-cover" width={1920} height={1080} />
+          <img src={neighborhood.cover_image || settings.hero_image || heroBgFallback} alt="" className="h-full w-full object-cover" width={1920} height={1080} />
         </div>
         <div className="absolute inset-0 bg-black/60" />
         <div className="container relative py-24 md:py-32 lg:py-40">
           <div className="mx-auto max-w-3xl text-center text-white">
             <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
               className="mb-5 text-3xl font-black leading-tight md:text-5xl lg:text-6xl">
-              Precisando de Desentupidora 24h {loc}?
+              {neighborhood.h1 || `Precisando de Desentupidora 24h ${loc}?`}
             </motion.h1>
             <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}
               className="mx-auto mb-4 max-w-2xl text-lg opacity-90 md:text-xl">
@@ -126,6 +126,24 @@ export default function NeighborhoodPage() {
           </div>
         </div>
       </section>
+
+      {/* ===== CONTEÚDO PERSONALIZADO ===== */}
+      {neighborhood.base_content && (
+        <section className="py-12 md:py-16">
+          <div className="container mx-auto max-w-3xl">
+            <div className="prose prose-lg max-w-none text-muted-foreground">
+              {neighborhood.base_content.split("\n").map((p: string, i: number) => {
+                const trimmed = p.trim();
+                if (!trimmed) return <br key={i} />;
+                if (trimmed.startsWith("### ")) return <h3 key={i} className="mt-8 mb-3 text-xl font-bold text-foreground">{trimmed.slice(4)}</h3>;
+                if (trimmed.startsWith("## ")) return <h2 key={i} className="mt-10 mb-4 text-2xl font-bold text-foreground">{trimmed.slice(3)}</h2>;
+                if (trimmed.startsWith("# ")) return <h2 key={i} className="mt-10 mb-4 text-3xl font-bold text-foreground">{trimmed.slice(2)}</h2>;
+                return <p key={i} className="text-muted-foreground leading-relaxed mb-4">{trimmed}</p>;
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ===== SERVIÇOS ===== */}
       {services && services.length > 0 && (
