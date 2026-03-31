@@ -12,6 +12,7 @@ import {
   ExternalLink,
   Menu,
   File,
+  Users,
   ChevronDown,
   ChevronRight,
 } from "lucide-react";
