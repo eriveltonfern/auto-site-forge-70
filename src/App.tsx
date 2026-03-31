@@ -14,6 +14,7 @@ import BlogPostPage from "./pages/BlogPostPage.tsx";
 import SobrePage from "./pages/SobrePage.tsx";
 import ContatoPage from "./pages/ContatoPage.tsx";
 import SitemapPage from "./pages/SitemapPage.tsx";
+import SitemapXmlRedirect from "./pages/SitemapXmlRedirect.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import AdminLayout from "./pages/admin/AdminLayout.tsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.tsx";
